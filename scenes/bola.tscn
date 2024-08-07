@@ -1,0 +1,16 @@
+[gd_scene load_steps=3 format=3 uid="uid://drwm0yb1mdeo8"]
+
+[sub_resource type="PhysicsMaterial" id="PhysicsMaterial_yoek4"]
+bounce = 5.0
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_ecgr8"]
+radius = 18.0278
+
+[node name="Bola" type="RigidBody2D" groups=["bolas"]]
+physics_material_override = SubResource("PhysicsMaterial_yoek4")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+texture_filter = 1
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("CircleShape2D_ecgr8")
