@@ -31,4 +31,38 @@ theme_override_styles/fill = SubResource("StyleBoxFlat_m1iqg")
 show_percentage = false
 script = ExtResource("5_uo2g2")
 
+[node name="Player" type="Label" parent="."]
+offset_left = 10.0
+offset_top = 691.0
+offset_right = 118.0
+offset_bottom = 714.0
+text = "Jogador atual:"
+
+[node name="jogador_atual" type="Label" parent="."]
+offset_left = 123.0
+offset_top = 691.0
+offset_right = 231.0
+offset_bottom = 714.0
+text = "0"
+
+[node name="Group" type="Label" parent="."]
+offset_left = 10.0
+offset_top = 716.0
+offset_right = 118.0
+offset_bottom = 739.0
+text = "Grupo atual:"
+
+[node name="grupo_atual" type="Label" parent="."]
+offset_left = 123.0
+offset_top = 716.0
+offset_right = 231.0
+offset_bottom = 739.0
+text = "indefinido"
+
+[node name="Fim de jogo" type="Label" parent="."]
+offset_left = 10.0
+offset_top = 739.0
+offset_right = 118.0
+offset_bottom = 762.0
+
 [connection signal="shoot" from="Taco" to="." method="_on_taco_shoot"]

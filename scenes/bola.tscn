@@ -1,6 +1,7 @@
 [gd_scene load_steps=4 format=3 uid="uid://drwm0yb1mdeo8"]
 
 [sub_resource type="PhysicsMaterial" id="PhysicsMaterial_yoek4"]
+friction = 0.45
 bounce = 5.0
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_ecgr8"]

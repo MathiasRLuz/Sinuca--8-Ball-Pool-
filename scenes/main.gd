@@ -32,7 +32,23 @@ func _ready():
 func proximo_jogador():
 	jogador_atual = 1 - jogador_atual
 	print("Jogador atual: ", jogador_atual)
-
+	$jogador_atual.text = str(jogador_atual)
+	ajusta_texto_grupo()
+	
+func ajusta_texto_grupo():
+	var grupo_texto = "indefinido"
+	if jogador_atual == 0:
+		if grupo_jogador == 1:
+			grupo_texto = "menores"
+		elif grupo_jogador == 2: 
+			grupo_texto = "maiores"
+	if jogador_atual == 1:
+		if grupo_jogador == 2:
+			grupo_texto = "menores"
+		elif grupo_jogador == 1: 
+			grupo_texto = "maiores"
+	$grupo_atual.text = grupo_texto
+	
 func remove_bola(bola):	
 	print("Remover bola " + str(bola))
 	if bola>8:
@@ -43,6 +59,10 @@ func remove_bola(bola):
 		print(grupo_menor)
 	for b in get_tree().get_nodes_in_group("bolas"):
 		if b.name == str(bola):
+			var b_sprite = Sprite2D.new()
+			add_child(b_sprite)
+			b_sprite.texture = b.get_node("Sprite2D").texture
+			b_sprite.position = Vector2(180 + 50 * (14-grupo_maior.size()-grupo_menor.size()),725)
 			b.queue_free()
 
 func falta(grupo_favorecido):
@@ -64,8 +84,10 @@ func falta(grupo_favorecido):
 func fim_de_partida(jogador_vencedor): # 0 jogador, 1 bot
 	if jogador_vencedor == 0:
 		print("Parabens, você venceu")
+		$"Fim de jogo".text = "Jogador 0 venceu"
 	else:
 		print("Você perdeu")
+		$"Fim de jogo".text = "Jogador 1 venceu"
 	set_process(false)
 
 
@@ -107,6 +129,7 @@ func reset_cue_ball():
 	cue_ball.get_node("Sprite2D").texture = ball_images.back() # última imagem do array
 	taking_shot = false
 	cue_ball.get_node("Area2D").connect("body_entered", Callable(self, "_on_CueBall_area_entered"))
+	cue_ball.continuous_cd = true  # Ativa o CCD
 
 func _on_CueBall_area_entered(body):
 	if body.is_in_group("bolas") && primeira_bola_batida == 0 && body.name != "Bola":
@@ -204,6 +227,7 @@ func define_grupos(bola):
 		else:
 			grupo_jogador = 2
 	print("Grupo do jogador: " + str(grupo_jogador))
+	ajusta_texto_grupo()
 
 func bola_8_derrubada():	
 	if jogador_atual == 0: # vez do player
@@ -252,7 +276,11 @@ func potted_ball(body):
 		if bola_adversaria(bola):
 			foi_falta = true
 		potted.append(body)
-		body.hide()
+		var b_sprite = Sprite2D.new()
+		add_child(b_sprite)
+		b_sprite.texture = body.get_node("Sprite2D").texture
+		b_sprite.position = Vector2(180 + 50 * (14-grupo_maior.size()-grupo_menor.size()),725)
+		body.queue_free()
 
 func bateu_primeiro_em_bola_proibida(bola):
 	if bola == 8:
