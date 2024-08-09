@@ -5,7 +5,7 @@ var power : float = 0.0
 var power_direction : int = 1
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
-func _process(delta):
+func _process(_delta):
 	var mouse_pos := get_viewport().get_mouse_position()
 	look_at(mouse_pos)
 	# check for mouse clicks
