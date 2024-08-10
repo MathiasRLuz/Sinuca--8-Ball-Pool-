@@ -5,7 +5,7 @@ extends Node
 var ball_images := []
 var cue_ball
 const START_POS := Vector2(890,340)
-const MAX_POWER := 8.0
+const MAX_POWER := 30
 const MOVE_THRESHOLD := 5.0
 var taking_shot : bool
 var cue_ball_potted : bool
@@ -114,6 +114,7 @@ func generate_balls():
 			ball.get_node("Sprite2D").texture = ball_images[count]
 			count += 1
 			ball.name = str(count)
+			ball.continuous_cd = true
 			add_child(ball)
 		rows -= 1
 		
@@ -182,7 +183,7 @@ func _process(_delta):
 			if derrubou_a_8_por_ultimo:
 				fim_de_partida(jogador_atual)
 		
-		if moveram: # bolas pararam após a tacada			
+		if moveram: # bolas pararam após a tacada												
 			if bateu_primeiro_em_bola_proibida(primeira_bola_batida):
 				if grupo_jogador != 0: foi_falta = true
 			

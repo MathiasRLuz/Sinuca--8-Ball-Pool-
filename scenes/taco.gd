@@ -3,14 +3,14 @@ extends Sprite2D
 signal shoot
 var power : float = 0.0
 var power_direction : int = 1
-
+@export var power_multiplier : int
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(_delta):
 	var mouse_pos := get_viewport().get_mouse_position()
 	look_at(mouse_pos)
 	# check for mouse clicks
 	if Input.is_mouse_button_pressed(MOUSE_BUTTON_LEFT):
-		power += power_direction * 0.1
+		power += power_direction * 0.3
 		if power >= get_parent().MAX_POWER:
 			power_direction = -1
 		elif power <= 0:
@@ -19,6 +19,10 @@ func _process(_delta):
 		power_direction = 1 
 		if power > 0 :
 			var dir = mouse_pos - position
+			dir = dir.normalized()
+			#power = get_parent().MAX_POWER
+			power *= power_multiplier
+			print((power * dir).length())
 			shoot.emit(power * dir)
 			power = 0
 	
