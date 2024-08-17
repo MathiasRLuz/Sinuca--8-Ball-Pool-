@@ -1,6 +1,11 @@
-[gd_scene load_steps=3 format=3 uid="uid://d0uweniqsslnk"]
+[gd_scene load_steps=4 format=3 uid="uid://d0uweniqsslnk"]
 
 [ext_resource type="Texture2D" uid="uid://e1drkbdgnvnf" path="res://assets/table.png" id="1_x37cw"]
+
+[sub_resource type="PhysicsMaterial" id="PhysicsMaterial_muaau"]
+friction = 0.5
+rough = true
+bounce = 0.1
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_r7gxe"]
 radius = 20.0
@@ -11,6 +16,7 @@ texture = ExtResource("1_x37cw")
 centered = false
 
 [node name="paredes" type="StaticBody2D" parent="."]
+physics_material_override = SubResource("PhysicsMaterial_muaau")
 
 [node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="paredes"]
 position = Vector2(157, 43)

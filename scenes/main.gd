@@ -2,7 +2,8 @@ extends Node
 
 @export var ball_scene : PackedScene
 @onready var shapecast = $ShapeCast2D
-
+var apply_max_force: bool = false
+var force_first_player: bool = false
 var ball_images := []
 var cue_ball
 const START_POS := Vector2(890,340)
@@ -23,13 +24,15 @@ var primeira_bola_batida: int = 0
 var moveram: bool = false
 var derrubou_a_8_por_ultimo: bool = false
 var buracos := []
+var jogador_ja_tinha_grupo: bool = false
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	hide_cue()
 	all_potted = []
 	randomize()  # Garante que a semente do gerador de números aleatórios seja diferente a cada execução
-	jogador_atual = randi() % 2  # Retorna 0 ou 1 aleatoriamente
+	if force_first_player: jogador_atual = 1
+	else: jogador_atual = randi() % 2  # Retorna 0 ou 1 aleatoriamente
 	for hole in $Mesa/buracos.get_children():
 		buracos.append(hole)
 	load_images()
@@ -141,7 +144,7 @@ func reset_cue_ball():
 	shapecast.reparent(cue_ball)
 
 func _on_CueBall_area_entered(body):
-	if body.is_in_group("bolas") && primeira_bola_batida == 0 && body.name != "Bola" && grupo_jogador != 0:
+	if body.is_in_group("bolas") && primeira_bola_batida == 0 && body.name != "Bola":
 		primeira_bola_batida = body.name.to_int()
 		
 func get_better_ball():
@@ -289,6 +292,8 @@ func hide_cue():
 	$PowerBar.hide()
 
 func nova_tacada():
+	if not jogador_ja_tinha_grupo and grupo_jogador != 0:
+		jogador_ja_tinha_grupo = true
 	if potted.size() == 0 || foi_falta:
 		proximo_jogador()
 	
@@ -324,8 +329,9 @@ func _process(_delta):
 				fim_de_partida(jogador_atual)
 				return
 		
-		if moveram: # bolas pararam após a tacada												
-			if (primeira_bola_batida == 0 and grupo_jogador != 0) or (primeira_bola_batida != 0 && bateu_primeiro_em_bola_proibida(primeira_bola_batida)):
+		if moveram: # bolas pararam após a tacada
+			print("Primeira bola ", primeira_bola_batida)
+			if (primeira_bola_batida == 0 and grupo_jogador != 0) or (jogador_ja_tinha_grupo and primeira_bola_batida != 0 and bateu_primeiro_em_bola_proibida(primeira_bola_batida)):
 				foi_falta = true
 			
 		if not taking_shot:			
@@ -355,6 +361,9 @@ func verifica_favorecido_por_falta():
 			falta(2)
 
 func _on_taco_shoot(power):
+	if apply_max_force: 
+		power = power.normalized() * MAX_POWER * $Taco.power_multiplier
+		print("Power: ",power.length())
 	cue_ball.apply_central_impulse(power)
 
 func define_grupos(bola):

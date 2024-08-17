@@ -1,8 +1,9 @@
 [gd_scene load_steps=4 format=3 uid="uid://drwm0yb1mdeo8"]
 
-[sub_resource type="PhysicsMaterial" id="PhysicsMaterial_yoek4"]
-friction = 0.0
-bounce = 0.95
+[sub_resource type="PhysicsMaterial" id="PhysicsMaterial_mlpql"]
+friction = 0.3
+rough = true
+bounce = 0.6
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_ecgr8"]
 radius = 18.0278
@@ -11,13 +12,17 @@ radius = 18.0278
 radius = 18.0
 
 [node name="Bola" type="RigidBody2D" groups=["bolas"]]
-mass = 1.5
-physics_material_override = SubResource("PhysicsMaterial_yoek4")
+mass = 0.17
+physics_material_override = SubResource("PhysicsMaterial_mlpql")
 gravity_scale = 0.0
 can_sleep = false
+continuous_cd = 2
 max_contacts_reported = 1
 contact_monitor = true
-linear_damp = 0.7
+linear_damp_mode = 1
+linear_damp = 1.0
+angular_damp_mode = 1
+angular_damp = 1.5
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
 texture_filter = 1
