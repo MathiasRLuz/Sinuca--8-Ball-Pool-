@@ -1,4 +1,4 @@
-[gd_scene load_steps=8 format=3 uid="uid://dvexns24mbh41"]
+[gd_scene load_steps=9 format=3 uid="uid://dvexns24mbh41"]
 
 [ext_resource type="PackedScene" uid="uid://d0uweniqsslnk" path="res://scenes/mesa.tscn" id="1_f0rcr"]
 [ext_resource type="Script" path="res://scenes/main.gd" id="1_osuje"]
@@ -11,6 +11,9 @@ bg_color = Color(1, 1, 1, 0.458824)
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_m1iqg"]
 bg_color = Color(0.909804, 0, 0.254902, 1)
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_lmf8b"]
+radius = 18.0
 
 [node name="Main" type="Node"]
 script = ExtResource("1_osuje")
@@ -65,5 +68,26 @@ offset_left = 10.0
 offset_top = 739.0
 offset_right = 118.0
 offset_bottom = 762.0
+
+[node name="RayCast2D" type="RayCast2D" parent="."]
+visible = false
+position = Vector2(891, 340)
+enabled = false
+exclude_parent = false
+target_position = Vector2(-800, 0)
+
+[node name="ShapeCast2D" type="ShapeCast2D" parent="."]
+position = Vector2(890, 340)
+enabled = false
+shape = SubResource("CircleShape2D_lmf8b")
+target_position = Vector2(-506, -16)
+
+[node name="Line2D" type="Line2D" parent="."]
+visible = false
+width = 4.0
+
+[node name="Line2D2" type="Line2D" parent="."]
+width = 4.0
+default_color = Color(1, 0, 0, 1)
 
 [connection signal="shoot" from="Taco" to="." method="_on_taco_shoot"]

@@ -1,0 +1,69 @@
+[gd_scene load_steps=8 format=3 uid="uid://dvexns24mbh41"]
+
+[ext_resource type="PackedScene" uid="uid://d0uweniqsslnk" path="res://scenes/mesa.tscn" id="1_f0rcr"]
+[ext_resource type="Script" path="res://scenes/main.gd" id="1_osuje"]
+[ext_resource type="PackedScene" uid="uid://drwm0yb1mdeo8" path="res://scenes/bola.tscn" id="2_se4dg"]
+[ext_resource type="PackedScene" uid="uid://clecbdn7movg2" path="res://scenes/taco.tscn" id="4_q3lyd"]
+[ext_resource type="Script" path="res://scenes/PowerBar.gd" id="5_uo2g2"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_yysmw"]
+bg_color = Color(1, 1, 1, 0.458824)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_m1iqg"]
+bg_color = Color(0.909804, 0, 0.254902, 1)
+
+[node name="Main" type="Node"]
+script = ExtResource("1_osuje")
+ball_scene = ExtResource("2_se4dg")
+
+[node name="Mesa" parent="." instance=ExtResource("1_f0rcr")]
+
+[node name="Taco" parent="." instance=ExtResource("4_q3lyd")]
+power_multiplier = 150
+
+[node name="PowerBar" type="ProgressBar" parent="."]
+z_index = 1
+offset_left = 277.0
+offset_top = 151.0
+offset_right = 377.0
+offset_bottom = 181.0
+theme_override_styles/background = SubResource("StyleBoxFlat_yysmw")
+theme_override_styles/fill = SubResource("StyleBoxFlat_m1iqg")
+show_percentage = false
+script = ExtResource("5_uo2g2")
+
+[node name="Player" type="Label" parent="."]
+offset_left = 10.0
+offset_top = 691.0
+offset_right = 118.0
+offset_bottom = 714.0
+text = "Jogador atual:"
+
+[node name="jogador_atual" type="Label" parent="."]
+offset_left = 123.0
+offset_top = 691.0
+offset_right = 231.0
+offset_bottom = 714.0
+text = "0"
+
+[node name="Group" type="Label" parent="."]
+offset_left = 10.0
+offset_top = 716.0
+offset_right = 118.0
+offset_bottom = 739.0
+text = "Grupo atual:"
+
+[node name="grupo_atual" type="Label" parent="."]
+offset_left = 123.0
+offset_top = 716.0
+offset_right = 231.0
+offset_bottom = 739.0
+text = "indefinido"
+
+[node name="Fim de jogo" type="Label" parent="."]
+offset_left = 10.0
+offset_top = 739.0
+offset_right = 118.0
+offset_bottom = 762.0
+
+[connection signal="shoot" from="Taco" to="." method="_on_taco_shoot"]
