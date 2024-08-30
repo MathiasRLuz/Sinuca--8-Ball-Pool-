@@ -163,8 +163,9 @@ func get_better_ball():
 		for hole in buracos:	
 			var hole_position = hole.to_global(hole.get_child(0).position)			
 			var pocket_direction = (hole_position - b[1]).normalized()
-			var contact_point = b[1] - pocket_direction * ball_radius
-			var white_to_ball = (b[1] - cue_ball.position).normalized()
+			var contact_point = b[1] - pocket_direction * 2*ball_radius
+			var white_to_ball = (contact_point - cue_ball.position).normalized()
+			#var white_to_ball = (b[1] - cue_ball.position).normalized()
 			var ball_to_pocket = (hole_position - contact_point).normalized()
 			# Calcule o ângulo entre os dois vetores
 			var angle_radians = ball_to_pocket.angle_to(white_to_ball)
@@ -270,7 +271,25 @@ func vez_bot():
 		$Line2D.visible = false
 		$Line2D2.visible = false
 	else:
-		show_cue()
+		# verifica as bolas permitidas
+		var permitted_balls := []
+		var ball_nearest_to_hole = null
+		var ball_nearest_to_hole_distance = INF
+		var clear_shot_balls := []
+		var best_collision_point = null
+		var smallest_angle = INF
+		for b in get_tree().get_nodes_in_group("bolas"):
+			if b.name != "Bola":
+				if is_ball_permitted(b.name.to_int()):
+					var ball = [b.name.to_int(), b.position]
+					permitted_balls.append(ball)
+					
+		# calcular 4 posições projetadas da bola branca nas tabelas (vetores em 0, 90, 180 e 270 graus, com comprimento x2)
+		
+		
+		for b in permitted_balls:
+			# para cada bola permitida, cria vetor da bola até as 4 posições da bola branca projetada
+			pass
 
 func show_cue():
 	$Taco.position = cue_ball.position
