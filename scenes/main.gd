@@ -166,9 +166,8 @@ func get_better_ball():
 			var contact_point = b[1] - pocket_direction * 2*ball_radius
 			var white_to_ball = (contact_point - cue_ball.position).normalized()
 			#var white_to_ball = (b[1] - cue_ball.position).normalized()
-			var ball_to_pocket = (hole_position - contact_point).normalized()
 			# Calcule o ângulo entre os dois vetores
-			var angle_radians = ball_to_pocket.angle_to(white_to_ball)
+			var angle_radians = pocket_direction.angle_to(white_to_ball)
 			# Converta para graus, se necessário
 			var angle_degrees = rad_to_deg(angle_radians)
 			#print("Ball: ", b[0], " Hole: ", hole.name, " Angle: ", angle_degrees)
@@ -266,7 +265,7 @@ func vez_bot():
 		$Line2D.add_point(better_ball[2])
 		$Line2D.visible = true
 		await get_tree().create_timer(5).timeout
-		var power = MAX_POWER * dir.normalized() * $Taco.power_multiplier
+		var power = MAX_POWER * dir.normalized() * $Taco.power_multiplier * 0.8
 		cue_ball.apply_central_impulse(power)
 		$Line2D.visible = false
 		$Line2D2.visible = false
