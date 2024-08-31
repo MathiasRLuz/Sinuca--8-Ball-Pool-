@@ -22,7 +22,7 @@ ball_scene = ExtResource("2_se4dg")
 [node name="Mesa" parent="." instance=ExtResource("1_f0rcr")]
 
 [node name="Taco" parent="." instance=ExtResource("4_q3lyd")]
-power_multiplier = 12
+power_multiplier = 10
 
 [node name="PowerBar" type="ProgressBar" parent="."]
 z_index = 1

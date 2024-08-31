@@ -2,6 +2,8 @@ extends Node
 
 @export var ball_scene : PackedScene
 @onready var shapecast = $ShapeCast2D
+@onready var shapecast2: ShapeCast2D = $ShapeCast2D2
+
 var apply_max_force: bool = false
 var force_first_player: bool = false
 var ball_images := []
@@ -149,41 +151,117 @@ func _on_CueBall_area_entered(body):
 		
 func get_better_ball():
 	var permitted_balls := []
-	var ball_nearest_to_hole = null
-	var ball_nearest_to_hole_distance = INF
-	var clear_shot_balls := []
+	var best_ball = null
+	var best_score = -INF
 	var best_collision_point = null
-	var smallest_angle = INF
+	var best_hole_position = Vector2.ZERO
 	for b in get_tree().get_nodes_in_group("bolas"):
 		if b.name != "Bola":
 			if is_ball_permitted(b.name.to_int()):
-				var ball = [b.name.to_int(), b.position]
+				var ball = b
 				permitted_balls.append(ball)
-	for b in permitted_balls:
+	
+	for b in permitted_balls: 
 		for hole in buracos:	
 			var hole_position = hole.to_global(hole.get_child(0).position)			
-			var pocket_direction = (hole_position - b[1]).normalized()
-			var contact_point = b[1] - pocket_direction * 2*ball_radius
+			var pocket_direction = (hole_position - b.position).normalized()
+			var contact_point = b.position - pocket_direction * 2* ball_radius
 			var white_to_ball = (contact_point - cue_ball.position).normalized()
-			#var white_to_ball = (b[1] - cue_ball.position).normalized()
-			# Calcule o ângulo entre os dois vetores
+			
 			var angle_radians = pocket_direction.angle_to(white_to_ball)
-			# Converta para graus, se necessário
 			var angle_degrees = rad_to_deg(angle_radians)
-			#print("Ball: ", b[0], " Hole: ", hole.name, " Angle: ", angle_degrees)
-			if check_clear_shot(b[0],contact_point): #&& abs(angle_degrees) > 90:
-				clear_shot_balls.append(b)
-				if abs(angle_degrees) < smallest_angle:
+			if check_clear_shot(b.name.to_int(),contact_point):				
+				var score = 0
+				
+				# Critério 1: Ângulo (quanto menor, melhor)
+				score += (180 - abs(angle_degrees)) * 2  # Multiplicador de 2 para dar mais peso
+				
+				# Critério 2: Distância da bola branca até a bola alvo (quanto menor, melhor)
+				var distance_to_ball = cue_ball.position.distance_to(b.position)
+				score += (1 / distance_to_ball) * 100  # Inverso da distância multiplicado para dar peso
+				
+				# Critério 3: Distância da bola alvo até a caçapa (quanto menor, melhor)
+				var distance_to_hole = b.position.distance_to(hole_position)
+				score += (1 / distance_to_hole) * 100 * 2
+				
+				# Critério 4: Interferências (penalizar se houver outras bolas no caminho)
+				var clear_path = check_clear_path(b, hole)
+				if not clear_path[0]:
+					var penalidade = 250 * clear_path[1]
+					print("Penalidade colisões: ", penalidade)
+					score -= penalidade  # Penalidade se houver interferência
+				print(b.name," - ",hole.name," - ",score)
+				# Avaliar se esta jogada é melhor que as anteriores
+				if score > best_score:
+					best_score = score
+					best_ball = b
+					best_collision_point = contact_point
+					best_hole_position = hole_position
 					$Line2D2.clear_points()
 					$Line2D2.add_point(contact_point)
 					$Line2D2.add_point(hole_position)
 					$Line2D2.visible = true
-					best_collision_point = contact_point
-					ball_nearest_to_hole = b
-					smallest_angle = abs(angle_degrees)
-	return ([ball_nearest_to_hole,clear_shot_balls,best_collision_point])
+	
+	return ([best_ball, best_hole_position,best_collision_point,best_score])
+
+func calculate_shot_power(ball, hole_position, contact_point):
+	var distance_white_to_ball = cue_ball.position.distance_to(contact_point)
+	var distance_ball_to_hole = contact_point.distance_to(hole_position)
+	
+	# Configurações de física da mesa
+	var friction_coefficient = 0.05  # Depende do material da mesa
+	var mass_of_ball = ball.mass  # Massa típica de uma bola de sinuca (em kg)
+	
+	# Calcular a força necessária baseada na distância
+	var power = distance_white_to_ball + distance_ball_to_hole
+	
+	# Ajustar a força com base no coeficiente de atrito
+	power *= (1 + friction_coefficient)
+	
+	# Ajustar a força com base no ângulo
+	var shot_direction = (contact_point - cue_ball.position).normalized()
+	var pocket_direction = (hole_position - contact_point).normalized()
+	var angle_radians = shot_direction.angle_to(pocket_direction)
+	var angle_factor = 1.0 + 0.5 * abs(angle_radians / PI)
+	
+	power *= angle_factor
+	
+	# Ajuste final de força baseado na massa e nas configurações do jogo
+	# Multiplicar por um fator para ajustar para o comportamento desejado
+	var final_power = power * mass_of_ball   # O multiplicador depende da escala do seu jogo
+	return final_power
+
+func check_clear_path(ball,pocket):
+	shapecast2.reparent(ball)
+	var pocket_position = pocket.to_global(pocket.get_child(0).position)	
+	# Defina a posição de origem do shapecast2D	
+	shapecast2.position = Vector2.ZERO
+	# Calcule o vetor de direção e distância para o shapecast2d
+	shapecast2.target_position = shapecast2.to_local(pocket_position)
+	# Habilite o RayCast2D para começar a detectar colisões
+	shapecast2.enabled = true
+	shapecast2.force_shapecast_update()	
+	# Verifique se há uma colisão
+	if shapecast2.is_colliding():
+		# Obtenha o objeto colidido
+		var collisions = shapecast2.get_collision_count()		
+		var collider = shapecast2.get_collider(0)
+		var nome = collider.name
+		if nome == "Area2D": nome = collider.get_parent().name
+		print(ball.name, " colisões: ", collisions, " - primeira colisão: ", nome)
+		# qual será a primeira colisão
+		shapecast2.enabled = false
+		shapecast2.reparent($".")
+		if nome == "buracos":
+			return [true,collisions]
+		else: return [false,collisions]
+	else:
+		shapecast2.enabled = false
+		shapecast2.reparent($".")
+		return [false,0]
 
 func check_clear_shot(ball_number, contact_point: Vector2):
+	var tolerancia = 0.05 # porcentagem de distancia (entre o ponto de colisão real e o contact_point calculado) excedente ao raio da bola
 	# Defina a posição de origem do shapecast2D	
 	shapecast.position = Vector2.ZERO
 	# Calcule o vetor de direção e distância para o shapecast2d
@@ -195,11 +273,13 @@ func check_clear_shot(ball_number, contact_point: Vector2):
 	if shapecast.is_colliding():
 		# Obtenha o objeto colidido
 		var collider = shapecast.get_collider(0)
-		# qual será a primeira colisão
-		#print(shapecast.position,shapecast.target_position,collider.name)
-		shapecast.enabled = false
-		if collider.name == str(ball_number):
+		# qual será o ponto da primeira colisão
+		var colision_point = shapecast.get_collision_point(0)
+		var distancia = colision_point.distance_to(contact_point) # distancia entre o ponto de colisão real e o contact_point calculado
+		shapecast.enabled = false	
+		if collider.name == str(ball_number) and distancia<=ball_radius*(1+tolerancia):
 			return true
+		else: return false
 	else:
 		shapecast.enabled = false
 		return false
@@ -253,7 +333,8 @@ func is_ball_permitted(ball):
 						return true
 	
 func vez_bot():
-	var better_ball = get_better_ball() # [ball_nearest_to_hole,clear_shot_balls,best_collision_point]
+	print("INICIO VEZ BOT")
+	var better_ball = get_better_ball() # [best_ball, hole_position,best_collision_point]
 	print("Betterball: ",better_ball)
 	if better_ball[2] != null:
 		$Taco.position = cue_ball.position
@@ -265,8 +346,9 @@ func vez_bot():
 		$Line2D.add_point(better_ball[2])
 		$Line2D.visible = true
 		await get_tree().create_timer(5).timeout
-		var power = MAX_POWER * dir.normalized() * $Taco.power_multiplier * 0.8
-		cue_ball.apply_central_impulse(power)
+		var power = MAX_POWER * dir.normalized() * $Taco.power_multiplier * calculate_shot_power(better_ball[0],better_ball[1],better_ball[2])/200
+		print("POWER > ", power.length())
+		cue_ball.apply_central_impulse(power)		
 		$Line2D.visible = false
 		$Line2D2.visible = false
 	else:
@@ -282,13 +364,14 @@ func vez_bot():
 				if is_ball_permitted(b.name.to_int()):
 					var ball = [b.name.to_int(), b.position]
 					permitted_balls.append(ball)
-					
+
 		# calcular 4 posições projetadas da bola branca nas tabelas (vetores em 0, 90, 180 e 270 graus, com comprimento x2)
 		
 		
 		for b in permitted_balls:
 			# para cada bola permitida, cria vetor da bola até as 4 posições da bola branca projetada
 			pass
+	print("FIM VEZ BOT")
 
 func show_cue():
 	$Taco.position = cue_ball.position
