@@ -3,6 +3,8 @@ extends Node
 @export var ball_scene : PackedScene
 @onready var shapecast = $ShapeCast2D
 @onready var shapecast2: ShapeCast2D = $ShapeCast2D2
+@onready var raycast: RayCast2D = $RayCast2D
+@onready var raycast2: RayCast2D = $RayCast2D2
 
 var apply_max_force: bool = false
 var force_first_player: bool = false
@@ -153,8 +155,9 @@ func get_better_ball():
 	var permitted_balls := []
 	var best_ball = null
 	var best_score = -INF
-	var best_collision_point = null
+	var best_collision_point = null	
 	var best_hole_position = Vector2.ZERO
+	var direct_shot := false
 	for b in get_tree().get_nodes_in_group("bolas"):
 		if b.name != "Bola":
 			if is_ball_permitted(b.name.to_int()):
@@ -170,7 +173,7 @@ func get_better_ball():
 			
 			var angle_radians = pocket_direction.angle_to(white_to_ball)
 			var angle_degrees = rad_to_deg(angle_radians)
-			if check_clear_shot(b.name.to_int(),contact_point):				
+			if check_clear_shot(b.name.to_int(),contact_point):	
 				var score = 0
 				
 				# Critério 1: Ângulo (quanto menor, melhor)
@@ -197,12 +200,56 @@ func get_better_ball():
 					best_ball = b
 					best_collision_point = contact_point
 					best_hole_position = hole_position
+					# linha vermelha
 					$Line2D2.clear_points()
 					$Line2D2.add_point(contact_point)
 					$Line2D2.add_point(hole_position)
 					$Line2D2.visible = true
+					direct_shot = true
 	
-	return ([best_ball, best_hole_position,best_collision_point,best_score])
+	if best_ball == null:
+		# nenhum tiro direto
+		# calcular 4 posições projetadas da bola branca nas tabelas (vetores em 0, 90, 180 e 270 graus, com comprimento x2)
+		var cue_ball_projections = calculate_cue_ball_projections()
+		for b in permitted_balls:
+			# para cada bola permitida, cria vetor da bola até as 4 posições da bola branca projetada
+			for projected_cue_ball in cue_ball_projections:
+				raycast.reparent(b)
+				raycast.position = Vector2.ZERO
+				raycast.target_position = projected_cue_ball
+				if raycast.is_colliding():
+					# Obtenha o ponto de tabela
+					var collision_point = raycast.get_collision_point()
+					# linha vermelha
+					$Line2D2.clear_points()
+					$Line2D2.add_point(collision_point)
+					$Line2D2.add_point(b.position)
+					$Line2D2.visible = true
+	return ([best_ball, best_hole_position,best_collision_point,best_score,direct_shot])
+
+func calculate_cue_ball_projections():
+	var ball_positions = []
+	var directions = [
+		Vector2(1, 0),   # 0° - Direita
+		Vector2(0, -1),  # 90° - Cima
+		Vector2(-1, 0),  # 180° - Esquerda
+		Vector2(0, 1)    # 270° - Baixo
+	]
+	raycast2.enabled = true
+	for direction in directions:
+		raycast2.target_position = direction * 10000  # Lança o raycast numa grande distância
+		raycast2.global_position = cue_ball.global_position  # Posição do RayCast2D na bola branca
+		
+		raycast2.force_raycast_update()
+		if raycast2.is_colliding():
+			var collision_point = raycast2.get_collision_point()
+			var distance = cue_ball.global_position.distance_to(collision_point)
+			var projected_position = cue_ball.position + direction * distance * 2
+			ball_positions.append(projected_position)
+		
+	raycast2.enabled = false
+	print("Projections: ", ball_positions)
+	return ball_positions
 
 func calculate_shot_power(ball, hole_position, contact_point):
 	var distance_white_to_ball = cue_ball.position.distance_to(contact_point)
@@ -238,7 +285,7 @@ func check_clear_path(ball,pocket):
 	shapecast2.position = Vector2.ZERO
 	# Calcule o vetor de direção e distância para o shapecast2d
 	shapecast2.target_position = shapecast2.to_local(pocket_position)
-	# Habilite o RayCast2D para começar a detectar colisões
+	# Habilite o ShapeCast2D para começar a detectar colisões
 	shapecast2.enabled = true
 	shapecast2.force_shapecast_update()	
 	# Verifique se há uma colisão
@@ -334,8 +381,8 @@ func is_ball_permitted(ball):
 	
 func vez_bot():
 	print("INICIO VEZ BOT")
-	var better_ball = get_better_ball() # [best_ball, hole_position,best_collision_point]
-	print("Betterball: ",better_ball)
+	var better_ball = get_better_ball() # ([best_ball, best_hole_position,best_collision_point,best_score,direct_shot])
+	print("Betterball: ",better_ball)	
 	if better_ball[2] != null:
 		$Taco.position = cue_ball.position
 		$Taco.show()
@@ -345,32 +392,16 @@ func vez_bot():
 		$Line2D.add_point(cue_ball.position)
 		$Line2D.add_point(better_ball[2])
 		$Line2D.visible = true
-		await get_tree().create_timer(5).timeout
-		var power = MAX_POWER * dir.normalized() * $Taco.power_multiplier * calculate_shot_power(better_ball[0],better_ball[1],better_ball[2])/200
+		await get_tree().create_timer(1).timeout
+		var power = MAX_POWER * dir.normalized() * $Taco.power_multiplier 
+		# se tiro direto calcula a força, senão usa força maxima nas tabelas
+		if better_ball[4]: power *= calculate_shot_power(better_ball[0],better_ball[1],better_ball[2])/200 
 		print("POWER > ", power.length())
 		cue_ball.apply_central_impulse(power)		
 		$Line2D.visible = false
 		$Line2D2.visible = false
-	else:
-		# verifica as bolas permitidas
-		var permitted_balls := []
-		var ball_nearest_to_hole = null
-		var ball_nearest_to_hole_distance = INF
-		var clear_shot_balls := []
-		var best_collision_point = null
-		var smallest_angle = INF
-		for b in get_tree().get_nodes_in_group("bolas"):
-			if b.name != "Bola":
-				if is_ball_permitted(b.name.to_int()):
-					var ball = [b.name.to_int(), b.position]
-					permitted_balls.append(ball)
-
-		# calcular 4 posições projetadas da bola branca nas tabelas (vetores em 0, 90, 180 e 270 graus, com comprimento x2)
-		
-		
-		for b in permitted_balls:
-			# para cada bola permitida, cria vetor da bola até as 4 posições da bola branca projetada
-			pass
+	else:		
+		print("Não sei oq fazer")		
 	print("FIM VEZ BOT")
 
 func show_cue():

@@ -16,6 +16,7 @@ texture = ExtResource("1_x37cw")
 centered = false
 
 [node name="paredes" type="StaticBody2D" parent="."]
+collision_layer = 3
 physics_material_override = SubResource("PhysicsMaterial_muaau")
 
 [node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="paredes"]

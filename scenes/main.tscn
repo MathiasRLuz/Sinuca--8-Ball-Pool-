@@ -70,11 +70,18 @@ offset_right = 118.0
 offset_bottom = 762.0
 
 [node name="RayCast2D" type="RayCast2D" parent="."]
-visible = false
 position = Vector2(891, 340)
 enabled = false
 exclude_parent = false
 target_position = Vector2(-800, 0)
+collision_mask = 2
+
+[node name="RayCast2D2" type="RayCast2D" parent="."]
+position = Vector2(891, 340)
+enabled = false
+exclude_parent = false
+target_position = Vector2(-800, 0)
+collision_mask = 2
 
 [node name="ShapeCast2D" type="ShapeCast2D" parent="."]
 position = Vector2(890, 340)
@@ -83,10 +90,10 @@ shape = SubResource("CircleShape2D_lmf8b")
 target_position = Vector2(-506, -16)
 
 [node name="ShapeCast2D2" type="ShapeCast2D" parent="."]
-position = Vector2(523, 780)
+position = Vector2(554.5, 1054)
 enabled = false
 shape = SubResource("CircleShape2D_lmf8b")
-target_position = Vector2(-506, -16)
+target_position = Vector2(0, -453)
 collide_with_areas = true
 
 [node name="Line2D" type="Line2D" parent="."]
@@ -94,6 +101,7 @@ visible = false
 width = 4.0
 
 [node name="Line2D2" type="Line2D" parent="."]
+visible = false
 width = 4.0
 default_color = Color(1, 0, 0, 1)
 
