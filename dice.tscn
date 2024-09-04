@@ -1,0 +1,75 @@
+[gd_scene load_steps=10 format=3 uid="uid://bqaaeu03n30v1"]
+
+[ext_resource type="Script" path="res://dice.gd" id="1_eirsg"]
+[ext_resource type="Texture2D" uid="uid://cwr2w21fee5d7" path="res://assets/ball_1.png" id="2_haody"]
+[ext_resource type="Texture2D" uid="uid://bcyj4jnyg5ql4" path="res://assets/ball_2.png" id="3_y3b5d"]
+[ext_resource type="Texture2D" uid="uid://cmxc2m3vtrl7u" path="res://assets/ball_3.png" id="4_3mwc6"]
+[ext_resource type="Texture2D" uid="uid://ckf155u7xn8nh" path="res://assets/ball_4.png" id="5_evsvt"]
+[ext_resource type="Texture2D" uid="uid://dvod6wdej051e" path="res://assets/ball_5.png" id="6_q2xve"]
+[ext_resource type="Texture2D" uid="uid://csbbg1yiq61w4" path="res://assets/ball_6.png" id="7_1vfoq"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_dx7o3"]
+
+[sub_resource type="BoxMesh" id="BoxMesh_eegro"]
+
+[node name="Dice" type="RigidBody3D"]
+mass = 0.1
+gravity_scale = 0.0
+script = ExtResource("1_eirsg")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+shape = SubResource("BoxShape3D_dx7o3")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+mesh = SubResource("BoxMesh_eegro")
+
+[node name="Faces" type="Node3D" parent="."]
+
+[node name="1" type="Node3D" parent="Faces"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5, 0)
+
+[node name="Decal" type="Decal" parent="Faces/1"]
+visible = false
+size = Vector3(1, 1, 1)
+texture_albedo = ExtResource("2_haody")
+
+[node name="2" type="Node3D" parent="Faces"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.5, 0, 0)
+
+[node name="Decal" type="Decal" parent="Faces/2"]
+size = Vector3(1, 1, 1)
+texture_albedo = ExtResource("3_y3b5d")
+upper_fade = 1e-05
+lower_fade = 0.000123179
+
+[node name="3" type="Node3D" parent="Faces"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.5)
+
+[node name="Decal" type="Decal" parent="Faces/3"]
+visible = false
+size = Vector3(1, 1, 1)
+texture_albedo = ExtResource("4_3mwc6")
+
+[node name="4" type="Node3D" parent="Faces"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.5)
+
+[node name="Decal" type="Decal" parent="Faces/4"]
+visible = false
+size = Vector3(1, 1, 1)
+texture_albedo = ExtResource("5_evsvt")
+
+[node name="5" type="Node3D" parent="Faces"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.5, 0, 0)
+
+[node name="Decal" type="Decal" parent="Faces/5"]
+visible = false
+size = Vector3(1, 1, 1)
+texture_albedo = ExtResource("6_q2xve")
+
+[node name="6" type="Node3D" parent="Faces"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.5, 0)
+
+[node name="Decal" type="Decal" parent="Faces/6"]
+visible = false
+size = Vector3(1, 1, 1)
+texture_albedo = ExtResource("7_1vfoq")
