@@ -84,16 +84,16 @@ target_position = Vector2(-800, 0)
 collision_mask = 2
 
 [node name="ShapeCast2D" type="ShapeCast2D" parent="."]
-position = Vector2(890, 340)
+position = Vector2(426, 362)
 enabled = false
 shape = SubResource("CircleShape2D_lmf8b")
-target_position = Vector2(-506, -16)
+target_position = Vector2(694, 44)
 
 [node name="ShapeCast2D2" type="ShapeCast2D" parent="."]
-position = Vector2(554.5, 1054)
+position = Vector2(91, 414)
 enabled = false
 shape = SubResource("CircleShape2D_lmf8b")
-target_position = Vector2(0, -453)
+target_position = Vector2(-937, 59)
 collide_with_areas = true
 
 [node name="Line2D" type="Line2D" parent="."]
@@ -104,5 +104,10 @@ width = 4.0
 visible = false
 width = 4.0
 default_color = Color(1, 0, 0, 1)
+
+[node name="Line2D3" type="Line2D" parent="."]
+visible = false
+width = 4.0
+default_color = Color(0.521291, 0.431825, 0.962876, 1)
 
 [connection signal="shoot" from="Taco" to="." method="_on_taco_shoot"]

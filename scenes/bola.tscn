@@ -12,7 +12,8 @@ radius = 18.0278
 radius = 18.0
 
 [node name="Bola" type="RigidBody2D" groups=["bolas"]]
-mass = 0.17
+collision_priority = 10.0
+mass = 0.16
 physics_material_override = SubResource("PhysicsMaterial_mlpql")
 gravity_scale = 0.0
 can_sleep = false
