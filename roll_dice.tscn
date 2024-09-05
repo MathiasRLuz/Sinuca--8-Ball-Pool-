@@ -1,19 +1,32 @@
-[gd_scene load_steps=3 format=3 uid="uid://d210d8k3gp6ak"]
+[gd_scene load_steps=4 format=3 uid="uid://d210d8k3gp6ak"]
 
 [ext_resource type="PackedScene" uid="uid://bqaaeu03n30v1" path="res://dice.tscn" id="1_d4vsc"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_4dqsw"]
 size = Vector3(100, 1, 100)
 
+[sub_resource type="QuadMesh" id="QuadMesh_wjhps"]
+size = Vector2(100, 100)
+orientation = 1
+
 [node name="StaticBody3D" type="StaticBody3D"]
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="."]
 shape = SubResource("BoxShape3D_4dqsw")
 
+[node name="MeshInstance3D" type="MeshInstance3D" parent="CollisionShape3D"]
+mesh = SubResource("QuadMesh_wjhps")
+
 [node name="Dice" parent="." instance=ExtResource("1_d4vsc")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.70972, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2, 0)
+mass = 1.0
+gravity_scale = 1.0
+angular_damp_mode = 1
+angular_damp = 0.5
 
 [node name="Camera3D" type="Camera3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 0.884589, 0.466371, 0, -0.466371, 0.884589, 0, 5.98567, 7.34502)
+transform = Transform3D(1, 0, 0, 0, 0.734192, 0.678942, 0, -0.678942, 0.734192, 0, 5.921, 5.36948)
+fov = 15.0
+near = 0.005
 
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="Camera3D"]

@@ -1,10 +1,19 @@
-[gd_scene load_steps=9 format=3 uid="uid://dvexns24mbh41"]
+[gd_scene load_steps=18 format=3 uid="uid://dvexns24mbh41"]
 
 [ext_resource type="PackedScene" uid="uid://d0uweniqsslnk" path="res://scenes/mesa.tscn" id="1_f0rcr"]
 [ext_resource type="Script" path="res://scenes/main.gd" id="1_osuje"]
 [ext_resource type="PackedScene" uid="uid://drwm0yb1mdeo8" path="res://scenes/bola.tscn" id="2_se4dg"]
 [ext_resource type="PackedScene" uid="uid://clecbdn7movg2" path="res://scenes/taco.tscn" id="4_q3lyd"]
 [ext_resource type="Script" path="res://scenes/PowerBar.gd" id="5_uo2g2"]
+[ext_resource type="Texture2D" uid="uid://b3hkuh5gaoyqc" path="res://icon.svg" id="6_pa0kc"]
+[ext_resource type="Script" path="res://scenes/screen.gd" id="7_yc43q"]
+[ext_resource type="Texture2D" uid="uid://cwr2w21fee5d7" path="res://assets/ball_1.png" id="8_fpaow"]
+[ext_resource type="PackedScene" uid="uid://d210d8k3gp6ak" path="res://roll_dice.tscn" id="8_xqw4x"]
+[ext_resource type="Texture2D" uid="uid://bcyj4jnyg5ql4" path="res://assets/ball_2.png" id="9_e2frl"]
+[ext_resource type="Texture2D" uid="uid://cmxc2m3vtrl7u" path="res://assets/ball_3.png" id="10_w451w"]
+[ext_resource type="Texture2D" uid="uid://ckf155u7xn8nh" path="res://assets/ball_4.png" id="11_o6iuk"]
+[ext_resource type="Texture2D" uid="uid://dvod6wdej051e" path="res://assets/ball_5.png" id="12_0vrp5"]
+[ext_resource type="Texture2D" uid="uid://csbbg1yiq61w4" path="res://assets/ball_6.png" id="13_p272j"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_yysmw"]
 bg_color = Color(1, 1, 1, 0.458824)
@@ -109,5 +118,16 @@ default_color = Color(1, 0, 0, 1)
 visible = false
 width = 4.0
 default_color = Color(0.521291, 0.431825, 0.962876, 1)
+
+[node name="Screen" type="Sprite2D" parent="."]
+position = Vector2(1021, 707)
+texture = ExtResource("6_pa0kc")
+script = ExtResource("7_yc43q")
+dice_faces = Array[Texture2D]([ExtResource("8_fpaow"), ExtResource("9_e2frl"), ExtResource("10_w451w"), ExtResource("11_o6iuk"), ExtResource("12_0vrp5"), ExtResource("13_p272j")])
+
+[node name="SubViewport" type="SubViewport" parent="."]
+size = Vector2i(100, 100)
+
+[node name="StaticBody3D" parent="SubViewport" instance=ExtResource("8_xqw4x")]
 
 [connection signal="shoot" from="Taco" to="." method="_on_taco_shoot"]

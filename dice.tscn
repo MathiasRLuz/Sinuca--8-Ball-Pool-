@@ -1,4 +1,4 @@
-[gd_scene load_steps=10 format=3 uid="uid://bqaaeu03n30v1"]
+[gd_scene load_steps=17 format=3 uid="uid://bqaaeu03n30v1"]
 
 [ext_resource type="Script" path="res://dice.gd" id="1_eirsg"]
 [ext_resource type="Texture2D" uid="uid://cwr2w21fee5d7" path="res://assets/ball_1.png" id="2_haody"]
@@ -12,6 +12,27 @@
 
 [sub_resource type="BoxMesh" id="BoxMesh_eegro"]
 
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_xdox7"]
+albedo_texture = ExtResource("2_haody")
+
+[sub_resource type="QuadMesh" id="QuadMesh_nrbtn"]
+material = SubResource("StandardMaterial3D_xdox7")
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_vlq4w"]
+albedo_texture = ExtResource("3_y3b5d")
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_mhxl6"]
+albedo_texture = ExtResource("4_3mwc6")
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_j8u6g"]
+albedo_texture = ExtResource("5_evsvt")
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_v5orf"]
+albedo_texture = ExtResource("6_q2xve")
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_he44q"]
+albedo_texture = ExtResource("7_1vfoq")
+
 [node name="Dice" type="RigidBody3D"]
 mass = 0.1
 gravity_scale = 0.0
@@ -21,6 +42,7 @@ script = ExtResource("1_eirsg")
 shape = SubResource("BoxShape3D_dx7o3")
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+visible = false
 mesh = SubResource("BoxMesh_eegro")
 
 [node name="Faces" type="Node3D" parent="."]
@@ -28,48 +50,48 @@ mesh = SubResource("BoxMesh_eegro")
 [node name="1" type="Node3D" parent="Faces"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5, 0)
 
-[node name="Decal" type="Decal" parent="Faces/1"]
-visible = false
-size = Vector3(1, 1, 1)
-texture_albedo = ExtResource("2_haody")
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Faces/1"]
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, 0, 0, 0)
+mesh = SubResource("QuadMesh_nrbtn")
 
 [node name="2" type="Node3D" parent="Faces"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.5, 0, 0)
 
-[node name="Decal" type="Decal" parent="Faces/2"]
-size = Vector3(1, 1, 1)
-texture_albedo = ExtResource("3_y3b5d")
-upper_fade = 1e-05
-lower_fade = 0.000123179
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Faces/2"]
+transform = Transform3D(-4.37114e-08, 0, -1, 0, 1, 0, 1, 0, -4.37114e-08, 0, 0, 0)
+material_override = SubResource("StandardMaterial3D_vlq4w")
+mesh = SubResource("QuadMesh_nrbtn")
 
 [node name="3" type="Node3D" parent="Faces"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.5)
 
-[node name="Decal" type="Decal" parent="Faces/3"]
-visible = false
-size = Vector3(1, 1, 1)
-texture_albedo = ExtResource("4_3mwc6")
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Faces/3"]
+material_override = SubResource("StandardMaterial3D_mhxl6")
+mesh = SubResource("QuadMesh_nrbtn")
 
 [node name="4" type="Node3D" parent="Faces"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.5)
 
-[node name="Decal" type="Decal" parent="Faces/4"]
-visible = false
-size = Vector3(1, 1, 1)
-texture_albedo = ExtResource("5_evsvt")
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Faces/4"]
+transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 0, 0, 0)
+material_override = SubResource("StandardMaterial3D_j8u6g")
+mesh = SubResource("QuadMesh_nrbtn")
+skeleton = NodePath("../../../..")
 
 [node name="5" type="Node3D" parent="Faces"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.5, 0, 0)
 
-[node name="Decal" type="Decal" parent="Faces/5"]
-visible = false
-size = Vector3(1, 1, 1)
-texture_albedo = ExtResource("6_q2xve")
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Faces/5"]
+transform = Transform3D(-4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, 0, 0, 0)
+material_override = SubResource("StandardMaterial3D_v5orf")
+mesh = SubResource("QuadMesh_nrbtn")
+skeleton = NodePath("../../../..")
 
 [node name="6" type="Node3D" parent="Faces"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.5, 0)
 
-[node name="Decal" type="Decal" parent="Faces/6"]
-visible = false
-size = Vector3(1, 1, 1)
-texture_albedo = ExtResource("7_1vfoq")
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Faces/6"]
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0)
+material_override = SubResource("StandardMaterial3D_he44q")
+mesh = SubResource("QuadMesh_nrbtn")
+skeleton = NodePath("../../../..")

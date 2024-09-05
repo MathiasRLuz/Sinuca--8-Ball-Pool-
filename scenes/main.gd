@@ -122,17 +122,34 @@ func generate_balls():
 	var count : int = 0
 	var rows : int = 5
 	var diameter = 36
+	var ball_positions = []
+	var ball8_pos : Vector2
+	var ball15_pos : Vector2
 	for col in range(5):
-		for row in range(rows):
-			var ball = ball_scene.instantiate()
-			var pos = Vector2(250 + (col * diameter), 267 + (row * diameter) + (col * diameter / 2))			
-			ball.position = pos
-			ball.get_node("Sprite2D").texture = ball_images[count]
+		for row in range(rows):			
+			var pos = Vector2(250 + (col * diameter), 267 + (row * diameter) + (float(col * diameter) / 2.0))
 			count += 1
-			ball.name = str(count)
-			ball.continuous_cd = true
-			add_child(ball)
+			if count == 11:
+				ball8_pos = pos
+			else:
+				ball_positions.append(pos)
 		rows -= 1
+	count = 0
+	ball_positions.shuffle()	
+	for i in range(15):
+		var ball = ball_scene.instantiate()		
+		ball.get_node("Sprite2D").texture = ball_images[count]
+		if count == 7:
+			ball.position = ball8_pos
+			ball15_pos = ball_positions[i]
+		elif i<14:
+			ball.position = ball_positions[i]
+		else:
+			ball.position = ball15_pos
+		count += 1
+		ball.name = str(count)
+		ball.continuous_cd = true
+		add_child(ball)	
 		
 func remove_cue_ball():
 	var old_b = cue_ball
@@ -316,10 +333,9 @@ func get_better_ball():
 			$Line2D3.add_point(best_contact_point)
 			$Line2D3.visible = true
 		else:			
-				# mirar apenas para acertar uma bola do grupo				
-				for b in permitted_balls: 
-						var white_to_ball = (b.position - cue_ball.position).normalized()
-						if check_clear_shot(b.name,b.position,false):								
+				# mirar apenas para acertar uma bola do grupo
+				for b in permitted_balls:
+						if check_clear_shot(b.name,b.position,false):
 							possible_points.append(b.position)
 				if possible_points.size() > 0:
 					print("Mirando para acertar uma bola permitida")
