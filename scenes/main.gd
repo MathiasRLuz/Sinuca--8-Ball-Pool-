@@ -21,8 +21,8 @@ var mesa_aberta : bool = true
 
 var jogador_atual : int = 0 # 0 jogador, 1 bot
 var apply_max_force: bool = false
-var force_first_player: bool = true
-var grupo_jogador : int = 2 # 0 indefinido, 1 menores, 2 maiores
+var force_first_player: bool = false
+var grupo_jogador : int = 0 # indefinido, 1 menores, 2 maiores
 
 var grupo_maior := [9,10,11,12,13,14,15]
 var grupo_menor := [1,2,3,4,5,6,7]
@@ -332,7 +332,7 @@ func get_better_ball():
 			$Line2D3.add_point(best_collision_point)
 			$Line2D3.add_point(best_contact_point)
 			$Line2D3.visible = true
-		else:			
+		else:
 				# mirar apenas para acertar uma bola do grupo
 				for b in permitted_balls:
 						if check_clear_shot(b.name,b.position,false):
