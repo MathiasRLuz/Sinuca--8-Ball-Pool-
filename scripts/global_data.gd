@@ -1,7 +1,9 @@
 extends Node
 
+enum LookingDirection {RIGHT, LEFT}
 enum Npcs {NPC, DOMOVOY, BRUXA}
 enum Falas {PRE_BATALHA, VITORIOSO, DERROTADO, GENERICA, }
+
 var Texts = {
 	Npcs.NPC : {
 		Falas.PRE_BATALHA: [
@@ -22,6 +24,7 @@ var enemy_original_position : Vector2
 var enemy_can_move: bool
 var player_spawn_position: Vector2
 var player_spawn_was_set := false
+var player_looking_dir := LookingDirection.RIGHT
 
 func set_new_enemy(_enemy,_enemy_original_position,_enemy_can_move):
 	current_enemy = _enemy
@@ -36,6 +39,7 @@ func clear_enemy_data():
 func get_current_enemy():
 	return [current_enemy,enemy_original_position,enemy_can_move]
 	
-func set_player_spawn_position(pos):
+func set_player_spawn(pos,dir):
 	player_spawn_position = pos
 	player_spawn_was_set = true
+	player_looking_dir = dir

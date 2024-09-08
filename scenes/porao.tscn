@@ -1,4 +1,4 @@
-[gd_scene load_steps=21 format=4 uid="uid://sr5g8pchrh1v"]
+[gd_scene load_steps=20 format=4 uid="uid://sr5g8pchrh1v"]
 
 [ext_resource type="PackedScene" uid="uid://bdncjqubnoh5" path="res://scenes/transition.tscn" id="1_e74f6"]
 [ext_resource type="Texture2D" uid="uid://b1jxh1eytihxv" path="res://assets/Wizpool/Overworld/porao chao.png" id="1_qk1fd"]
@@ -12,7 +12,6 @@
 [ext_resource type="SpriteFrames" uid="uid://dq84ac28byycd" path="res://tres_files/bruxa_sprite_frames.tres" id="6_2vvn1"]
 [ext_resource type="Texture2D" uid="uid://c6c65hole1out" path="res://assets/Wizpool/Overworld/sprite porao/porao_escada.png" id="10_buv1p"]
 [ext_resource type="Script" path="res://scripts/escada.gd" id="12_dsv8l"]
-[ext_resource type="PackedScene" uid="uid://dqoxt520vx0fw" path="res://scenes/bar.tscn" id="13_l8yah"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_kyq34"]
 texture = ExtResource("2_1c4vj")
@@ -50,7 +49,7 @@ point_count = 3
 size = Vector2(25, 39)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_xwwn5"]
-size = Vector2(8, 27.5)
+size = Vector2(8, 22)
 
 [node name="Porao" type="Node2D"]
 script = ExtResource("1_qxowi")
@@ -109,8 +108,8 @@ texture = ExtResource("10_buv1p")
 script = ExtResource("12_dsv8l")
 descendo = false
 direction = 1
-player_spawn_position = Vector2(53, 30)
-next_scene = ExtResource("13_l8yah")
+player_spawn_position = Vector2(53, 20)
+next_scene_path = "res://scenes/bar.tscn"
 
 [node name="StaticBody2D" type="StaticBody2D" parent="Escada"]
 
@@ -121,7 +120,7 @@ shape = SubResource("RectangleShape2D_gwqfx")
 [node name="Area2D" type="Area2D" parent="Escada"]
 
 [node name="StairStartPoint" type="CollisionShape2D" parent="Escada/Area2D"]
-position = Vector2(13, 15.75)
+position = Vector2(13, 13)
 shape = SubResource("RectangleShape2D_xwwn5")
 
 [connection signal="body_entered" from="Escada/Area2D" to="Escada" method="_on_area_2d_body_entered"]

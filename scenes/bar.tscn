@@ -1,4 +1,4 @@
-[gd_scene load_steps=13 format=4 uid="uid://dqoxt520vx0fw"]
+[gd_scene load_steps=12 format=4 uid="uid://dqoxt520vx0fw"]
 
 [ext_resource type="Script" path="res://scripts/level.gd" id="1_5n24m"]
 [ext_resource type="PackedScene" uid="uid://bdncjqubnoh5" path="res://scenes/transition.tscn" id="1_7xk4b"]
@@ -7,7 +7,6 @@
 [ext_resource type="Texture2D" uid="uid://ddtebdrgc20gh" path="res://assets/Wizpool/Overworld/sprites bar/escadabar-0027.png" id="4_ih52s"]
 [ext_resource type="PackedScene" uid="uid://currqium6v628" path="res://scenes/player.tscn" id="6_mp7x7"]
 [ext_resource type="Script" path="res://scripts/escada.gd" id="6_urp26"]
-[ext_resource type="PackedScene" uid="uid://sr5g8pchrh1v" path="res://scenes/porao.tscn" id="8_7dxtu"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_wsiju"]
 texture = ExtResource("2_qtr86")
@@ -1121,14 +1120,14 @@ position = Vector2(5, 7)
 texture = ExtResource("2_vnlln")
 
 [node name="Player" parent="." instance=ExtResource("6_mp7x7")]
-position = Vector2(-33, 3)
+position = Vector2(-23, 75)
 
 [node name="Escada" type="Sprite2D" parent="."]
 position = Vector2(81, 45)
 texture = ExtResource("4_ih52s")
 script = ExtResource("6_urp26")
 player_spawn_position = Vector2(203, 287)
-next_scene = ExtResource("8_7dxtu")
+next_scene_path = "res://scenes/porao.tscn"
 
 [node name="StaticBody2D" type="StaticBody2D" parent="Escada"]
 
