@@ -10,7 +10,7 @@ var pos : Vector3
 func _ready() -> void:
 	pos = position	
 
-func _physics_process(delta: float) -> void:
+func _physics_process(_delta: float) -> void:
 	isMoving = linear_velocity.length() > 0.01	
 	position.x = 0
 	position.z = 0

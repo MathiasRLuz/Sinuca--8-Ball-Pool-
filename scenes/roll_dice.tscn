@@ -1,6 +1,6 @@
 [gd_scene load_steps=4 format=3 uid="uid://d210d8k3gp6ak"]
 
-[ext_resource type="PackedScene" uid="uid://bqaaeu03n30v1" path="res://dice.tscn" id="1_d4vsc"]
+[ext_resource type="PackedScene" uid="uid://bqaaeu03n30v1" path="res://scenes/dice.tscn" id="1_d4vsc"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_4dqsw"]
 size = Vector3(100, 1, 100)
@@ -26,7 +26,7 @@ angular_damp = 0.5
 
 [node name="Camera3D" type="Camera3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 0.734192, 0.678942, 0, -0.678942, 0.734192, 0, 5.921, 5.36948)
-fov = 15.0
+fov = 30.0
 near = 0.005
 
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="Camera3D"]

@@ -1,7 +1,7 @@
 [gd_scene load_steps=3 format=3 uid="uid://clecbdn7movg2"]
 
 [ext_resource type="Texture2D" uid="uid://csqmfc2u5vuow" path="res://assets/cue.png" id="1_dso27"]
-[ext_resource type="Script" path="res://scenes/taco.gd" id="2_gx12w"]
+[ext_resource type="Script" path="res://scripts/taco.gd" id="2_gx12w"]
 
 [node name="Taco" type="Sprite2D"]
 z_index = 2

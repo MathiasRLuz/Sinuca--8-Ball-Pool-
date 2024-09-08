@@ -1,13 +1,13 @@
 [gd_scene load_steps=12 format=3 uid="uid://dvexns24mbh41"]
 
 [ext_resource type="PackedScene" uid="uid://d0uweniqsslnk" path="res://scenes/mesa.tscn" id="1_f0rcr"]
-[ext_resource type="Script" path="res://scenes/main.gd" id="1_osuje"]
+[ext_resource type="Script" path="res://scripts/main.gd" id="1_osuje"]
 [ext_resource type="PackedScene" uid="uid://drwm0yb1mdeo8" path="res://scenes/bola.tscn" id="2_se4dg"]
 [ext_resource type="PackedScene" uid="uid://clecbdn7movg2" path="res://scenes/taco.tscn" id="4_q3lyd"]
-[ext_resource type="Script" path="res://scenes/PowerBar.gd" id="5_uo2g2"]
+[ext_resource type="Script" path="res://scripts/PowerBar.gd" id="5_uo2g2"]
 [ext_resource type="Texture2D" uid="uid://b3hkuh5gaoyqc" path="res://icon.svg" id="6_pa0kc"]
-[ext_resource type="Script" path="res://scenes/screen.gd" id="7_yc43q"]
-[ext_resource type="PackedScene" uid="uid://d210d8k3gp6ak" path="res://roll_dice.tscn" id="8_xqw4x"]
+[ext_resource type="Script" path="res://scripts/screen.gd" id="7_yc43q"]
+[ext_resource type="PackedScene" uid="uid://d210d8k3gp6ak" path="res://scenes/roll_dice.tscn" id="8_xqw4x"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_yysmw"]
 bg_color = Color(1, 1, 1, 0.458824)
