@@ -1,6 +1,8 @@
 extends Node
 
 @export var ball_scene : PackedScene
+@export var force_victory := false
+
 @onready var shapecast = $ShapeCast2D
 @onready var shapecast2: ShapeCast2D = $ShapeCast2D2
 @onready var raycast: RayCast2D = $RayCast2D
@@ -102,6 +104,7 @@ func falta(grupo_favorecido):
 func fim_de_partida(jogador_vencedor): # 0 jogador, 1 bot
 	if jogador_vencedor == 0:
 		print("Parabens, você venceu")
+		GlobalData.enemy_defeated(GlobalData.current_enemy_name)
 		$"Fim de jogo".text = "Jogador 0 venceu"
 	else:
 		print("Você perdeu")
@@ -613,8 +616,13 @@ func nova_tacada():
 	primeira_bola_batida = 0
 	foi_falta = false
 	
+func _input(event):
+	if event.is_action_pressed("interact"):	
+		if force_victory: GlobalData.enemy_defeated(GlobalData.current_enemy_name) # força vitória do jogador
+		get_tree().change_scene_to_file(GlobalData.last_scene_before_battle)
+
 # Called every frame. 'delta' is the elapsed time since the previous frame.
-func _process(_delta):
+func _process(_delta):	
 	var moving := false
 	for b in get_tree().get_nodes_in_group("bolas"):
 		if (b.linear_velocity.length() > 0.0 and b.linear_velocity.length() < MOVE_THRESHOLD):
