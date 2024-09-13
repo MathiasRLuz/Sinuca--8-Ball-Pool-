@@ -44,7 +44,7 @@ func _ready():
 	else: jogador_atual = randi() % 2  # Retorna 0 ou 1 aleatoriamente
 	for hole in $Mesa/buracos.get_children():
 		buracos.append(hole)
-	load_images()
+	#load_images()
 	new_game()	
 	$Mesa/buracos.body_entered.connect(potted_ball)
 
@@ -82,6 +82,10 @@ func remove_bola(bola):
 			var b_sprite = Sprite2D.new()
 			add_child(b_sprite)
 			b_sprite.texture = b.get_node("Sprite2D").texture
+			b_sprite.hframes = b.get_node("Sprite2D").hframes
+			b_sprite.vframes = b.get_node("Sprite2D").vframes
+			b_sprite.frame = b.get_node("Sprite2D").frame
+			b_sprite.scale = b.get_node("Sprite2D").scale
 			b_sprite.position = Vector2(180 + 50 * (14-grupo_maior.size()-grupo_menor.size()),725)
 			b.queue_free()
 
@@ -141,8 +145,8 @@ func generate_balls():
 	ball_positions.shuffle()	
 	for i in range(15):
 		var ball = ball_scene.instantiate()		
-		ball.get_node("Sprite2D").texture = ball_images[count]
-		#ball.get_node("Sprite2D").frame = i+1
+		#ball.get_node("Sprite2D").texture = ball_images[count]
+		ball.get_node("Sprite2D").frame = i+1
 		if count == 7:
 			ball.position = ball8_pos
 			ball15_pos = ball_positions[i]
@@ -165,8 +169,8 @@ func reset_cue_ball():
 	cue_ball = ball_scene.instantiate()
 	add_child(cue_ball)
 	cue_ball.position = START_POS
-	#cue_ball.get_node("Sprite2D").frame = 0
-	cue_ball.get_node("Sprite2D").texture = ball_images.back() # última imagem do array
+	cue_ball.get_node("Sprite2D").frame = 0
+	#cue_ball.get_node("Sprite2D").texture = ball_images.back() # última imagem do array
 	taking_shot = false
 	cue_ball.set_contact_monitor(true)
 	cue_ball.max_contacts_reported = 256
@@ -764,6 +768,7 @@ func potted_ball(body):
 		b_sprite.hframes = body.get_node("Sprite2D").hframes
 		b_sprite.vframes = body.get_node("Sprite2D").vframes
 		b_sprite.frame = body.get_node("Sprite2D").frame
+		b_sprite.scale = body.get_node("Sprite2D").scale
 		b_sprite.position = Vector2(180 + 50 * (14-grupo_maior.size()-grupo_menor.size()),725)
 		body.queue_free()
 

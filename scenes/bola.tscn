@@ -1,4 +1,6 @@
-[gd_scene load_steps=4 format=3 uid="uid://drwm0yb1mdeo8"]
+[gd_scene load_steps=5 format=3 uid="uid://drwm0yb1mdeo8"]
+
+[ext_resource type="Texture2D" uid="uid://djwys21foai4d" path="res://assets/Wizpool/Bolas de Sinuca.png" id="1_ymfk2"]
 
 [sub_resource type="PhysicsMaterial" id="PhysicsMaterial_mlpql"]
 friction = 0.3
@@ -27,6 +29,10 @@ angular_damp = 1.5
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
 texture_filter = 1
+scale = Vector2(2.525, 2.525)
+texture = ExtResource("1_ymfk2")
+hframes = 9
+vframes = 2
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 shape = SubResource("CircleShape2D_ecgr8")

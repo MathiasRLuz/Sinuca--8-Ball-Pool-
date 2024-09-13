@@ -114,6 +114,7 @@ width = 4.0
 default_color = Color(0.521291, 0.431825, 0.962876, 1)
 
 [node name="Screen" type="Sprite2D" parent="."]
+visible = false
 position = Vector2(1021, 707)
 texture = ExtResource("6_2lwaj")
 script = ExtResource("7_kkqnw")
