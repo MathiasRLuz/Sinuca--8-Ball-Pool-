@@ -23,7 +23,7 @@ var mesa_aberta : bool = true
 
 var jogador_atual : int = 0 # 0 jogador, 1 bot
 var apply_max_force: bool = false
-var force_first_player: int = 1 # -1 random, 0 bot, 1 jogador
+var force_first_player: int = -1 # -1 random, 0 bot, 1 jogador
 var grupo_jogador : int = 0 # indefinido, 1 menores, 2 maiores
 
 var grupo_maior := [9,10,11,12,13,14,15]

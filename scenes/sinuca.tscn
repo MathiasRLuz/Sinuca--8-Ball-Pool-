@@ -124,4 +124,7 @@ size = Vector2i(100, 100)
 
 [node name="StaticBody3D" parent="SubViewport" instance=ExtResource("8_ejpbm")]
 
+[node name="Camera2D" type="Camera2D" parent="."]
+position = Vector2(595, 350)
+
 [connection signal="shoot" from="Taco" to="." method="_on_taco_shoot"]
