@@ -8,13 +8,12 @@ rough = true
 bounce = 0.1
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_r7gxe"]
-radius = 20.0
+radius = 7.0
 
 [node name="Mesa" type="Sprite2D"]
 centered = false
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
-scale = Vector2(4.6783, 3.90857)
 texture = ExtResource("1_i3cer")
 centered = false
 
@@ -24,73 +23,48 @@ physics_material_override = SubResource("PhysicsMaterial_muaau")
 
 [node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="paredes"]
 position = Vector2(157, 43)
-polygon = PackedVector2Array(-68, 12, -32, 40, 397, 40, 407, 12, 404, -264, -70, -264, -382, -249, -379, 79, -128, 56, -137.151, 6.0218, -124, -9, -97.9765, -17.603, -75, -11)
-
-[node name="CollisionPolygon2D2" type="CollisionPolygon2D" parent="paredes"]
-position = Vector2(687, 43)
-polygon = PackedVector2Array(-49, 16, -35, 38, 396, 38, 419, 17, 414, -264, -138, -268, -124, 6, -108, -17, -83, -26, -66, -22, -52, -5)
-
-[node name="CollisionPolygon2D3" type="CollisionPolygon2D" parent="paredes"]
-position = Vector2(36, 511)
-rotation = -1.55778
-polygon = PackedVector2Array(-76.7202, 22.0004, -56.3964, 46.738, 393.578, 41.8808, 417.342, 23.5699, 433.807, -17.6479, 414, -264, -70, -264, -92.5258, -39.7991)
-
-[node name="CollisionPolygon2D4" type="CollisionPolygon2D" parent="paredes"]
-position = Vector2(1157, 165)
-rotation = 1.56852
-polygon = PackedVector2Array(-70.0317, 13.8409, -49.0773, 33.8888, 395.922, 34.9019, 417.969, 13.952, 418.595, -261.047, -406.368, -277.926, -384.142, 62.1257, -110.127, 55.7495, -134.072, 31.6949, -138.016, 6.68579, -131.968, -14.3004, -105.936, -28.2412, -79.9543, -20.182)
-
-[node name="CollisionPolygon2D5" type="CollisionPolygon2D" parent="paredes"]
-position = Vector2(1031, 636)
-rotation = -3.13777
-polygon = PackedVector2Array(-73.9344, 17.2828, -49.866, 35.1907, 379.131, 33.551, 393.028, 6.49762, 414, -264, -400.071, -279.473, -426.592, 107.632, -115.789, 55.4431, -141.982, 37.3485, -152.961, 10.5848, -146.041, -10.4418, -122.095, -24.5334, -89.0491, -12.6597)
-
-[node name="CollisionPolygon2D6" type="CollisionPolygon2D" parent="paredes"]
-position = Vector2(480, 636)
-rotation = -3.13946
-scale = Vector2(0.942655, 0.911074)
-polygon = PackedVector2Array(-90.139, 15.5651, -80.5441, 38.5937, 391.526, 37.5538, 415, 14, 414.874, -20.9877, 484.77, -15.3386, 488.147, 79.0483, 763.977, 85.0253, 785.519, -271.745, -161.864, -299.29, -170.835, -19.38, -131.615, -34.833, -98.7048, -22.832)
+polygon = PackedVector2Array(-35, -34, -31, -37, -27, -38, -23, -36, -20, -32, -20, -28, -15, -22, 73, -21, 80, -27, 81, -30, 83, -33, 86, -35, 90, -35, 95, -32, 96, -27, 95, -23, 93, -21, 88, -19, 83, -13, 82, 100, 88, 108, 93, 109, 95, 112, 96, 116, 95, 119, 94, 121, 90, 124, 82, 122, 79, 116, 74, 111, -16, 111, -20, 117, -21, 122, -22, 124, -25, 126, -28, 127, -31, 126, -34, 124, -35, 122, -36, 118, -36, 116, -41, 111, -130, 111, -135, 114, -136, 118, -149, 347, 15, 364, 385, 426, 407, 12, 404, -264, -70, -264, -382, -249, -393, 409, -149, 347, -136, 118, -140, 123, -144, 124, -147, 123, -150, 121, -152, 117, -151, 112, -148, 109, -144, 108, -139, 101, -139, -12, -144, -18, -150, -21, -152, -25, -152, -30, -146, -35, -139, -34, -136, -28, -129, -22, -42, -22, -36, -28, -36, -31)
 
 [node name="buracos" type="Area2D" parent="."]
 
 [node name="TL" type="CollisionShape2D" parent="buracos"]
-position = Vector2(52, 55)
+position = Vector2(13, 16)
 shape = SubResource("CircleShape2D_r7gxe")
 
 [node name="Alvo" type="Node2D" parent="buracos/TL"]
-position = Vector2(36, 39)
-
-[node name="TR" type="CollisionShape2D" parent="buracos"]
-position = Vector2(1153, 56)
-shape = SubResource("CircleShape2D_r7gxe")
-
-[node name="Alvo" type="Node2D" parent="buracos/TR"]
-position = Vector2(-39, 35)
-
-[node name="BL" type="CollisionShape2D" parent="buracos"]
-position = Vector2(53, 627)
-shape = SubResource("CircleShape2D_r7gxe")
-
-[node name="Alvo" type="Node2D" parent="buracos/BL"]
-position = Vector2(32, -34)
-
-[node name="BR" type="CollisionShape2D" parent="buracos"]
-position = Vector2(1149, 628)
-shape = SubResource("CircleShape2D_r7gxe")
-
-[node name="Alvo" type="Node2D" parent="buracos/BR"]
-position = Vector2(-39, -37)
+position = Vector2(8, 9)
 
 [node name="TM" type="CollisionShape2D" parent="buracos"]
-position = Vector2(603, 42)
+position = Vector2(129, 13)
 shape = SubResource("CircleShape2D_r7gxe")
 
 [node name="Alvo" type="Node2D" parent="buracos/TM"]
-position = Vector2(0, 40)
+position = Vector2(0, 7)
+
+[node name="TR" type="CollisionShape2D" parent="buracos"]
+position = Vector2(245, 16)
+shape = SubResource("CircleShape2D_r7gxe")
+
+[node name="Alvo" type="Node2D" parent="buracos/TR"]
+position = Vector2(-7, 7)
+
+[node name="BL" type="CollisionShape2D" parent="buracos"]
+position = Vector2(13, 159)
+shape = SubResource("CircleShape2D_r7gxe")
+
+[node name="Alvo" type="Node2D" parent="buracos/BL"]
+position = Vector2(7, -8)
 
 [node name="BM" type="CollisionShape2D" parent="buracos"]
-position = Vector2(604, 641)
+position = Vector2(129, 162)
 shape = SubResource("CircleShape2D_r7gxe")
 
 [node name="Alvo" type="Node2D" parent="buracos/BM"]
-position = Vector2(0, -38)
+position = Vector2(0, -7)
+
+[node name="BR" type="CollisionShape2D" parent="buracos"]
+position = Vector2(245, 159)
+shape = SubResource("CircleShape2D_r7gxe")
+
+[node name="Alvo" type="Node2D" parent="buracos/BR"]
+position = Vector2(-9, -9)

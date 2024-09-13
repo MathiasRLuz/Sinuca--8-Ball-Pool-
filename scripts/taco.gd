@@ -7,11 +7,11 @@ var power_direction : int = 1
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
-	var mouse_pos := get_viewport().get_mouse_position()
+	var mouse_pos := get_global_mouse_position()	
 	look_at(mouse_pos)
 	# check for mouse clicks
 	if Input.is_mouse_button_pressed(MOUSE_BUTTON_LEFT):
-		power += power_direction * 70	* delta	
+		power += power_direction * 30	* delta	
 		if power >= get_parent().MAX_POWER:
 			power_direction = -1
 		elif power <= 0:

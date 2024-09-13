@@ -11,14 +11,14 @@ extends Node
 
 var ball_images := []
 var cue_ball
-const START_POS := Vector2(890,335)
+const START_POS := Vector2(216,86.5)
 @export var MAX_POWER := 40
 const MOVE_THRESHOLD := 5.0
 var taking_shot : bool
 var cue_ball_potted : bool
 var potted := []
 var all_potted := []
-var ball_radius = 14.0
+var ball_radius = 5.6
 var mesa_aberta : bool = true
 
 var jogador_atual : int = 0 # 0 jogador, 1 bot
@@ -86,7 +86,7 @@ func remove_bola(bola):
 			b_sprite.vframes = b.get_node("Sprite2D").vframes
 			b_sprite.frame = b.get_node("Sprite2D").frame
 			b_sprite.scale = b.get_node("Sprite2D").scale
-			b_sprite.position = Vector2(180 + 50 * (14-grupo_maior.size()-grupo_menor.size()),725)
+			b_sprite.position = potted_ball_position()
 			b.queue_free()
 
 func falta(grupo_favorecido):
@@ -134,7 +134,7 @@ func generate_balls():
 	var ball15_pos : Vector2
 	for col in range(5):
 		for row in range(rows):			
-			var pos = Vector2(200 + (col * diameter) - (col * 2), START_POS.y - 4 * ball_radius + (row * diameter) + (float(col * diameter) / 2.0))
+			var pos = Vector2(50 + (col * diameter) - (col * 2), START_POS.y - 4 * ball_radius + (row * diameter) + (float(col * diameter) / 2.0))
 			count += 1
 			if count == 11:
 				ball8_pos = pos
@@ -764,14 +764,18 @@ func potted_ball(body):
 		all_potted.append(bola)
 		var b_sprite = Sprite2D.new()
 		add_child(b_sprite)
-		b_sprite.texture = body.get_node("Sprite2D").texture
-		b_sprite.hframes = body.get_node("Sprite2D").hframes
-		b_sprite.vframes = body.get_node("Sprite2D").vframes
-		b_sprite.frame = body.get_node("Sprite2D").frame
-		b_sprite.scale = body.get_node("Sprite2D").scale
-		b_sprite.position = Vector2(180 + 50 * (14-grupo_maior.size()-grupo_menor.size()),725)
+		if body.get_node("Sprite2D"):
+			b_sprite.texture = body.get_node("Sprite2D").texture
+			b_sprite.hframes = body.get_node("Sprite2D").hframes
+			b_sprite.vframes = body.get_node("Sprite2D").vframes
+			b_sprite.frame = body.get_node("Sprite2D").frame
+			b_sprite.scale = body.get_node("Sprite2D").scale
+			b_sprite.position = potted_ball_position()
 		body.queue_free()
 
+func potted_ball_position():
+	return Vector2(180 + 15 * (14-grupo_maior.size()-grupo_menor.size()),200)
+	
 func bateu_primeiro_em_bola_proibida(bola):
 	if bola == 8:
 		if jogador_atual == 0:

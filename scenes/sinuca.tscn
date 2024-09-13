@@ -16,11 +16,12 @@ bg_color = Color(1, 1, 1, 0.458824)
 bg_color = Color(0.909804, 0, 0.254902, 1)
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_lmf8b"]
-radius = 14.1
+radius = 6.0
 
 [node name="Sinuca" type="Node"]
 script = ExtResource("1_4cjhd")
 ball_scene = ExtResource("2_g7l3x")
+MAX_POWER = 20
 
 [node name="Mesa" parent="." instance=ExtResource("3_45acg")]
 
@@ -30,9 +31,9 @@ power_multiplier = 12
 [node name="PowerBar" type="ProgressBar" parent="."]
 z_index = 1
 offset_left = 277.0
-offset_top = 151.0
+offset_top = -366.0
 offset_right = 377.0
-offset_bottom = 181.0
+offset_bottom = -336.0
 theme_override_styles/background = SubResource("StyleBoxFlat_yysmw")
 theme_override_styles/fill = SubResource("StyleBoxFlat_m1iqg")
 show_percentage = false
@@ -40,40 +41,40 @@ script = ExtResource("5_c7jvl")
 
 [node name="Player" type="Label" parent="."]
 offset_left = 10.0
-offset_top = 691.0
+offset_top = 174.0
 offset_right = 118.0
-offset_bottom = 714.0
+offset_bottom = 197.0
 text = "Jogador atual:"
 
 [node name="jogador_atual" type="Label" parent="."]
 offset_left = 123.0
-offset_top = 691.0
+offset_top = 174.0
 offset_right = 231.0
-offset_bottom = 714.0
+offset_bottom = 197.0
 text = "0"
 
 [node name="Group" type="Label" parent="."]
 offset_left = 10.0
-offset_top = 716.0
+offset_top = 199.0
 offset_right = 118.0
-offset_bottom = 739.0
+offset_bottom = 222.0
 text = "Grupo atual:"
 
 [node name="grupo_atual" type="Label" parent="."]
 offset_left = 123.0
-offset_top = 716.0
+offset_top = 199.0
 offset_right = 231.0
-offset_bottom = 739.0
+offset_bottom = 222.0
 text = "indefinido"
 
 [node name="Fim de jogo" type="Label" parent="."]
 offset_left = 10.0
-offset_top = 739.0
+offset_top = 222.0
 offset_right = 118.0
-offset_bottom = 762.0
+offset_bottom = 245.0
 
 [node name="RayCast2D" type="RayCast2D" parent="."]
-position = Vector2(891, 340)
+position = Vector2(216, 87)
 enabled = false
 exclude_parent = false
 target_position = Vector2(-800, 0)
@@ -93,7 +94,7 @@ shape = SubResource("CircleShape2D_lmf8b")
 target_position = Vector2(694, 44)
 
 [node name="ShapeCast2D2" type="ShapeCast2D" parent="."]
-position = Vector2(91, 414)
+position = Vector2(29, 86)
 enabled = false
 shape = SubResource("CircleShape2D_lmf8b")
 target_position = Vector2(-937, 59)
@@ -101,21 +102,20 @@ collide_with_areas = true
 
 [node name="Line2D" type="Line2D" parent="."]
 visible = false
-width = 4.0
+width = 1.0
 
 [node name="Line2D2" type="Line2D" parent="."]
 visible = false
-width = 4.0
+width = 1.0
 default_color = Color(1, 0, 0, 1)
 
 [node name="Line2D3" type="Line2D" parent="."]
 visible = false
-width = 4.0
+width = 1.0
 default_color = Color(0.521291, 0.431825, 0.962876, 1)
 
 [node name="Screen" type="Sprite2D" parent="."]
-visible = false
-position = Vector2(1021, 707)
+position = Vector2(335, 93)
 texture = ExtResource("6_2lwaj")
 script = ExtResource("7_kkqnw")
 
@@ -123,5 +123,9 @@ script = ExtResource("7_kkqnw")
 size = Vector2i(100, 100)
 
 [node name="StaticBody3D" parent="SubViewport" instance=ExtResource("8_ejpbm")]
+
+[node name="Camera2D" type="Camera2D" parent="."]
+position = Vector2(127, 87)
+zoom = Vector2(2, 2)
 
 [connection signal="shoot" from="Taco" to="." method="_on_taco_shoot"]
