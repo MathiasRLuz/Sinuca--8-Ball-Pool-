@@ -1,6 +1,8 @@
 extends Node
 
 @export var ball_scene : PackedScene
+@export var force_victory := false
+
 @onready var shapecast = $ShapeCast2D
 @onready var shapecast2: ShapeCast2D = $ShapeCast2D2
 @onready var raycast: RayCast2D = $RayCast2D
@@ -9,19 +11,19 @@ extends Node
 
 var ball_images := []
 var cue_ball
-const START_POS := Vector2(890,340)
-const MAX_POWER := 40
+const START_POS := Vector2(890,335)
+@export var MAX_POWER := 40
 const MOVE_THRESHOLD := 5.0
 var taking_shot : bool
 var cue_ball_potted : bool
 var potted := []
 var all_potted := []
-var ball_radius = 18.0
+var ball_radius = 17.0
 var mesa_aberta : bool = true
 
 var jogador_atual : int = 0 # 0 jogador, 1 bot
 var apply_max_force: bool = false
-var force_first_player: bool = false
+var force_first_player: int = 1 # -1 random, 0 bot, 1 jogador
 var grupo_jogador : int = 0 # indefinido, 1 menores, 2 maiores
 
 var grupo_maior := [9,10,11,12,13,14,15]
@@ -38,7 +40,7 @@ func _ready():
 	hide_cue()
 	all_potted = []
 	randomize()  # Garante que a semente do gerador de números aleatórios seja diferente a cada execução
-	if force_first_player: jogador_atual = 1
+	if force_first_player!=-1: jogador_atual = force_first_player
 	else: jogador_atual = randi() % 2  # Retorna 0 ou 1 aleatoriamente
 	for hole in $Mesa/buracos.get_children():
 		buracos.append(hole)
@@ -102,6 +104,7 @@ func falta(grupo_favorecido):
 func fim_de_partida(jogador_vencedor): # 0 jogador, 1 bot
 	if jogador_vencedor == 0:
 		print("Parabens, você venceu")
+		GlobalData.enemy_defeated(GlobalData.current_enemy_name)
 		$"Fim de jogo".text = "Jogador 0 venceu"
 	else:
 		print("Você perdeu")
@@ -121,13 +124,13 @@ func new_game():
 func generate_balls():
 	var count : int = 0
 	var rows : int = 5
-	var diameter = 36
+	var diameter = 2 * ball_radius
 	var ball_positions = []
 	var ball8_pos : Vector2
 	var ball15_pos : Vector2
 	for col in range(5):
 		for row in range(rows):			
-			var pos = Vector2(250 + (col * diameter), 267 + (row * diameter) + (float(col * diameter) / 2.0))
+			var pos = Vector2(200 + (col * diameter) - (col * 2), START_POS.y - 4 * ball_radius + (row * diameter) + (float(col * diameter) / 2.0))
 			count += 1
 			if count == 11:
 				ball8_pos = pos
@@ -139,6 +142,7 @@ func generate_balls():
 	for i in range(15):
 		var ball = ball_scene.instantiate()		
 		ball.get_node("Sprite2D").texture = ball_images[count]
+		#ball.get_node("Sprite2D").frame = i+1
 		if count == 7:
 			ball.position = ball8_pos
 			ball15_pos = ball_positions[i]
@@ -161,6 +165,7 @@ func reset_cue_ball():
 	cue_ball = ball_scene.instantiate()
 	add_child(cue_ball)
 	cue_ball.position = START_POS
+	#cue_ball.get_node("Sprite2D").frame = 0
 	cue_ball.get_node("Sprite2D").texture = ball_images.back() # última imagem do array
 	taking_shot = false
 	cue_ball.set_contact_monitor(true)
@@ -187,8 +192,8 @@ func get_better_ball():
 				permitted_balls.append(ball)
 	
 	for b in permitted_balls: 
-		for hole in buracos:	
-			var hole_position = hole.to_global(hole.get_child(0).position)			
+		for hole in buracos:
+			var hole_position = hole.to_global(hole.get_child(0).position)
 			var pocket_direction = (hole_position - b.position).normalized()
 			var contact_point = b.position - pocket_direction * 2* ball_radius
 			var white_to_ball = (contact_point - cue_ball.position).normalized()
@@ -237,12 +242,13 @@ func get_better_ball():
 		# calcular 4 posições projetadas da bola branca nas tabelas (vetores em 0, 90, 180 e 270 graus, com comprimento x2)
 		var cue_ball_projections = calculate_cue_ball_projections()
 		var cue_ball_position = cue_ball.position
+		var debug = false
 		for b in permitted_balls:
-			print("Bola: ", b.name)
+			if debug: print("Bola: ", b.name)
 			# para cada bola permitida, cria vetor do ponto de mira da bola em cada buraco até as 4 posições da bola branca projetada
 			for projected_cue_ball in cue_ball_projections:
 				for hole in buracos:	
-					print("Buraco: ", hole.name)
+					if debug: print("Buraco: ", hole.name)
 					var hole_position = hole.to_global(hole.get_child(0).position)			
 					var pocket_direction = (hole_position - b.position).normalized()
 					var contact_point = b.position - pocket_direction * 2* ball_radius
@@ -258,19 +264,19 @@ func get_better_ball():
 						# descobrir em qual parede está tabelando
 						if collision_point.x>1120: # direita
 							collision_point -= Vector2(ball_radius,0)
-							print("Tabelando na direita ", collision_point)							
+							if debug: print("Tabelando na direita ", collision_point)							
 						elif collision_point.x<80: # esquerda
 							collision_point += Vector2(ball_radius,0)							
-							print("Tabelando na esquerda ", collision_point)							
+							if debug: print("Tabelando na esquerda ", collision_point)							
 						elif collision_point.y>595: # baixo
 							collision_point -= Vector2(0,ball_radius)
-							print("Tabelando em baixo ", collision_point)							
+							if debug: print("Tabelando em baixo ", collision_point)							
 						elif collision_point.y<80: # cima
 							collision_point += Vector2(0,ball_radius)
-							print("Tabelando em cima ", collision_point)							
+							if debug: print("Tabelando em cima ", collision_point)							
 						
 						if check_clear_shot("paredes",collision_point):
-							print("Caminho livre até o ponto de tabela")
+							if debug: print("Caminho livre até o ponto de tabela")
 							# se a bola branca tem caminho direto até o ponto de tabela
 							cue_ball.position = collision_point
 							
@@ -292,7 +298,7 @@ func get_better_ball():
 								
 								var angle_radians = pocket_direction.angle_to(tabela_to_ball)
 								var angle_degrees = rad_to_deg(angle_radians)
-								print("Angle: ", angle_degrees)
+								if debug: print("Angle: ", angle_degrees)
 								var score = 0
 								
 								# Critério 1: Ângulo (quanto menor, melhor)
@@ -310,9 +316,9 @@ func get_better_ball():
 								var clear_path = check_clear_path(b, hole)
 								if not clear_path[0]:
 									var penalidade = 250 * clear_path[1]
-									print("Penalidade colisões: ", penalidade)
+									if debug: print("Penalidade colisões: ", penalidade)
 									score -= penalidade  # Penalidade se houver interferência
-								print(b.name," - ",hole.name," - ",score)
+								if debug: print(b.name," - ",hole.name," - ",score)
 								# Avaliar se esta jogada é melhor que as anteriores
 								if score > best_score:
 									best_score = score
@@ -613,8 +619,13 @@ func nova_tacada():
 	primeira_bola_batida = 0
 	foi_falta = false
 	
+func _input(event):
+	if event.is_action_pressed("interact"):	
+		if force_victory: GlobalData.enemy_defeated(GlobalData.current_enemy_name) # força vitória do jogador
+		get_tree().change_scene_to_file(GlobalData.last_scene_before_battle)
+
 # Called every frame. 'delta' is the elapsed time since the previous frame.
-func _process(_delta):
+func _process(_delta):	
 	var moving := false
 	for b in get_tree().get_nodes_in_group("bolas"):
 		if (b.linear_velocity.length() > 0.0 and b.linear_velocity.length() < MOVE_THRESHOLD):
@@ -750,6 +761,9 @@ func potted_ball(body):
 		var b_sprite = Sprite2D.new()
 		add_child(b_sprite)
 		b_sprite.texture = body.get_node("Sprite2D").texture
+		b_sprite.hframes = body.get_node("Sprite2D").hframes
+		b_sprite.vframes = body.get_node("Sprite2D").vframes
+		b_sprite.frame = body.get_node("Sprite2D").frame
 		b_sprite.position = Vector2(180 + 50 * (14-grupo_maior.size()-grupo_menor.size()),725)
 		body.queue_free()
 
@@ -800,4 +814,3 @@ func bola_adversaria(bola):
 		elif (grupo_jogador == 2): #jogador no grupo das maiores, bot no grupo das menores
 			if bola < 8: return false
 			else: return true
-	

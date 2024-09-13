@@ -27,6 +27,9 @@ var character_direction : Vector2
 var char_last_pos: Vector2
 var falas := []
 var current_dialogue_id = -1
+var derrotado := false
+var enfrentado := false
+var pode_desafiar := true
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
@@ -37,16 +40,35 @@ func _ready() -> void:
 	$PathFollow2D.loop = loop
 	falas = GlobalData.Texts[npc_type][state_fala]
 	name_text.text = npc_name
+	derrotado = GlobalData.defeated_enemies.count(npc_name) > 0		
+	enfrentado = GlobalData.faced_enemies.count(npc_name) > 0
+	if derrotado: 
+		pode_desafiar = false
+		
+	if GlobalData.current_enemy_name == npc_name:
+		position = GlobalData.enemy_pos
+		can_move = false
+		sprite.animation = "walk_left"
+		path_follow_2d.position = Vector2.ZERO
 	
 func talk():
+	if derrotado:
+		print("já fui derrotado")		
+	elif enfrentado:
+		print("Já fui enfrentado, mas ganhei")
+		
 	current_dialogue_id+=1
 	if current_dialogue_id >= len(falas):
 		dialogue_finished.emit()
 		current_dialogue_id = -1
 		dialogue.visible = false
 		
-		# save to global data
 		var _current_enemy = GlobalData.get_current_enemy() # [current_enemy,enemy_original_position,enemy_can_move]
+		if not pode_desafiar: # voltar pra posição e rota normal
+			return
+		
+		# save to global data
+		
 		# transition scene
 		transition_node._set_animation(transition_node.Animations.SPOT_PLAYER, 0.7,"transition_in") #PIXELS, SPOT_PLAYER, SPOT_CENTER, VER_CUT, HOR_CUT
 		await get_tree().create_timer(2).timeout
@@ -54,10 +76,8 @@ func talk():
 		if _current_enemy[0] != null:
 			_current_enemy[0].position = _current_enemy[1]
 			_current_enemy[0].can_move = _current_enemy[2]
-		GlobalData.set_new_enemy($".",position,can_move)
-		
-		
-		
+		GlobalData.set_new_enemy($".",position,can_move,npc_name)
+
 		# teleport to nearest table
 		can_move = false
 		player.position = nearest_table.position + Vector2(-25,-30)
@@ -66,10 +86,13 @@ func talk():
 		
 		sprite.animation = "walk_left"
 		player.sprite.animation = "walk_down"
-		
-		transition_node._set_animation(transition_node.Animations.PIXELS, 0.7,"transition_out")		
-		
+		GlobalData.set_player_spawn(player.position,GlobalData.LookingDirection.DOWN)
+		GlobalData.last_scene_before_battle = get_tree().current_scene.scene_file_path
+		GlobalData.enemy_pos = position
+		GlobalData.enemy_faced(npc_name)
+		get_tree().change_scene_to_file("res://scenes/sinuca.tscn")		
 		return
+		
 	text_text.text = falas[current_dialogue_id][GameSettings.lang[GameSettings.currentLanguage]]
 	dialogue.visible = true	
 
