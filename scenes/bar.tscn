@@ -1,4 +1,4 @@
-[gd_scene load_steps=12 format=4 uid="uid://dqoxt520vx0fw"]
+[gd_scene load_steps=15 format=4 uid="uid://dqoxt520vx0fw"]
 
 [ext_resource type="Script" path="res://scripts/level.gd" id="1_5n24m"]
 [ext_resource type="PackedScene" uid="uid://bdncjqubnoh5" path="res://scenes/transition.tscn" id="1_7xk4b"]
@@ -7,6 +7,7 @@
 [ext_resource type="Texture2D" uid="uid://ddtebdrgc20gh" path="res://assets/Wizpool/Overworld/sprites bar/escadabar-0027.png" id="4_ih52s"]
 [ext_resource type="PackedScene" uid="uid://currqium6v628" path="res://scenes/player.tscn" id="6_mp7x7"]
 [ext_resource type="Script" path="res://scripts/escada.gd" id="6_urp26"]
+[ext_resource type="Texture2D" uid="uid://bgguryb51qt5v" path="res://assets/Wizpool/Overworld/sprites bar/balcão-0025.png" id="8_tumth"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_wsiju"]
 texture = ExtResource("2_qtr86")
@@ -1101,6 +1102,12 @@ size = Vector2(24, 32)
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_hpcvl"]
 size = Vector2(8, 25)
 
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_6m4sy"]
+size = Vector2(96, 16)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_1vd84"]
+size = Vector2(18, 37.75)
+
 [node name="bar" type="Node2D"]
 script = ExtResource("1_5n24m")
 
@@ -1120,7 +1127,7 @@ position = Vector2(5, 7)
 texture = ExtResource("2_vnlln")
 
 [node name="Player" parent="." instance=ExtResource("6_mp7x7")]
-position = Vector2(-23, 75)
+position = Vector2(-97, -35)
 
 [node name="Escada" type="Sprite2D" parent="."]
 position = Vector2(81, 45)
@@ -1140,5 +1147,19 @@ shape = SubResource("RectangleShape2D_xv6fs")
 [node name="StairStartPoint" type="CollisionShape2D" parent="Escada/Area2D"]
 position = Vector2(-12, -3.5)
 shape = SubResource("RectangleShape2D_hpcvl")
+
+[node name="Balcão-0025" type="Sprite2D" parent="."]
+position = Vector2(-90, -4)
+texture = ExtResource("8_tumth")
+
+[node name="StaticBody2D" type="StaticBody2D" parent="Balcão-0025"]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Balcão-0025/StaticBody2D"]
+position = Vector2(0, 19)
+shape = SubResource("RectangleShape2D_6m4sy")
+
+[node name="CollisionShape2D2" type="CollisionShape2D" parent="Balcão-0025/StaticBody2D"]
+position = Vector2(40, -6.875)
+shape = SubResource("RectangleShape2D_1vd84")
 
 [connection signal="body_entered" from="Escada/Area2D" to="Escada" method="_on_area_2d_body_entered"]

@@ -1,4 +1,4 @@
-[gd_scene load_steps=12 format=3 uid="uid://dvexns24mbh41"]
+[gd_scene load_steps=13 format=3 uid="uid://dvexns24mbh41"]
 
 [ext_resource type="Script" path="res://scripts/main.gd" id="1_4cjhd"]
 [ext_resource type="PackedScene" uid="uid://drwm0yb1mdeo8" path="res://scenes/bola.tscn" id="2_g7l3x"]
@@ -8,6 +8,7 @@
 [ext_resource type="Texture2D" uid="uid://b3hkuh5gaoyqc" path="res://icon.svg" id="6_2lwaj"]
 [ext_resource type="Script" path="res://scripts/screen.gd" id="7_kkqnw"]
 [ext_resource type="PackedScene" uid="uid://d210d8k3gp6ak" path="res://scenes/roll_dice.tscn" id="8_ejpbm"]
+[ext_resource type="Texture2D" uid="uid://sp7q3ihbj20g" path="res://assets/Wizpool/Bruxa (1).png" id="9_6gmrt"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_yysmw"]
 bg_color = Color(1, 1, 1, 0.458824)
@@ -21,6 +22,7 @@ radius = 14.1
 [node name="Sinuca" type="Node"]
 script = ExtResource("1_4cjhd")
 ball_scene = ExtResource("2_g7l3x")
+force_victory = true
 
 [node name="Mesa" parent="." instance=ExtResource("3_45acg")]
 
@@ -126,5 +128,10 @@ size = Vector2i(100, 100)
 
 [node name="Camera2D" type="Camera2D" parent="."]
 position = Vector2(595, 350)
+
+[node name="Bruxa(1)" type="Sprite2D" parent="."]
+position = Vector2(162, 47)
+scale = Vector2(0.635, 0.635)
+texture = ExtResource("9_6gmrt")
 
 [connection signal="shoot" from="Taco" to="." method="_on_taco_shoot"]
