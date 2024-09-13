@@ -18,7 +18,7 @@ var taking_shot : bool
 var cue_ball_potted : bool
 var potted := []
 var all_potted := []
-var ball_radius = 17.0
+var ball_radius = 14.0
 var mesa_aberta : bool = true
 
 var jogador_atual : int = 0 # 0 jogador, 1 bot

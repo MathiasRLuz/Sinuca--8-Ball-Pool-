@@ -16,7 +16,7 @@ bg_color = Color(1, 1, 1, 0.458824)
 bg_color = Color(0.909804, 0, 0.254902, 1)
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_lmf8b"]
-radius = 18.0
+radius = 14.1
 
 [node name="Sinuca" type="Node"]
 script = ExtResource("1_4cjhd")

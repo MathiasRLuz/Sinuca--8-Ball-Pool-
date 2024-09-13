@@ -1,10 +1,15 @@
 [gd_scene load_steps=3 format=3 uid="uid://clecbdn7movg2"]
 
-[ext_resource type="Texture2D" uid="uid://csqmfc2u5vuow" path="res://assets/cue.png" id="1_dso27"]
 [ext_resource type="Script" path="res://scripts/taco.gd" id="2_gx12w"]
+[ext_resource type="Texture2D" uid="uid://bx6tv16gl78sk" path="res://assets/Wizpool/Tacos/Taco de Sinuca.png" id="3_emfk0"]
 
 [node name="Taco" type="Sprite2D"]
 z_index = 2
 texture_filter = 1
-texture = ExtResource("1_dso27")
 script = ExtResource("2_gx12w")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+position = Vector2(-160, 4.54747e-13)
+rotation = 1.5708
+scale = Vector2(2, 2)
+texture = ExtResource("3_emfk0")

@@ -8,10 +8,10 @@ rough = true
 bounce = 0.6
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_ecgr8"]
-radius = 18.0278
+radius = 14.0
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_ml710"]
-radius = 18.0
+radius = 14.0
 
 [node name="Bola" type="RigidBody2D" groups=["bolas"]]
 collision_priority = 10.0
@@ -29,7 +29,7 @@ angular_damp = 1.5
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
 texture_filter = 1
-scale = Vector2(2.525, 2.525)
+scale = Vector2(2, 2)
 texture = ExtResource("1_ymfk2")
 hframes = 9
 vframes = 2
