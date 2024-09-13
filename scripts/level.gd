@@ -16,4 +16,3 @@ func _ready() -> void:
 				player.sprite.animation = "walk_up"
 			GlobalData.LookingDirection.DOWN:
 				player.sprite.animation = "walk_down"
-		
