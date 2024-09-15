@@ -17,6 +17,17 @@ var EnemyDificulty = {
 		EnemyDififultyVariables.crit2 : 100,
 		EnemyDififultyVariables.crit3 : 200,
 		EnemyDififultyVariables.crit4 : 250
+	}, 
+	Npcs.BRUXA : {
+		EnemyDififultyVariables.power_probability : 0,
+		EnemyDififultyVariables.force_scale : 0.8,
+		EnemyDififultyVariables.precision : 0.95,
+		EnemyDififultyVariables.error_radius : 5,
+		EnemyDififultyVariables.max_shot_angle : 60,
+		EnemyDififultyVariables.crit1 : 5,
+		EnemyDififultyVariables.crit2 : 100,
+		EnemyDififultyVariables.crit3 : 200,
+		EnemyDififultyVariables.crit4 : 500
 	}
 }
 
