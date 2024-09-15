@@ -1,8 +1,9 @@
-[gd_scene load_steps=10 format=3 uid="uid://k4j50hnohm7m"]
+[gd_scene load_steps=11 format=3 uid="uid://k4j50hnohm7m"]
 
 [ext_resource type="Script" path="res://scripts/moving_enemy.gd" id="1_jlwd4"]
 [ext_resource type="Texture2D" uid="uid://de7x1bg4mbr56" path="res://assets/Wizpool/Overworld/Template adulto (mulher).png" id="2_u2qux"]
 [ext_resource type="Texture2D" uid="uid://86d7vbjmjsa0" path="res://assets/Wizpool/Overworld/Caixa de texto 2.png" id="3_m03xi"]
+[ext_resource type="Texture2D" uid="uid://d0dqnhmuh5gq6" path="res://assets/Wizpool/Overworld/Caixa de texto 3.png" id="3_pgwe8"]
 [ext_resource type="Texture2D" uid="uid://dj3x543ubf0uu" path="res://assets/Wizpool/UI/keyboard_e_outline.png" id="4_2qw08"]
 
 [sub_resource type="Curve2D" id="Curve2D_5moho"]
@@ -68,7 +69,7 @@ texture_filter = 1
 layout_mode = 0
 offset_right = 80.0
 offset_bottom = 40.0
-texture = ExtResource("3_m03xi")
+texture = ExtResource("3_pgwe8")
 
 [node name="Name" type="RichTextLabel" parent="PathFollow2D/StaticBody2D/AnimatedSprite2D/Dialogue/NinePatchRect"]
 layout_mode = 0
@@ -83,7 +84,7 @@ text = "Name"
 layout_mode = 0
 offset_left = 4.0
 offset_top = 10.0
-offset_right = 181.0
+offset_right = 187.0
 offset_bottom = 75.0
 scale = Vector2(0.4, 0.4)
 text = "Text template Text templateText templateText templateText template"

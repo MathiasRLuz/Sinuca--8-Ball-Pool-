@@ -111,8 +111,8 @@ animations = [{
 }]
 
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_8nfoa"]
-radius = 8.0
-height = 20.0
+radius = 7.0
+height = 16.0
 
 [sub_resource type="Animation" id="Animation_3c3ho"]
 length = 0.001
@@ -331,11 +331,12 @@ animation = &"walk_right"
 autoplay = "walk_up"
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
-position = Vector2(0, 12)
+position = Vector2(0, 14)
+rotation = 1.5708
 shape = SubResource("CapsuleShape2D_8nfoa")
 
 [node name="Camera2D" type="Camera2D" parent="."]
-zoom = Vector2(2.5, 2.5)
+zoom = Vector2(3, 3)
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="."]
 libraries = {

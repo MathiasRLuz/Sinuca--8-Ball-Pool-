@@ -6,8 +6,9 @@ extends CharacterBody2D
 var movement_speed:= 18000.0
 var character_direction : Vector2
 
-enum States {IDLE, MOVE}
+enum States {IDLE, MOVE, SENTADO}
 var currentState = States.IDLE
+var banco : Node2D
 
 func _physics_process(delta: float) -> void:
 	handle_state_transitions()
@@ -20,7 +21,22 @@ func handle_state_transitions():
 		currentState = States.MOVE
 	else:		
 		currentState = States.IDLE
-	
+		
+
+func sentou(_banco):
+	visible = false
+	set_physics_process(false)
+	banco = _banco
+	await get_tree().create_timer(0.1).timeout
+	currentState = States.SENTADO
+
+func _input(event):
+	if currentState == States.SENTADO and (event.is_action_pressed("up") or event.is_action_pressed("down") or event.is_action_pressed("left") or event.is_action_pressed("right") or event.is_action_pressed("interact")):
+		banco.occupied = false
+		visible = true
+		set_physics_process(true)
+		
+
 func perform_state_actions(delta):
 	match currentState:
 		States.MOVE:

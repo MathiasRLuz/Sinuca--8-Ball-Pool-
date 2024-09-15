@@ -1,8 +1,24 @@
 extends Node
 
 enum LookingDirection {RIGHT, LEFT, UP, DOWN}
-enum Npcs {NPC, DOMOVOY, BRUXA}
+enum Npcs {NPC, DOMOVOY, SLIME, ESQUELETO, GOBLIN, CICLOPE, BRUXA, GOLEM, MEDUSA, REALEZA, FANTASMA, MINOTAURO}
 enum Falas {PRE_BATALHA, VITORIOSO, DERROTADO, GENERICA, }
+
+enum EnemyDififultyVariables {power_probability, force_scale, precision, error_radius, max_shot_angle, crit1, crit2, crit3, crit4}
+
+var EnemyDificulty = {
+	Npcs.NPC : {
+		EnemyDififultyVariables.power_probability : 0,
+		EnemyDififultyVariables.force_scale : 0.8,
+		EnemyDififultyVariables.precision : 0.8,
+		EnemyDififultyVariables.error_radius : 5,
+		EnemyDififultyVariables.max_shot_angle : 60,
+		EnemyDififultyVariables.crit1 : 2,
+		EnemyDififultyVariables.crit2 : 100,
+		EnemyDififultyVariables.crit3 : 200,
+		EnemyDififultyVariables.crit4 : 250
+	}
+}
 
 var Texts = {
 	Npcs.NPC : {
