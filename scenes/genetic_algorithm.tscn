@@ -1,0 +1,7 @@
+[gd_scene load_steps=2 format=3 uid="uid://dkh8etnbqahef"]
+
+[ext_resource type="Script" path="res://scripts/genetic_algorithm.gd" id="1_02564"]
+
+[node name="GeneticAlgorithm" type="Node"]
+script = ExtResource("1_02564")
+start_ga = true

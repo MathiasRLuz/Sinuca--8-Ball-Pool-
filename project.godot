@@ -19,6 +19,7 @@ config/icon="res://icon.svg"
 
 GameSettings="*res://scripts/game_settings.gd"
 GlobalData="*res://scripts/global_data.gd"
+GeneticAlgorithm="*res://scripts/genetic_algorithm.gd"
 
 [display]
 

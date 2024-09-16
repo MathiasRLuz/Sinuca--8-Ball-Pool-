@@ -1,8 +1,8 @@
 extends Node
 
 @export var ball_scene : PackedScene
-@export var current_enemy : GlobalData.Npcs
-@export var bots := [GlobalData.Npcs.NPC,GlobalData.Npcs.BRUXA]
+@export var current_enemy : Dictionary
+@export var bots_id = [0,1]
 @export var table_max_distance := 900.0
 @onready var shapecast = $ShapeCast2D
 @onready var shapecast2: ShapeCast2D = $ShapeCast2D2
@@ -39,9 +39,14 @@ var jogador_ja_tinha_grupo: bool = false
 var faltas = [0,0]
 var pontos = [0,0]
 var tacadas = [0,0]
+var vitorias = [0,0]
 var pontos_da_tacada = 0
 # Called when the node enters the scene tree for the first time.
-func _ready():	
+func _ready():
+	GlobalData.set_bots_ids(GlobalData.matchups[GlobalData.matchup_id])
+	bots_id = GlobalData.get_bots_ids()
+	print(bots_id[0]," vs ", bots_id[1])
+	print(GlobalData.bots[bots_id[0]], " vs ", GlobalData.bots[bots_id[1]])
 	hide_cue()
 	all_potted = []
 	randomize()  # Garante que a semente do gerador de números aleatórios seja diferente a cada execução
@@ -60,8 +65,8 @@ func proximo_jogador():
 	ajusta_texto_grupo()
 
 func atualiza_texto():
-	var adversario = abs(1-jogador_atual)
-	$jogador_atual.text = str(jogador_atual) + " tacadas: " + str(tacadas[jogador_atual]) + " pontos: " + str(pontos[jogador_atual]) + " faltas: " + str(faltas[jogador_atual]) + " - Oponente> tacadas: " + str(tacadas[adversario]) + " pontos: " + str(pontos[adversario]) + " faltas: " + str(faltas[adversario])
+	var adversario = abs(1-jogador_atual)	
+	$jogador_atual.text = str(bots_id[jogador_atual]) + ", tacadas: " + str(tacadas[jogador_atual]) + ", pontos: " + str(pontos[jogador_atual]) + ", faltas: " + str(faltas[jogador_atual]) + " - Oponente> tacadas: " + str(tacadas[adversario]) + ", pontos: " + str(pontos[adversario]) + ", faltas: " + str(faltas[adversario])
 
 func ajusta_texto_grupo():
 	var grupo_texto = "indefinido"
@@ -122,6 +127,9 @@ func fim_de_partida(jogador_vencedor): # 0 jogador, 1 bot
 		#print("Você perdeu")
 		$"Fim de jogo".text = "Jogador 1 venceu"
 	set_process(false)
+	vitorias[jogador_vencedor]+=1
+	print("Vencedor: ", bots_id[jogador_vencedor])
+	next_duel()
 
 func load_images():
 	for i in range(1,17,1):
@@ -185,6 +193,7 @@ func reset_cue_ball():
 	cue_ball.connect("body_entered", Callable(self, "_on_CueBall_area_entered"))
 	cue_ball.continuous_cd = true  # Ativa o CCD
 	shapecast.reparent(cue_ball)
+	await get_tree().create_timer(1).timeout
 
 func _on_CueBall_area_entered(body):
 	if body.is_in_group("bolas") && primeira_bola_batida == 0 && body.name != "Bola":
@@ -212,24 +221,24 @@ func get_better_ball():
 			
 			var angle_radians = pocket_direction.angle_to(white_to_ball)
 			var angle_degrees = rad_to_deg(angle_radians)
-			if check_clear_shot(b.name,contact_point) and abs(angle_degrees) < GlobalData.EnemyDificulty[current_enemy][GlobalData.EnemyDififultyVariables.max_shot_angle]:	
+			if check_clear_shot(b.name,contact_point) and abs(angle_degrees) < current_enemy[GlobalData.EnemyDififultyVariables.max_shot_angle]:	
 				var score = 0
 				
 				# Critério 1: Ângulo (quanto menor, melhor)
-				score += (GlobalData.EnemyDificulty[current_enemy][GlobalData.EnemyDififultyVariables.max_shot_angle] - abs(angle_degrees)) * GlobalData.EnemyDificulty[current_enemy][GlobalData.EnemyDififultyVariables.crit1]
+				score += (current_enemy[GlobalData.EnemyDififultyVariables.max_shot_angle] - abs(angle_degrees)) * current_enemy[GlobalData.EnemyDififultyVariables.crit1]
 				
 				# Critério 2: Distância da bola branca até a bola alvo (quanto menor, melhor)
 				var distance_to_ball = cue_ball.position.distance_to(b.position)
-				score += (1 / distance_to_ball) * GlobalData.EnemyDificulty[current_enemy][GlobalData.EnemyDififultyVariables.crit2]  # Inverso da distância multiplicado para dar peso
+				score += (1 / distance_to_ball) * current_enemy[GlobalData.EnemyDififultyVariables.crit2]  # Inverso da distância multiplicado para dar peso
 				
 				# Critério 3: Distância da bola alvo até a caçapa (quanto menor, melhor)
 				var distance_to_hole = b.position.distance_to(hole_position)
-				score += (1 / distance_to_hole) * GlobalData.EnemyDificulty[current_enemy][GlobalData.EnemyDififultyVariables.crit3]
+				score += (1 / distance_to_hole) * current_enemy[GlobalData.EnemyDififultyVariables.crit3]
 				
 				# Critério 4: Interferências (penalizar se houver outras bolas no caminho)
 				var clear_path = check_clear_path(b, hole)
 				if not clear_path[0]:
-					var penalidade = GlobalData.EnemyDificulty[current_enemy][GlobalData.EnemyDififultyVariables.crit4] * clear_path[1]
+					var penalidade = current_enemy[GlobalData.EnemyDififultyVariables.crit4] * clear_path[1]
 					#print("Penalidade colisões: ", penalidade)
 					score -= penalidade  # Penalidade se houver interferência
 				#print(b.name," - ",hole.name," - ",score)
@@ -311,24 +320,24 @@ func get_better_ball():
 								var angle_radians = pocket_direction.angle_to(tabela_to_ball)
 								var angle_degrees = rad_to_deg(angle_radians)
 								if debug: print("Angle: ", angle_degrees)
-								if abs(angle_degrees) < GlobalData.EnemyDificulty[current_enemy][GlobalData.EnemyDififultyVariables.max_shot_angle]:
+								if abs(angle_degrees) < current_enemy[GlobalData.EnemyDififultyVariables.max_shot_angle]:
 									var score = 0
 									
 									# Critério 1: Ângulo (quanto menor, melhor)
-									score += (GlobalData.EnemyDificulty[current_enemy][GlobalData.EnemyDififultyVariables.max_shot_angle] - abs(angle_degrees)) * GlobalData.EnemyDificulty[current_enemy][GlobalData.EnemyDififultyVariables.crit1] # Multiplicador de 2 para dar mais peso
+									score += (current_enemy[GlobalData.EnemyDififultyVariables.max_shot_angle] - abs(angle_degrees)) * current_enemy[GlobalData.EnemyDififultyVariables.crit1] # Multiplicador de 2 para dar mais peso
 									
 									# Critério 2: Distância da bola branca até a bola alvo (quanto menor, melhor)
 									var distance_to_ball = cue_ball.position.distance_to(collision_point) + collision_point.distance_to(b.position)
-									score += (1 / distance_to_ball) * GlobalData.EnemyDificulty[current_enemy][GlobalData.EnemyDififultyVariables.crit2]  # Inverso da distância multiplicado para dar peso
+									score += (1 / distance_to_ball) * current_enemy[GlobalData.EnemyDififultyVariables.crit2]  # Inverso da distância multiplicado para dar peso
 									
 									# Critério 3: Distância da bola alvo até a caçapa (quanto menor, melhor)
 									var distance_to_hole = b.position.distance_to(hole_position)
-									score += (1 / distance_to_hole) * GlobalData.EnemyDificulty[current_enemy][GlobalData.EnemyDififultyVariables.crit3]
+									score += (1 / distance_to_hole) * current_enemy[GlobalData.EnemyDififultyVariables.crit3]
 									
 									# Critério 4: Interferências (penalizar se houver outras bolas no caminho)
 									var clear_path = check_clear_path(b, hole)
 									if not clear_path[0]:
-										var penalidade = GlobalData.EnemyDificulty[current_enemy][GlobalData.EnemyDififultyVariables.crit4] * clear_path[1]
+										var penalidade = current_enemy[GlobalData.EnemyDififultyVariables.crit4] * clear_path[1]
 										if debug: print("Penalidade colisões: ", penalidade)
 										score -= penalidade  # Penalidade se houver interferência
 									if debug: print(b.name," - ",hole.name," - ",score)
@@ -580,23 +589,20 @@ func is_ball_permitted(ball):
 	
 func vez_bot(bot_id):
 	#print("INICIO VEZ BOT ", bot_id)
-	current_enemy = bots[bot_id]
-	#print(GlobalData.EnemyDificulty[current_enemy][GlobalData.EnemyDififultyVariables.max_shot_angle])
-	var rng = RandomNumberGenerator.new()
-	if rng.randf() < GlobalData.EnemyDificulty[current_enemy][GlobalData.EnemyDififultyVariables.power_probability]:
-		print("Usar poder")
+	current_enemy = GlobalData.get_bots()[bots_id[bot_id]]
+	var rng = RandomNumberGenerator.new()	
 	var better_ball = await get_better_ball() # ([best_ball, best_hole_position,best_collision_point,best_score,direct_shot])
 	
 	#print("Betterball: ",better_ball)	
 	if better_ball[2] != null:
 		var target_point = better_ball[2]		
-		if rng.randf() > GlobalData.EnemyDificulty[current_enemy][GlobalData.EnemyDififultyVariables.precision]:
+		if rng.randf() > current_enemy[GlobalData.EnemyDififultyVariables.precision]:
 			#print("Falha na precisão")
 			var possible_points := []
 			for degree in range(360):
 				var radians = deg_to_rad(degree)  # Converte graus para radianos
-				var x = target_point.x + GlobalData.EnemyDificulty[current_enemy][GlobalData.EnemyDififultyVariables.error_radius] * cos(radians)  # Calcula a coordenada x
-				var y = target_point.y + GlobalData.EnemyDificulty[current_enemy][GlobalData.EnemyDififultyVariables.error_radius] * sin(radians)  # Calcula a coordenada y
+				var x = target_point.x + current_enemy[GlobalData.EnemyDififultyVariables.error_radius] * cos(radians)  # Calcula a coordenada x
+				var y = target_point.y + current_enemy[GlobalData.EnemyDififultyVariables.error_radius] * sin(radians)  # Calcula a coordenada y
 				var point = Vector2(x, y)  # Cria o ponto como um Vector2
 				possible_points.append(point)				
 			target_point = possible_points.pick_random()
@@ -610,7 +616,7 @@ func vez_bot(bot_id):
 		$Line2D.add_point(cue_ball.position)
 		$Line2D.add_point(target_point)
 		$Line2D.visible = true
-		#await get_tree().create_timer(1).timeout
+		await get_tree().create_timer(0.01).timeout
 		
 		# Camera lenta na tabela
 		#if better_ball[4]: Engine.set_time_scale(1)
@@ -619,7 +625,7 @@ func vez_bot(bot_id):
 		var power = MAX_POWER * dir.normalized() * $Taco.power_multiplier 
 		# se tiro direto calcula a força, senão usa força maxima nas tabelas
 		if better_ball[4]: power *= calculate_shot_power(better_ball[1],better_ball[2])
-		power *= GlobalData.EnemyDificulty[current_enemy][GlobalData.EnemyDififultyVariables.force_scale]
+		power *= current_enemy[GlobalData.EnemyDififultyVariables.force_scale]
 		#print("POWER > ", power.length())
 		cue_ball.apply_central_impulse(power)		
 		$Line2D.visible = false
@@ -629,7 +635,7 @@ func vez_bot(bot_id):
 		print("Não sei oq fazer")		
 	#print("FIM VEZ BOT")
 	tacadas[jogador_atual] += 1
-	atualiza_texto()
+	#atualiza_texto()
 
 func show_cue():
 	$Taco.position = cue_ball.position
@@ -661,6 +667,23 @@ func nova_tacada():
 	inicia_vez()
 	primeira_bola_batida = 0
 	foi_falta = false
+
+func _input(event: InputEvent) -> void:
+	if event.is_action_pressed("interact"):
+		next_duel()
+
+func next_duel():
+	GeneticAlgorithm.eval_bot(bots_id[0],[vitorias[0],tacadas[0],pontos[0],faltas[0]])
+	GeneticAlgorithm.eval_bot(bots_id[1],[vitorias[1],tacadas[1],pontos[1],faltas[1]])
+	if GlobalData.matchup_id < len(GlobalData.matchups) - 1: 
+		GlobalData.matchup_id += 1		
+		get_tree().change_scene_to_file(get_tree().current_scene.scene_file_path)
+	else:
+		GeneticAlgorithm.new_generation()
+		
+func reset_game():
+	remove_cue_ball()
+	new_game()
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(_delta):	

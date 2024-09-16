@@ -1,15 +1,22 @@
-[gd_resource type="SpriteFrames" load_steps=13 format=3 uid="uid://bvuyyu61gpval"]
+[gd_resource type="SpriteFrames" load_steps=14 format=3 uid="uid://bvuyyu61gpval"]
 
 [ext_resource type="Texture2D" uid="uid://y1gtoxgwbolx" path="res://assets/Wizpool/Overworld/Template adulto.png" id="1_18kpa"]
-[ext_resource type="Texture2D" uid="uid://ugqq4vbmscta" path="res://assets/Wizpool/Overworld/Ciclope Jr.png" id="1_qn3xh"]
 
-[sub_resource type="AtlasTexture" id="AtlasTexture_3yrre"]
-atlas = ExtResource("1_qn3xh")
+[sub_resource type="AtlasTexture" id="AtlasTexture_vkcfi"]
+atlas = ExtResource("1_18kpa")
 region = Rect2(0, 0, 32, 45)
 
-[sub_resource type="AtlasTexture" id="AtlasTexture_geokg"]
-atlas = ExtResource("1_qn3xh")
+[sub_resource type="AtlasTexture" id="AtlasTexture_t0d3h"]
+atlas = ExtResource("1_18kpa")
 region = Rect2(32, 0, 32, 45)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_7yaqh"]
+atlas = ExtResource("1_18kpa")
+region = Rect2(64, 0, 32, 45)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_uuq4i"]
+atlas = ExtResource("1_18kpa")
+region = Rect2(96, 0, 32, 45)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_knwdl"]
 atlas = ExtResource("1_18kpa")
@@ -47,10 +54,16 @@ region = Rect2(96, 45, 32, 45)
 animations = [{
 "frames": [{
 "duration": 1.0,
-"texture": SubResource("AtlasTexture_3yrre")
+"texture": SubResource("AtlasTexture_vkcfi")
 }, {
 "duration": 1.0,
-"texture": SubResource("AtlasTexture_geokg")
+"texture": SubResource("AtlasTexture_t0d3h")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_7yaqh")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_uuq4i")
 }],
 "loop": true,
 "name": &"walk_down",

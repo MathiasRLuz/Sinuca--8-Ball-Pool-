@@ -1,13 +1,13 @@
 [gd_scene load_steps=12 format=3 uid="uid://drlktyoe7eg1s"]
 
-[ext_resource type="Script" path="res://scripts/camp_bots.gd" id="1_bhk00"]
-[ext_resource type="PackedScene" uid="uid://drwm0yb1mdeo8" path="res://scenes/bola.tscn" id="2_2let8"]
-[ext_resource type="PackedScene" uid="uid://d0uweniqsslnk" path="res://scenes/mesa.tscn" id="3_lm75x"]
-[ext_resource type="PackedScene" uid="uid://clecbdn7movg2" path="res://scenes/taco.tscn" id="4_hlvb5"]
-[ext_resource type="Script" path="res://scripts/PowerBar.gd" id="5_j4s1j"]
-[ext_resource type="Texture2D" uid="uid://b3hkuh5gaoyqc" path="res://icon.svg" id="6_m5duk"]
-[ext_resource type="Script" path="res://scripts/screen.gd" id="7_itfgb"]
-[ext_resource type="PackedScene" uid="uid://d210d8k3gp6ak" path="res://scenes/roll_dice.tscn" id="8_usg3m"]
+[ext_resource type="Script" path="res://scripts/camp_bots.gd" id="1_abn6p"]
+[ext_resource type="PackedScene" uid="uid://drwm0yb1mdeo8" path="res://scenes/bola.tscn" id="2_g3oi0"]
+[ext_resource type="PackedScene" uid="uid://d0uweniqsslnk" path="res://scenes/mesa.tscn" id="3_fnrl2"]
+[ext_resource type="PackedScene" uid="uid://clecbdn7movg2" path="res://scenes/taco.tscn" id="4_0gahc"]
+[ext_resource type="Script" path="res://scripts/PowerBar.gd" id="5_aiwg5"]
+[ext_resource type="Texture2D" uid="uid://b3hkuh5gaoyqc" path="res://icon.svg" id="6_flqsn"]
+[ext_resource type="Script" path="res://scripts/screen.gd" id="7_ojfdl"]
+[ext_resource type="PackedScene" uid="uid://d210d8k3gp6ak" path="res://scenes/roll_dice.tscn" id="8_elgnw"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_yysmw"]
 bg_color = Color(1, 1, 1, 0.458824)
@@ -19,12 +19,12 @@ bg_color = Color(0.909804, 0, 0.254902, 1)
 radius = 14.1
 
 [node name="Sinuca" type="Node"]
-script = ExtResource("1_bhk00")
-ball_scene = ExtResource("2_2let8")
+script = ExtResource("1_abn6p")
+ball_scene = ExtResource("2_g3oi0")
 
-[node name="Mesa" parent="." instance=ExtResource("3_lm75x")]
+[node name="Mesa" parent="." instance=ExtResource("3_fnrl2")]
 
-[node name="Taco" parent="." instance=ExtResource("4_hlvb5")]
+[node name="Taco" parent="." instance=ExtResource("4_0gahc")]
 power_multiplier = 12
 
 [node name="PowerBar" type="ProgressBar" parent="."]
@@ -36,7 +36,7 @@ offset_bottom = 181.0
 theme_override_styles/background = SubResource("StyleBoxFlat_yysmw")
 theme_override_styles/fill = SubResource("StyleBoxFlat_m1iqg")
 show_percentage = false
-script = ExtResource("5_j4s1j")
+script = ExtResource("5_aiwg5")
 
 [node name="Player" type="Label" parent="."]
 offset_left = 24.0
@@ -116,13 +116,13 @@ default_color = Color(0.521291, 0.431825, 0.962876, 1)
 [node name="Screen" type="Sprite2D" parent="."]
 visible = false
 position = Vector2(1021, 707)
-texture = ExtResource("6_m5duk")
-script = ExtResource("7_itfgb")
+texture = ExtResource("6_flqsn")
+script = ExtResource("7_ojfdl")
 
 [node name="SubViewport" type="SubViewport" parent="."]
 size = Vector2i(100, 100)
 
-[node name="StaticBody3D" parent="SubViewport" instance=ExtResource("8_usg3m")]
+[node name="StaticBody3D" parent="SubViewport" instance=ExtResource("8_elgnw")]
 
 [node name="Camera2D" type="Camera2D" parent="."]
 position = Vector2(484, 276)

@@ -36,9 +36,9 @@ size = Vector2(56, 13)
 
 [sub_resource type="Curve2D" id="Curve2D_rqcra"]
 _data = {
-"points": PackedVector2Array(0, 0, 0, 0, 144, -25, 0, 0, 0, 0, 68.9579, 30.5203, 0, 0, 0, 0, 15, 33, 0, 0, 0, 0, -6.03584, 21.4684, 0, 0, 0, 0, 22, -28)
+"points": PackedVector2Array(0, 0, 0, 0, 144, -25, 0, 0, 0, 0, 68.9579, 30.5203, 0, 0, 0, 0, 15, 33, 0, 0, 0, 0, -6.03584, 21.4684, 0, 0, 0, 0, 22, -28, 0, 0, 0, 0, 144, -25)
 }
-point_count = 5
+point_count = 6
 
 [sub_resource type="Curve2D" id="Curve2D_yknv4"]
 _data = {
@@ -101,7 +101,7 @@ sprite_frames = ExtResource("6_2vvn1")
 loop = true
 look_at_player = true
 npc_name = "Bruxa"
-npc_type = 2
+npc_type = 6
 nearest_table = NodePath("../Mesa_sinuca")
 
 [node name="Escada" type="Sprite2D" parent="."]

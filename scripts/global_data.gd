@@ -4,7 +4,12 @@ enum LookingDirection {RIGHT, LEFT, UP, DOWN}
 enum Npcs {NPC, DOMOVOY, SLIME, ESQUELETO, GOBLIN, CICLOPE, BRUXA, GOLEM, MEDUSA, REALEZA, FANTASMA, MINOTAURO}
 enum Falas {PRE_BATALHA, VITORIOSO, DERROTADO, GENERICA, }
 
-enum EnemyDififultyVariables {power_probability, force_scale, precision, error_radius, max_shot_angle, crit1, crit2, crit3, crit4}
+enum EnemyDififultyVariables {power_probability, force_scale, precision, error_radius, max_shot_angle, crit1, crit2, crit3, crit4, crit5, crit6}
+
+var bots := []
+var current_bots_ids = [0,1]
+var matchups := []
+var matchup_id = 0
 
 var EnemyDificulty = {
 	Npcs.NPC : {
@@ -16,7 +21,9 @@ var EnemyDificulty = {
 		EnemyDififultyVariables.crit1 : 2,
 		EnemyDififultyVariables.crit2 : 100,
 		EnemyDififultyVariables.crit3 : 200,
-		EnemyDififultyVariables.crit4 : 250
+		EnemyDififultyVariables.crit4 : 250,
+		EnemyDififultyVariables.crit5 : 250,
+		EnemyDififultyVariables.crit6 : 250
 	}, 
 	Npcs.BRUXA : {
 		EnemyDififultyVariables.power_probability : 0,
@@ -27,7 +34,9 @@ var EnemyDificulty = {
 		EnemyDififultyVariables.crit1 : 5,
 		EnemyDififultyVariables.crit2 : 100,
 		EnemyDififultyVariables.crit3 : 200,
-		EnemyDififultyVariables.crit4 : 500
+		EnemyDififultyVariables.crit4 : 500,
+		EnemyDififultyVariables.crit5 : 250,
+		EnemyDififultyVariables.crit6 : 250
 	}
 }
 
@@ -82,3 +91,22 @@ func set_player_spawn(pos,dir):
 	player_spawn_position = pos
 	player_spawn_was_set = true
 	player_looking_dir = dir
+
+
+func clear_bots():
+	bots = []
+	
+func get_bots():
+	return bots
+	
+func add_bot(bot):
+	bots.append(bot)
+	
+func get_bots_ids():
+	return current_bots_ids
+	
+func set_bots_ids(bots_ids):
+	current_bots_ids = bots_ids
+
+func set_matchups(_matchups):
+	matchups = _matchups
