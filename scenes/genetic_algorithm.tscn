@@ -4,4 +4,3 @@
 
 [node name="GeneticAlgorithm" type="Node"]
 script = ExtResource("1_02564")
-start_ga = true

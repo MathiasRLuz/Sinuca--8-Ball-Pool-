@@ -220,9 +220,13 @@ func get_better_ball():
 				score += (1 / distance_to_hole) * GlobalData.EnemyDificulty[current_enemy][GlobalData.EnemyDififultyVariables.crit3]
 				
 				# Critério 4: Interferências (penalizar se houver outras bolas no caminho)
-				var clear_path = check_clear_path(b, hole)
+				var clear_path = check_clear_path(b, hole) 
+				# caminho direto ao buraco, numero de colisões sem contar as proibídas, 
+				# numero de colisões proibídas sem contar a 8, e numero de colisões com a 8 (0 ou 1)
 				if not clear_path[0]:
 					var penalidade = GlobalData.EnemyDificulty[current_enemy][GlobalData.EnemyDififultyVariables.crit4] * clear_path[1]
+					penalidade += GlobalData.EnemyDificulty[current_enemy][GlobalData.EnemyDififultyVariables.crit5] * clear_path[2]
+					penalidade += GlobalData.EnemyDificulty[current_enemy][GlobalData.EnemyDififultyVariables.crit6] * clear_path[3]
 					print("Penalidade colisões: ", penalidade)
 					score -= penalidade  # Penalidade se houver interferência
 				print(b.name," - ",hole.name," - ",score)
@@ -320,8 +324,12 @@ func get_better_ball():
 									
 									# Critério 4: Interferências (penalizar se houver outras bolas no caminho)
 									var clear_path = check_clear_path(b, hole)
+									# caminho direto ao buraco, numero de colisões sem contar as proibídas, 
+									# numero de colisões proibídas sem contar a 8, e numero de colisões com a 8 (0 ou 1)
 									if not clear_path[0]:
 										var penalidade = GlobalData.EnemyDificulty[current_enemy][GlobalData.EnemyDififultyVariables.crit4] * clear_path[1]
+										penalidade += GlobalData.EnemyDificulty[current_enemy][GlobalData.EnemyDififultyVariables.crit5] * clear_path[2]
+										penalidade += GlobalData.EnemyDificulty[current_enemy][GlobalData.EnemyDififultyVariables.crit6] * clear_path[3]
 										if debug: print("Penalidade colisões: ", penalidade)
 										score -= penalidade  # Penalidade se houver interferência
 									if debug: print(b.name," - ",hole.name," - ",score)
@@ -479,21 +487,32 @@ func check_clear_path(ball,pocket):
 	# Verifique se há uma colisão
 	if shapecast2.is_colliding():
 		# Obtenha o objeto colidido
-		var collisions = shapecast2.get_collision_count()		
+		
+		var collisions = []
+		var forbidden_collisions = []
+		for i in range(shapecast2.get_collision_count()):
+			var _name = shapecast2.get_collider(i).name
+			if _name == "Area2D": _name = shapecast2.get_collider(i).get_parent().name
+			if collisions.count(str(_name)) < 1 and str(_name) != ball.name:
+				collisions.append(str(_name))
+				if str(_name) != "paredes" and str(_name) != "buracos":
+					if bateu_primeiro_em_bola_proibida(int(str(_name))):
+						forbidden_collisions.append(str(_name))
+		var n_collisions = len(collisions)
 		var collider = shapecast2.get_collider(0)
 		var nome = collider.name
 		if nome == "Area2D": nome = collider.get_parent().name
-		print(ball.name, " colisões: ", collisions, " - primeira colisão: ", nome)
+		print(ball.name, " colisões: ", n_collisions, " - colisões: ", collisions, " - colisões com bolas proibidas: ", forbidden_collisions)
 		# qual será a primeira colisão
 		shapecast2.enabled = false
 		shapecast2.reparent($".")
 		if nome == "buracos":
-			return [true,collisions]
-		else: return [false,collisions]
+			return [true,n_collisions-len(forbidden_collisions),len(forbidden_collisions)-collisions.count("8"), collisions.count("8")]
+		else: return [false,n_collisions-len(forbidden_collisions),len(forbidden_collisions)-collisions.count("8"), collisions.count("8")]
 	else:
 		shapecast2.enabled = false
 		shapecast2.reparent($".")
-		return [false,0]
+		return [false,0, 0, 0]
 
 func check_clear_shot(ball_name, contact_point: Vector2, check_distance: bool = true):
 	var tolerancia = 0.05 # porcentagem de distancia (entre o ponto de colisão real e o contact_point calculado) excedente ao raio da bola

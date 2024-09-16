@@ -14,16 +14,16 @@ var matchup_id = 0
 var EnemyDificulty = {
 	Npcs.NPC : {
 		EnemyDififultyVariables.power_probability : 0,
-		EnemyDififultyVariables.force_scale : 0.8,
-		EnemyDififultyVariables.precision : 0.8,
+		EnemyDififultyVariables.force_scale : 1,
+		EnemyDififultyVariables.precision : 1,
 		EnemyDififultyVariables.error_radius : 5,
 		EnemyDififultyVariables.max_shot_angle : 60,
 		EnemyDififultyVariables.crit1 : 2,
 		EnemyDififultyVariables.crit2 : 100,
 		EnemyDififultyVariables.crit3 : 200,
 		EnemyDififultyVariables.crit4 : 250,
-		EnemyDififultyVariables.crit5 : 250,
-		EnemyDififultyVariables.crit6 : 250
+		EnemyDififultyVariables.crit5 : 500,
+		EnemyDififultyVariables.crit6 : 1000
 	}, 
 	Npcs.BRUXA : {
 		EnemyDififultyVariables.power_probability : 0,
@@ -35,8 +35,8 @@ var EnemyDificulty = {
 		EnemyDififultyVariables.crit2 : 100,
 		EnemyDififultyVariables.crit3 : 200,
 		EnemyDififultyVariables.crit4 : 500,
-		EnemyDififultyVariables.crit5 : 250,
-		EnemyDififultyVariables.crit6 : 250
+		EnemyDififultyVariables.crit5 : 750,
+		EnemyDififultyVariables.crit6 : 1000
 	}
 }
 
