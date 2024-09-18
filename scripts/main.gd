@@ -115,6 +115,7 @@ func fim_de_partida(jogador_vencedor): # 0 jogador, 1 bot
 		print("Você perdeu")
 		$"Fim de jogo".text = "Jogador 1 venceu"
 	get_tree().change_scene_to_file(GlobalData.last_scene_before_battle)
+	set_process(false)
 
 func load_images():
 	for i in range(1,17,1):

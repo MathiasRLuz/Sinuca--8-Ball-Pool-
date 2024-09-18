@@ -4,7 +4,7 @@ enum LookingDirection {RIGHT, LEFT, UP, DOWN}
 enum Npcs {NPC, DOMOVOY, SLIME, ESQUELETO, GOBLIN, CICLOPE, BRUXA, GOLEM, MEDUSA, REALEZA, FANTASMA, MINOTAURO}
 enum Falas {PRE_BATALHA, VITORIOSO, DERROTADO, GENERICA, }
 
-enum EnemyDififultyVariables {power_probability, force_scale, precision, error_radius, max_shot_angle, crit1, crit2, crit3, crit4, crit5, crit6}
+enum EnemyDififultyVariables {power_probability, force_scale, precision, error_radius, max_shot_angle, min_score, risky, crit1, crit2, crit3, crit4, crit5, crit6}
 
 var bots := []
 var current_bots_ids = [0,1]
@@ -18,6 +18,8 @@ var EnemyDificulty = {
 		EnemyDififultyVariables.precision : 1,
 		EnemyDififultyVariables.error_radius : 5,
 		EnemyDififultyVariables.max_shot_angle : 60,
+		EnemyDififultyVariables.min_score : 0,
+		EnemyDififultyVariables.risky: 0,
 		EnemyDififultyVariables.crit1 : 2,
 		EnemyDififultyVariables.crit2 : 100,
 		EnemyDififultyVariables.crit3 : 200,
@@ -31,6 +33,8 @@ var EnemyDificulty = {
 		EnemyDififultyVariables.precision : 0.95,
 		EnemyDififultyVariables.error_radius : 5,
 		EnemyDififultyVariables.max_shot_angle : 60,
+		EnemyDififultyVariables.min_score : 0,
+		EnemyDififultyVariables.risky: 0,
 		EnemyDififultyVariables.crit1 : 5,
 		EnemyDififultyVariables.crit2 : 100,
 		EnemyDififultyVariables.crit3 : 200,

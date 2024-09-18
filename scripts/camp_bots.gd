@@ -206,6 +206,7 @@ func get_better_ball():
 	var best_collision_point = null	
 	var best_hole_position = Vector2.ZERO
 	var direct_shot := false
+	var possible_contact_points = []
 	for b in get_tree().get_nodes_in_group("bolas"):
 		if b.name != "Bola":
 			if is_ball_permitted(b.name.to_int()):
@@ -246,18 +247,28 @@ func get_better_ball():
 				#print(b.name," - ",hole.name," - ",score)
 				# Avaliar se esta jogada é melhor que as anteriores
 				if score > best_score:
-					best_score = score
-					best_ball = b
-					best_collision_point = contact_point
-					best_hole_position = hole_position
-					# linha vermelha
-					$Line2D2.clear_points()
-					$Line2D2.add_point(contact_point)
-					$Line2D2.add_point(hole_position)
-					$Line2D2.visible = true
-					direct_shot = true
+					if score > current_enemy[GlobalData.EnemyDififultyVariables.min_score]:						
+						best_score = score
+						best_ball = b
+						best_collision_point = contact_point
+						best_hole_position = hole_position
+						# linha vermelha
+						$Line2D2.clear_points()
+						$Line2D2.add_point(contact_point)
+						$Line2D2.add_point(hole_position)
+						$Line2D2.visible = true
+						direct_shot = true
+					else:
+						possible_contact_points.append([b,hole_position,contact_point])
 	
 	if best_ball == null:
+		for possible_contact_point in possible_contact_points:
+			if possible_contact_point[3] > best_score:
+				best_ball = possible_contact_point[0]
+				best_hole_position = possible_contact_point[1]
+				best_collision_point = possible_contact_point[2]			
+				best_score = possible_contact_point[3]
+				direct_shot = true
 		var best_contact_point = Vector2.ZERO
 		var possible_points := []
 		
@@ -352,18 +363,20 @@ func get_better_ball():
 										best_collision_point = collision_point
 										best_hole_position = hole_position
 										best_contact_point = contact_point
-		if best_ball != null and not direct_shot:
-			#print("Tabelando no ponto de contato")
-			# linha vermelha
-			$Line2D2.clear_points()
-			$Line2D2.add_point(best_contact_point)
-			$Line2D2.add_point(best_hole_position)
-			$Line2D2.visible = true
-			# linha roxa
-			$Line2D3.clear_points()
-			$Line2D3.add_point(best_collision_point)
-			$Line2D3.add_point(best_contact_point)
-			$Line2D3.visible = true
+										direct_shot = false
+		if best_ball != null:
+			if not direct_shot:
+				#print("Tabelando no ponto de contato")
+				# linha vermelha
+				$Line2D2.clear_points()
+				$Line2D2.add_point(best_contact_point)
+				$Line2D2.add_point(best_hole_position)
+				$Line2D2.visible = true
+				# linha roxa
+				$Line2D3.clear_points()
+				$Line2D3.add_point(best_collision_point)
+				$Line2D3.add_point(best_contact_point)
+				$Line2D3.visible = true
 		else:
 				# mirar apenas para acertar uma bola do grupo
 				for b in permitted_balls:

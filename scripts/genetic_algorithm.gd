@@ -53,6 +53,8 @@ func create_bot():
 		GlobalData.EnemyDififultyVariables.precision : rng.randf_range(0.5, 1.0),
 		GlobalData.EnemyDififultyVariables.error_radius : rng.randf_range(0.5, 10.0),
 		GlobalData.EnemyDififultyVariables.max_shot_angle : rng.randf_range(10.0, 180.0),
+		GlobalData.EnemyDififultyVariables.min_score : rng.randf_range(-300.0, 100.0),
+		GlobalData.EnemyDififultyVariables.risky : rng.randi_range(0, 1),
 		GlobalData.EnemyDififultyVariables.crit1 : rng.randf_range(1.0, 50.0),
 		GlobalData.EnemyDififultyVariables.crit2 : rng.randf_range(50.0, 200.0),
 		GlobalData.EnemyDififultyVariables.crit3 : rng.randf_range(100.0, 500.0),
