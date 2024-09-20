@@ -191,6 +191,7 @@ func get_better_ball():
 	var best_collision_point = null	
 	var best_hole_position = Vector2.ZERO
 	var direct_shot := false
+	var possible_contact_points = []
 	for b in get_tree().get_nodes_in_group("bolas"):
 		if b.name != "Bola":
 			if is_ball_permitted(b.name.to_int()):
@@ -228,25 +229,41 @@ func get_better_ball():
 					var penalidade = GlobalData.EnemyDificulty[current_enemy][GlobalData.EnemyDififultyVariables.crit4] * clear_path[1]
 					penalidade += GlobalData.EnemyDificulty[current_enemy][GlobalData.EnemyDififultyVariables.crit5] * clear_path[2]
 					penalidade += GlobalData.EnemyDificulty[current_enemy][GlobalData.EnemyDififultyVariables.crit6] * clear_path[3]
-					print("Penalidade colisões: ", penalidade)
+					#print("Penalidade colisões: ", penalidade)
 					score -= penalidade  # Penalidade se houver interferência
 				print(b.name," - ",hole.name," - ",score)
 				# Avaliar se esta jogada é melhor que as anteriores
 				if score > best_score:
-					best_score = score
-					best_ball = b
-					best_collision_point = contact_point
-					best_hole_position = hole_position
-					# linha vermelha
-					$Line2D2.clear_points()
-					$Line2D2.add_point(contact_point)
-					$Line2D2.add_point(hole_position)
-					$Line2D2.visible = true
-					direct_shot = true
+					if score > GlobalData.EnemyDificulty[current_enemy][GlobalData.EnemyDififultyVariables.min_score]:
+						best_score = score
+						best_ball = b
+						best_collision_point = contact_point
+						best_hole_position = hole_position
+						# linha vermelha
+						$Line2D2.clear_points()
+						$Line2D2.add_point(contact_point)
+						$Line2D2.add_point(hole_position)
+						$Line2D2.visible = true
+						direct_shot = true
+					else:
+						possible_contact_points.append([b,hole_position,contact_point,score])
 	
 	if best_ball == null:
 		var best_contact_point = Vector2.ZERO
 		var possible_points := []
+		
+		for possible_contact_point in possible_contact_points:
+			if possible_contact_point[3] > best_score:				
+				best_ball = possible_contact_point[0]
+				best_hole_position = possible_contact_point[1]
+				best_collision_point = possible_contact_point[2]
+				best_score = possible_contact_point[3]
+				# linha vermelha
+				$Line2D2.clear_points()
+				$Line2D2.add_point(possible_contact_point[2])
+				$Line2D2.add_point(possible_contact_point[1])
+				$Line2D2.visible = true
+				direct_shot = true
 		
 		# nenhum tiro direto
 		# calcular 4 posições projetadas da bola branca nas tabelas (vetores em 0, 90, 180 e 270 graus, com comprimento x2)
@@ -285,12 +302,12 @@ func get_better_ball():
 							collision_point += Vector2(0,ball_radius)
 							if debug: print("Tabelando em cima ", collision_point)							
 						
-						if check_clear_shot("paredes",collision_point):
+						if check_clear_shot("paredes",collision_point): # da posição da branca até a parede
 							if debug: print("Caminho livre até o ponto de tabela")
 							# se a bola branca tem caminho direto até o ponto de tabela
 							cue_ball.position = collision_point
 							
-							if check_clear_shot(b.name,contact_point):	
+							if check_clear_shot(b.name,contact_point):	# da parede até a bola 
 								
 								# linha vermelha
 								$Line2D2.clear_points()
@@ -333,7 +350,7 @@ func get_better_ball():
 										penalidade += GlobalData.EnemyDificulty[current_enemy][GlobalData.EnemyDififultyVariables.crit6] * clear_path[3]
 										if debug: print("Penalidade colisões: ", penalidade)
 										score -= penalidade  # Penalidade se houver interferência
-									if debug: print(b.name," - ",hole.name," - ",score)
+									print(b.name," - ",hole.name," - ",score)
 									# Avaliar se esta jogada é melhor que as anteriores
 									if score > best_score:
 										best_score = score
@@ -341,18 +358,19 @@ func get_better_ball():
 										best_collision_point = collision_point
 										best_hole_position = hole_position
 										best_contact_point = contact_point
-		if best_ball != null and not direct_shot:
-			print("Tabelando no ponto de contato")
-			# linha vermelha
-			$Line2D2.clear_points()
-			$Line2D2.add_point(best_contact_point)
-			$Line2D2.add_point(best_hole_position)
-			$Line2D2.visible = true
-			# linha roxa
-			$Line2D3.clear_points()
-			$Line2D3.add_point(best_collision_point)
-			$Line2D3.add_point(best_contact_point)
-			$Line2D3.visible = true
+		if best_ball != null:
+			if not direct_shot:
+				print("Tabelando no ponto de contato")
+				# linha vermelha
+				$Line2D2.clear_points()
+				$Line2D2.add_point(best_contact_point)
+				$Line2D2.add_point(best_hole_position)
+				$Line2D2.visible = true
+				# linha roxa
+				$Line2D3.clear_points()
+				$Line2D3.add_point(best_collision_point)
+				$Line2D3.add_point(best_contact_point)
+				$Line2D3.visible = true
 		else:
 				# mirar apenas para acertar uma bola do grupo
 				for b in permitted_balls:
@@ -503,7 +521,7 @@ func check_clear_path(ball,pocket):
 		var collider = shapecast2.get_collider(0)
 		var nome = collider.name
 		if nome == "Area2D": nome = collider.get_parent().name
-		print(ball.name, " colisões: ", n_collisions, " - colisões: ", collisions, " - colisões com bolas proibidas: ", forbidden_collisions)
+		print(ball.name, " - ", n_collisions, " colisões, com: ", collisions, " - colisões com bolas proibidas: ", forbidden_collisions)
 		# qual será a primeira colisão
 		shapecast2.enabled = false
 		shapecast2.reparent($".")
@@ -515,7 +533,7 @@ func check_clear_path(ball,pocket):
 		shapecast2.reparent($".")
 		return [false,0, 0, 0]
 
-func check_clear_shot(ball_name, contact_point: Vector2, check_distance: bool = true):
+func check_clear_shot(ball_name, contact_point: Vector2, check_distance: bool = true, debug: bool = false):
 	var tolerancia = 0.05 # porcentagem de distancia (entre o ponto de colisão real e o contact_point calculado) excedente ao raio da bola
 	# Defina a posição de origem do shapecast2D	
 	shapecast.position = Vector2.ZERO
@@ -525,7 +543,6 @@ func check_clear_shot(ball_name, contact_point: Vector2, check_distance: bool = 
 	shapecast.enabled = true
 	shapecast.force_shapecast_update()	
 	# Verifique se há uma colisão
-	var debug := false
 	if shapecast.is_colliding():
 		# Obtenha o objeto colidido
 		var collider = shapecast.get_collider(0)
@@ -533,11 +550,13 @@ func check_clear_shot(ball_name, contact_point: Vector2, check_distance: bool = 
 		var colision_point = shapecast.get_collision_point(0)
 		var distancia = colision_point.distance_to(contact_point) # distancia entre o ponto de colisão real e o contact_point calculado
 		shapecast.enabled = false	
-		if (not check_distance and collider.name == ball_name) or (check_distance and distancia<=ball_radius*(1+tolerancia) and collider.name == ball_name):
+		var nome = collider.name
+		if nome == "Area2D": nome = collider.get_parent().name
+		if (not check_distance and nome == ball_name) or (check_distance and distancia<=ball_radius*(1+tolerancia) and nome == ball_name):
 			if debug: print("Has clear shot on ", ball_name, ", colliding in ", colision_point)
 			return true
 		else: 
-			if debug: print(ball_name, " primeira colisão: ", collider.name, " Distancia: ", distancia)
+			if debug: print(ball_name, " primeira colisão: ", nome, " Distancia: ", distancia)
 			return false
 	else:
 		shapecast.enabled = false
