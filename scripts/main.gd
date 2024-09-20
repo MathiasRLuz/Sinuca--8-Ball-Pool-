@@ -357,6 +357,7 @@ func get_better_ball():
 										best_collision_point = collision_point
 										best_hole_position = hole_position
 										best_contact_point = contact_point
+										direct_shot = false
 		if best_ball != null:
 			if not direct_shot:
 				print("--------------------- Tabelando no ponto de contato")
@@ -380,8 +381,8 @@ func get_better_ball():
 						var x = b.position.x + ball_radius * cos(radians)  # Calcula a coordenada x
 						var y = b.position.y + ball_radius * sin(radians)  # Calcula a coordenada y
 						var point = Vector2(x, y)  # Cria o ponto como um Vector2
-						if check_clear_shot(b.name,point,true):
-							var distance_to_ball = cue_ball.position.distance_to(b.position)
+						if check_clear_shot(b.name,point,true,true):
+							var distance_to_ball = cue_ball.position.distance_to(point)
 							possible_points.append([point,distance_to_ball,b])
 				if possible_points.size() > 0:
 					print("Mirando para acertar a bola permitida mais próxima")
@@ -446,7 +447,7 @@ func get_better_ball():
 							var ball = possible_point[2]
 							if score > best_score:
 								best_score = score
-								best_ball = 0#ball
+								best_ball = ball
 								best_collision_point = point
 						print("mirou em ", best_collision_point)
 					else:
@@ -567,10 +568,10 @@ func check_clear_shot(ball_name, contact_point: Vector2, check_distance: bool = 
 		var nome = collider.name
 		if nome == "Area2D": nome = collider.get_parent().name
 		if (not check_distance and nome == ball_name) or (check_distance and distancia<=ball_radius*(1+tolerancia) and nome == ball_name):
-			if debug: print("Has clear shot on ", ball_name, ", colliding in ", colision_point)
+			if debug: print("Has clear shot on ", ball_name, ", colliding in ", colision_point, " distance = ", distancia)
 			return true
 		else: 
-			if debug: print(ball_name, " primeira colisão: ", nome, " Distancia: ", distancia)
+			#if debug: print(ball_name, " primeira colisão: ", nome, " Distancia: ", distancia)
 			return false
 	else:
 		shapecast.enabled = false
