@@ -262,13 +262,6 @@ func get_better_ball():
 						possible_contact_points.append([b,hole_position,contact_point])
 	
 	if best_ball == null:
-		for possible_contact_point in possible_contact_points:
-			if possible_contact_point[3] > best_score:
-				best_ball = possible_contact_point[0]
-				best_hole_position = possible_contact_point[1]
-				best_collision_point = possible_contact_point[2]			
-				best_score = possible_contact_point[3]
-				direct_shot = true
 		var best_contact_point = Vector2.ZERO
 		var possible_points := []
 		
