@@ -197,7 +197,8 @@ func get_better_ball():
 			if is_ball_permitted(b.name.to_int()):
 				var ball = b
 				permitted_balls.append(ball)
-	
+				
+#region Acertar o ponto "ideal" de colisão	
 	for b in permitted_balls: 
 		for hole in buracos:
 			var hole_position = hole.to_global(hole.get_child(0).position)
@@ -246,8 +247,9 @@ func get_better_ball():
 						$Line2D2.visible = true
 						direct_shot = true
 					else:
-						possible_contact_points.append([b,hole_position,contact_point,score])
-	
+						possible_contact_points.append([b,hole_position,contact_point,score])	
+#endregion
+
 	if best_ball == null:
 		var best_contact_point = Vector2.ZERO
 		var possible_points := []
@@ -257,12 +259,7 @@ func get_better_ball():
 				best_ball = possible_contact_point[0]
 				best_hole_position = possible_contact_point[1]
 				best_collision_point = possible_contact_point[2]
-				best_score = possible_contact_point[3]
-				# linha vermelha
-				$Line2D2.clear_points()
-				$Line2D2.add_point(possible_contact_point[2])
-				$Line2D2.add_point(possible_contact_point[1])
-				$Line2D2.visible = true
+				best_score = possible_contact_point[3]			
 				direct_shot = true
 		
 		# nenhum tiro direto
@@ -270,6 +267,7 @@ func get_better_ball():
 		var cue_ball_projections = calculate_cue_ball_projections()
 		var cue_ball_position = cue_ball.position
 		var debug = false
+#region Verifica tabelas
 		for b in permitted_balls:
 			if debug: print("Bola: ", b.name)
 			# para cada bola permitida, cria vetor do ponto de mira da bola em cada buraco até as 4 posições da bola branca projetada
@@ -287,20 +285,21 @@ func get_better_ball():
 						# Obtenha o ponto de tabela
 						var collision_point = raycast.get_collision_point()
 						
+						if debug: print("Buraco: ", hole.name, " Bola: ", b.name)
 						# corrigir best_collision_point
 						# descobrir em qual parede está tabelando
 						if collision_point.x>limites_paredes[1]: # direita
 							collision_point -= Vector2(ball_radius,0)
-							if debug: print("Tabelando na direita ", collision_point)							
+							if debug: print("Tabelando na direita ", collision_point, " Branca em: ", cue_ball.position)
 						elif collision_point.x<limites_paredes[0]: # esquerda
 							collision_point += Vector2(ball_radius,0)							
-							if debug: print("Tabelando na esquerda ", collision_point)							
+							if debug: print("Tabelando na esquerda ", collision_point, " Branca em: ", cue_ball.position)
 						elif collision_point.y>limites_paredes[2]: # baixo
 							collision_point -= Vector2(0,ball_radius)
-							if debug: print("Tabelando em baixo ", collision_point)							
+							if debug: print("Tabelando em baixo ", collision_point, " Branca em: ", cue_ball.position)
 						elif collision_point.y<limites_paredes[3]: # cima
 							collision_point += Vector2(0,ball_radius)
-							if debug: print("Tabelando em cima ", collision_point)							
+							if debug: print("Tabelando em cima ", collision_point, " Branca em: ", cue_ball.position)
 						
 						if check_clear_shot("paredes",collision_point): # da posição da branca até a parede
 							if debug: print("Caminho livre até o ponto de tabela")
@@ -360,7 +359,7 @@ func get_better_ball():
 										best_contact_point = contact_point
 		if best_ball != null:
 			if not direct_shot:
-				print("Tabelando no ponto de contato")
+				print("--------------------- Tabelando no ponto de contato")
 				# linha vermelha
 				$Line2D2.clear_points()
 				$Line2D2.add_point(best_contact_point)
@@ -371,7 +370,9 @@ func get_better_ball():
 				$Line2D3.add_point(best_collision_point)
 				$Line2D3.add_point(best_contact_point)
 				$Line2D3.visible = true
+#endregion
 		else:
+				# significa que best_ball = null, best_score = -INF e best_collision_point = null 
 				# mirar apenas para acertar uma bola do grupo
 				for b in permitted_balls:
 					for degree in range(360):
@@ -379,13 +380,22 @@ func get_better_ball():
 						var x = b.position.x + ball_radius * cos(radians)  # Calcula a coordenada x
 						var y = b.position.y + ball_radius * sin(radians)  # Calcula a coordenada y
 						var point = Vector2(x, y)  # Cria o ponto como um Vector2
-						if check_clear_shot(b.name,point,false):
-							possible_points.append(point)
+						if check_clear_shot(b.name,point,true):
+							var distance_to_ball = cue_ball.position.distance_to(b.position)
+							possible_points.append([point,distance_to_ball,b])
 				if possible_points.size() > 0:
-					print("Mirando para acertar uma bola permitida")
-					best_collision_point = possible_points.pick_random()
+					print("Mirando para acertar a bola permitida mais próxima")
+					for possible_point in possible_points:
+						var point = possible_point[0]
+						var distance_to_ball = possible_point[1]
+						var score = (1 / distance_to_ball)
+						var ball = possible_point[2]
+						if score > best_score:
+							best_score = score
+							best_ball = ball
+							best_collision_point = point
 				else:
-					# mirar na tabela apenas para acertar uma bola do grupo
+					# Mirar na tabela apenas para acertar uma bola do grupo
 					for b in permitted_balls:
 						print("Bola: ", b.name)
 						var debug_full = false
@@ -423,24 +433,25 @@ func get_better_ball():
 										if debug_full: print("Caminho livre até o ponto de tabela")
 										# se a bola branca tem caminho direto até o ponto de tabela
 										cue_ball.position = collision_point
-										possible_points.append(collision_point)	
+										if check_clear_shot(b.name,point):	# da parede até a bola 
+											var distance_to_ball = cue_ball.position.distance_to(collision_point) + collision_point.distance_to(b.position)
+											possible_points.append([collision_point,distance_to_ball,b])
 					print("Bot não sabe onde mirar")
 					if possible_points.size() > 0:
-						best_collision_point = possible_points.pick_random()
+						print("Mirando na tabela apenas para acertar uma bola do grupo")
+						for possible_point in possible_points:
+							var point = possible_point[0]
+							var distance_to_ball = possible_point[1]
+							var score = (1 / distance_to_ball)
+							var ball = possible_point[2]
+							if score > best_score:
+								best_score = score
+								best_ball = 0#ball
+								best_collision_point = point
 						print("mirou em ", best_collision_point)
 					else:
-						print("mirou em qualquer parede")
-						var parede = randi() % 4
-						var rng = RandomNumberGenerator.new()
-						match parede:
-							0: #cima							
-								best_collision_point = Vector2(rng.randf_range(limites_paredes[0], limites_paredes[1]),limites_paredes[3])
-							1: #baixo
-								best_collision_point = Vector2(rng.randf_range(limites_paredes[0], limites_paredes[1]),limites_paredes[2])
-							2: #direita
-								best_collision_point = Vector2(limites_paredes[1],rng.randf_range(limites_paredes[2], limites_paredes[3]))
-							3: #esquerda
-								best_collision_point = Vector2(limites_paredes[0],rng.randf_range(limites_paredes[2], limites_paredes[3]))
+						print("mirou em qualquer bola")
+						best_collision_point = permitted_balls.pick_random().position
 		cue_ball.position = cue_ball_position
 		
 			
@@ -495,6 +506,7 @@ func calculate_shot_power(hole_position, contact_point):
 
 func check_clear_path(ball,pocket):
 	shapecast2.reparent(ball)
+	var ball_name = ball.name
 	var pocket_position = pocket.to_global(pocket.get_child(0).position)	
 	# Defina a posição de origem do shapecast2D	
 	shapecast2.position = Vector2.ZERO
@@ -509,10 +521,11 @@ func check_clear_path(ball,pocket):
 		
 		var collisions = []
 		var forbidden_collisions = []
-		for i in range(shapecast2.get_collision_count()):
+		var num_collisions = shapecast2.get_collision_count()
+		for i in range(num_collisions):
 			var _name = shapecast2.get_collider(i).name
 			if _name == "Area2D": _name = shapecast2.get_collider(i).get_parent().name
-			if collisions.count(str(_name)) < 1 and str(_name) != ball.name:
+			if collisions.count(str(_name)) < 1 and str(_name) != ball_name:
 				collisions.append(str(_name))
 				if str(_name) != "paredes" and str(_name) != "buracos":
 					if bateu_primeiro_em_bola_proibida(int(str(_name))):
@@ -521,11 +534,12 @@ func check_clear_path(ball,pocket):
 		var collider = shapecast2.get_collider(0)
 		var nome = collider.name
 		if nome == "Area2D": nome = collider.get_parent().name
-		print(ball.name, " - ", n_collisions, " colisões, com: ", collisions, " - colisões com bolas proibidas: ", forbidden_collisions)
+		print(ball_name, " - ", n_collisions, " colisões, com: ", collisions, " - colisões com bolas proibidas: ", forbidden_collisions, " - primeira colisão com: ", nome, " n ", num_collisions)
 		# qual será a primeira colisão
 		shapecast2.enabled = false
 		shapecast2.reparent($".")
 		if nome == "buracos":
+			print(ball_name, " direta pra caçapa")
 			return [true,n_collisions-len(forbidden_collisions),len(forbidden_collisions)-collisions.count("8"), collisions.count("8")]
 		else: return [false,n_collisions-len(forbidden_collisions),len(forbidden_collisions)-collisions.count("8"), collisions.count("8")]
 	else:
@@ -616,7 +630,13 @@ func vez_bot():
 	if rng.randf() < GlobalData.EnemyDificulty[current_enemy][GlobalData.EnemyDififultyVariables.power_probability]:
 		print("Usar poder")
 	var better_ball = await get_better_ball() # ([best_ball, best_hole_position,best_collision_point,best_score,direct_shot])
-	
+	if better_ball[4]:
+		# linha vermelha
+		$Line2D2.clear_points()
+		$Line2D2.add_point(better_ball[2])
+		$Line2D2.add_point(better_ball[1])
+		$Line2D2.visible = true
+		$Line2D3.visible = false
 	print("Betterball: ",better_ball)	
 	if better_ball[2] != null:
 		var target_point = better_ball[2]		
