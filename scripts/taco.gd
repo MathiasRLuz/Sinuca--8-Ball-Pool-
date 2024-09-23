@@ -3,7 +3,6 @@ signal shoot
 var power : float = 0.0
 var power_direction : int = 1
 @export var power_multiplier : int
-@onready var raycast = $"../RayCast2D"
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
@@ -19,11 +18,11 @@ func _process(delta):
 	else:
 		power_direction = 1 
 		if power > 0 :
-			var dir = mouse_pos - position
+			var dir = mouse_pos - global_position
 			dir = dir.normalized()
 			#power = get_parent().MAX_POWER
 			power *= power_multiplier
-			print((power * dir).length())
-			shoot.emit(power * dir)
+			#print((power * dir).length())
+			shoot.emit(power * dir, mouse_pos)
 			power = 0
 	

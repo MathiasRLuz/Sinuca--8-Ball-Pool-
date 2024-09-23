@@ -94,14 +94,6 @@ target_position = Vector2(151, 3)
 collision_mask = 3
 collide_with_areas = true
 
-[node name="ShapeCast2D2" type="ShapeCast2D" parent="."]
-position = Vector2(859, 68)
-enabled = false
-shape = SubResource("CircleShape2D_lmf8b")
-target_position = Vector2(-797, 395)
-collision_mask = 3
-collide_with_areas = true
-
 [node name="Line2D" type="Line2D" parent="."]
 visible = false
 width = 4.0
