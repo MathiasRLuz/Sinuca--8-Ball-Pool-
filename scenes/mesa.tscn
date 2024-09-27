@@ -54,42 +54,42 @@ polygon = PackedVector2Array(47.7827, 21.8468, 61.6029, 36.0852, 391.526, 37.553
 [node name="buracos" type="Area2D" parent="."]
 
 [node name="TL" type="CollisionShape2D" parent="buracos"]
-position = Vector2(39, 42)
+position = Vector2(43, 44)
 shape = SubResource("CircleShape2D_r7gxe")
 
 [node name="Alvo" type="Node2D" parent="buracos/TL"]
 position = Vector2(36, 39)
 
 [node name="TR" type="CollisionShape2D" parent="buracos"]
-position = Vector2(887, 42)
+position = Vector2(883, 45)
 shape = SubResource("CircleShape2D_r7gxe")
 
 [node name="Alvo" type="Node2D" parent="buracos/TR"]
 position = Vector2(-39, 35)
 
 [node name="BL" type="CollisionShape2D" parent="buracos"]
-position = Vector2(41, 483)
+position = Vector2(44, 480)
 shape = SubResource("CircleShape2D_r7gxe")
 
 [node name="Alvo" type="Node2D" parent="buracos/BL"]
 position = Vector2(32, -34)
 
 [node name="BR" type="CollisionShape2D" parent="buracos"]
-position = Vector2(887, 482)
+position = Vector2(883, 480)
 shape = SubResource("CircleShape2D_r7gxe")
 
 [node name="Alvo" type="Node2D" parent="buracos/BR"]
 position = Vector2(-39, -37)
 
 [node name="TM" type="CollisionShape2D" parent="buracos"]
-position = Vector2(463, 30)
+position = Vector2(463, 36)
 shape = SubResource("CircleShape2D_r7gxe")
 
 [node name="Alvo" type="Node2D" parent="buracos/TM"]
 position = Vector2(0, 27)
 
 [node name="BM" type="CollisionShape2D" parent="buracos"]
-position = Vector2(462, 495)
+position = Vector2(463, 490)
 shape = SubResource("CircleShape2D_r7gxe")
 
 [node name="Alvo" type="Node2D" parent="buracos/BM"]

@@ -1,4 +1,4 @@
-[gd_scene load_steps=12 format=3 uid="uid://dvexns24mbh41"]
+[gd_scene load_steps=14 format=3 uid="uid://dvexns24mbh41"]
 
 [ext_resource type="Script" path="res://scripts/main.gd" id="1_4cjhd"]
 [ext_resource type="PackedScene" uid="uid://drwm0yb1mdeo8" path="res://scenes/bola.tscn" id="2_g7l3x"]
@@ -8,6 +8,8 @@
 [ext_resource type="Texture2D" uid="uid://b3hkuh5gaoyqc" path="res://icon.svg" id="6_2lwaj"]
 [ext_resource type="Script" path="res://scripts/screen.gd" id="7_kkqnw"]
 [ext_resource type="PackedScene" uid="uid://d210d8k3gp6ak" path="res://scenes/roll_dice.tscn" id="8_ejpbm"]
+[ext_resource type="Texture2D" uid="uid://d03mqfdew41rl" path="res://assets/ball_16.png" id="9_jieif"]
+[ext_resource type="Texture2D" uid="uid://dqg6moc8b5dy5" path="res://assets/ball_8.png" id="10_uckew"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_yysmw"]
 bg_color = Color(1, 1, 1, 0.458824)
@@ -74,14 +76,12 @@ offset_bottom = 596.0
 
 [node name="RayCast2D" type="RayCast2D" parent="."]
 position = Vector2(891, 340)
-enabled = false
 exclude_parent = false
 target_position = Vector2(-800, 0)
 collision_mask = 2
 
 [node name="RayCast2D2" type="RayCast2D" parent="."]
 position = Vector2(810, 259.5)
-enabled = false
 exclude_parent = false
 target_position = Vector2(-800, 0)
 collision_mask = 2
@@ -96,15 +96,18 @@ collide_with_areas = true
 
 [node name="Line2D" type="Line2D" parent="."]
 visible = false
+z_index = 4096
 width = 4.0
 
 [node name="Line2D2" type="Line2D" parent="."]
 visible = false
+z_index = 4096
 width = 4.0
 default_color = Color(1, 0, 0, 1)
 
 [node name="Line2D3" type="Line2D" parent="."]
 visible = false
+z_index = 4096
 width = 4.0
 default_color = Color(0.521291, 0.431825, 0.962876, 1)
 
@@ -121,5 +124,31 @@ size = Vector2i(100, 100)
 
 [node name="Camera2D" type="Camera2D" parent="."]
 position = Vector2(484, 276)
+
+[node name="Projection0" type="Sprite2D" parent="."]
+position = Vector2(-635, 260)
+scale = Vector2(0.2, 0.2)
+texture = ExtResource("9_jieif")
+
+[node name="Projection1" type="Sprite2D" parent="."]
+position = Vector2(-635, 260)
+scale = Vector2(0.2, 0.2)
+texture = ExtResource("9_jieif")
+
+[node name="Projection2" type="Sprite2D" parent="."]
+position = Vector2(-635, 260)
+scale = Vector2(0.2, 0.2)
+texture = ExtResource("9_jieif")
+
+[node name="Projection3" type="Sprite2D" parent="."]
+position = Vector2(-635, 260)
+scale = Vector2(0.2, 0.2)
+texture = ExtResource("9_jieif")
+
+[node name="WhiteBall" type="Sprite2D" parent="."]
+z_index = 4096
+position = Vector2(-623, 260)
+scale = Vector2(0.2, 0.2)
+texture = ExtResource("10_uckew")
 
 [connection signal="shoot" from="Taco" to="." method="_on_taco_shoot"]

@@ -19,7 +19,7 @@ var EnemyDificulty = {
 		EnemyDififultyVariables.error_radius : 5,
 		EnemyDififultyVariables.max_shot_angle : 60,
 		EnemyDififultyVariables.min_score : 0,
-		EnemyDififultyVariables.risky: 0,
+		EnemyDififultyVariables.risky: 1,
 		EnemyDififultyVariables.crit1 : 2,
 		EnemyDififultyVariables.crit2 : 100,
 		EnemyDififultyVariables.crit3 : 200,

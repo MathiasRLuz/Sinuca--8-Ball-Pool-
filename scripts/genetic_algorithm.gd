@@ -63,3 +63,53 @@ func create_bot():
 		GlobalData.EnemyDififultyVariables.crit6 : rng.randf_range(100.0, 1000.0)
 	}
 	return bot
+
+func select_parents(fitness):
+	# Passo 1: Classificar os indivíduos com base no fitness
+	var sorted_indices = fitness.sorted(true).invert() # Ordena em ordem decrescente
+	var ranking = range(1, len(fitness) + 1) # Gera o ranking
+
+	# Passo 2: Calcular a soma do ranking manualmente
+	var total_ranks = 0
+	for rank in ranking:
+		total_ranks += rank
+
+	# Atribuir probabilidades com base no ranking
+	var selection_prob = []
+	for rank in ranking:
+		selection_prob.append((len(fitness) - rank + 1) / total_ranks)
+
+	# Reordenar as probabilidades para corresponder aos indivíduos na ordem original
+	var final_selection_prob = []
+	for i in range(len(fitness)):
+		final_selection_prob.append(0)
+
+	for i in range(len(sorted_indices)):
+		final_selection_prob[sorted_indices[i]] = selection_prob[i]
+
+	# Exibir as probabilidades
+	print("Probabilidades de seleção com base no ranking: ", final_selection_prob)
+
+	# Passo 3: Selecionar dois indivíduos para crossover com base nas probabilidades
+	var selected = select_individuals(final_selection_prob, 2)
+	print("Indivíduos selecionados: ", selected)
+
+# Função para selecionar indivíduos com base nas probabilidades
+func select_individuals(probabilities, n):
+	var selected = []
+	for _i in range(n):
+		var r = randf()
+		var cumulative_prob = 0.0
+		for i in range(len(probabilities)):
+			cumulative_prob += probabilities[i]
+			if r < cumulative_prob:
+				selected.append(i)
+				break
+	return selected
+	
+func cross_parents(a,b):
+	pass
+	
+func mutation(a):
+	pass
+	

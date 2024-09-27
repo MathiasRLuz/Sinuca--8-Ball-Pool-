@@ -163,8 +163,8 @@ func generate_balls():
 		add_child(ball)	
 		
 func remove_cue_ball():
-	var old_b = cue_ball
 	shapecast.reparent($".")
+	var old_b = cue_ball
 	remove_child(old_b)
 	old_b.queue_free()
 	
@@ -179,10 +179,10 @@ func reset_cue_ball():
 	cue_ball.max_contacts_reported = 256
 	cue_ball.connect("body_entered", Callable(self, "_on_CueBall_area_entered"))
 	cue_ball.continuous_cd = true  # Ativa o CCD
-	shapecast.reparent(cue_ball)
 
 func _on_CueBall_area_entered(body):
 	if body.is_in_group("bolas") && primeira_bola_batida == 0 && body.name != "Bola":
+		Engine.set_time_scale(1)
 		primeira_bola_batida = body.name.to_int()
 		
 func get_better_ball():
@@ -269,100 +269,102 @@ func get_better_ball():
 		var cue_ball_projections = calculate_cue_ball_projections()
 		var debug = false
 #region Verifica tabelas
-		for b in permitted_balls:
-			if debug: print("Bola: ", b.name)
-			# para cada bola permitida, cria vetor do ponto de mira da bola em cada buraco até as 4 posições da bola branca projetada
-			for projected_cue_ball in cue_ball_projections:
-				for hole in buracos:	
-					if debug: print("Buraco: ", hole.name)
-					var hole_position = hole.to_global(hole.get_child(0).position)			
-					var pocket_direction = (hole_position - b.position).normalized()
-					var contact_point = b.position - pocket_direction * 2* ball_radius
-					var direction = projected_cue_ball - contact_point	
-					raycast.target_position = direction * 10000  # Lança o raycast numa grande distância
-					raycast.global_position = contact_point # Posição do RayCast2D na bola
-					raycast.force_raycast_update()
-					if raycast.is_colliding():
-						# Obtenha o ponto de tabela
-						var collision_point = raycast.get_collision_point()
-						# corrigir best_collision_point
-						# descobrir em qual parede está tabelando
-						var parede = ""
-						if collision_point.x>limites_paredes[1]: # direita
-							collision_point -= Vector2(ball_radius,0)
-							if debug: print("Tabelando na direita ", collision_point, " Branca em: ", cue_ball.position)
-							parede = "Direita"
-						elif collision_point.x<limites_paredes[0]: # esquerda
-							collision_point += Vector2(ball_radius,0)							
-							if debug: print("Tabelando na esquerda ", collision_point, " Branca em: ", cue_ball.position)
-							parede = "Esquerda"
-						elif collision_point.y>limites_paredes[2]: # baixo
-							collision_point -= Vector2(0,ball_radius)
-							if debug: print("Tabelando em baixo ", collision_point, " Branca em: ", cue_ball.position)
-							parede = "Baixo"
-						elif collision_point.y<limites_paredes[3]: # cima
-							collision_point += Vector2(0,ball_radius)
-							if debug: print("Tabelando em cima ", collision_point, " Branca em: ", cue_ball.position)
-							parede = "Cima"						
-						var collisions = await check_ball_path(collision_point,cue_ball.global_position)
-						if collisions != {} and collisions.keys()[0] == "paredes" and check_collision_distance(collisions[collisions.keys()[0]],collision_point):
-						# da posição da branca até a parede
-							print("Caminho livre até o ponto de tabela em ", parede, " em ", collision_point, " na bola ", b.name, " na caçapa ", hole.name)
-							# se a bola branca tem caminho direto até o ponto de tabela
-							collisions = await check_ball_path(contact_point,collision_point)
-							if collisions != {} and collisions.keys()[0] == b.name and check_collision_distance(collisions[collisions.keys()[0]],contact_point):
-								# da parede até a bola 
-								print("Buraco: ", hole.name, " Bola: ", b.name)
-								# linha vermelha
-								$Line2D2.clear_points()
-								$Line2D2.add_point(contact_point)
-								$Line2D2.add_point(hole_position)
-								$Line2D2.visible = true
-								# linha roxa
-								$Line2D3.clear_points()
-								$Line2D3.add_point(collision_point)
-								$Line2D3.add_point(contact_point)
-								$Line2D3.visible = true	
-								if debug: await get_tree().create_timer(1).timeout
-								
-								var tabela_to_ball = (contact_point - collision_point).normalized()
-								
-								var angle_radians = pocket_direction.angle_to(tabela_to_ball)
-								var angle_degrees = rad_to_deg(angle_radians)
-								print("Angle: ", angle_degrees)
-								if abs(angle_degrees) < GlobalData.EnemyDificulty[current_enemy][GlobalData.EnemyDififultyVariables.max_shot_angle]:
-									var score = 0
+		if GlobalData.EnemyDificulty[current_enemy][GlobalData.EnemyDififultyVariables.risky] == 1:
+			for b in permitted_balls:
+				if debug: print("Bola: ", b.name)
+				# para cada bola permitida, cria vetor do ponto de mira da bola em cada buraco até as 4 posições da bola branca projetada
+				for projected_cue_ball in cue_ball_projections:
+					for hole in buracos:	
+						if debug: print("Buraco: ", hole.name)
+						var hole_position = hole.to_global(hole.get_child(0).position)			
+						var pocket_direction = (hole_position - b.position).normalized()
+						var contact_point = b.position - pocket_direction * 2* ball_radius
+						var direction = projected_cue_ball - contact_point	
+						raycast.target_position = direction * 10000  # Lança o raycast numa grande distância
+						raycast.global_position = contact_point # Posição do RayCast2D na bola
+						raycast.force_raycast_update()
+						if raycast.is_colliding():
+							# Obtenha o ponto de tabela
+							var collision_point = raycast.get_collision_point()
+							# corrigir best_collision_point
+							collision_point -= direction.normalized() * ball_radius
+							# descobrir em qual parede está tabelando
+							var parede = ""
+							if collision_point.x>limites_paredes[1]: # direita
+								#collision_point -= Vector2(ball_radius,0)
+								if debug: print("Tabelando na direita ", collision_point, " Branca em: ", cue_ball.position)
+								parede = "Direita"
+							elif collision_point.x<limites_paredes[0]: # esquerda
+								#collision_point += Vector2(ball_radius,0)							
+								if debug: print("Tabelando na esquerda ", collision_point, " Branca em: ", cue_ball.position)
+								parede = "Esquerda"
+							elif collision_point.y>limites_paredes[2]: # baixo
+								#collision_point -= Vector2(0,ball_radius)
+								if debug: print("Tabelando em baixo ", collision_point, " Branca em: ", cue_ball.position)
+								parede = "Baixo"
+							elif collision_point.y<limites_paredes[3]: # cima
+								#collision_point += Vector2(0,ball_radius)
+								if debug: print("Tabelando em cima ", collision_point, " Branca em: ", cue_ball.position)
+								parede = "Cima"						
+							var collisions = await check_ball_path(collision_point,cue_ball.global_position)
+							if collisions != {} and collisions.keys()[0] == "paredes" and check_collision_distance(collisions[collisions.keys()[0]],collision_point):
+							# da posição da branca até a parede
+								print("Caminho livre até o ponto de tabela em ", parede, " em ", collision_point, " na bola ", b.name, " na caçapa ", hole.name)
+								# se a bola branca tem caminho direto até o ponto de tabela
+								collisions = await check_ball_path(contact_point,collision_point)
+								if collisions != {} and collisions.keys()[0] == b.name and check_collision_distance(collisions[collisions.keys()[0]],contact_point):
+									# da parede até a bola 
+									print("Buraco: ", hole.name, " Bola: ", b.name)
+									# linha vermelha
+									$Line2D2.clear_points()
+									$Line2D2.add_point(contact_point)
+									$Line2D2.add_point(hole_position)
+									$Line2D2.visible = true
+									# linha roxa
+									$Line2D3.clear_points()
+									$Line2D3.add_point(collision_point)
+									$Line2D3.add_point(contact_point)
+									$Line2D3.visible = true	
+									if debug: await get_tree().create_timer(1).timeout
 									
-									# Critério 1: Ângulo (quanto menor, melhor)
-									score += (GlobalData.EnemyDificulty[current_enemy][GlobalData.EnemyDififultyVariables.max_shot_angle] - abs(angle_degrees)) * GlobalData.EnemyDificulty[current_enemy][GlobalData.EnemyDififultyVariables.crit1] # Multiplicador de 2 para dar mais peso
+									var tabela_to_ball = (contact_point - collision_point).normalized()
 									
-									# Critério 2: Distância da bola branca até a bola alvo (quanto menor, melhor)
-									var distance_to_ball = cue_ball.position.distance_to(collision_point) + collision_point.distance_to(b.position)
-									score += (1 / distance_to_ball) * GlobalData.EnemyDificulty[current_enemy][GlobalData.EnemyDififultyVariables.crit2]  # Inverso da distância multiplicado para dar peso
-									
-									# Critério 3: Distância da bola alvo até a caçapa (quanto menor, melhor)
-									var distance_to_hole = b.position.distance_to(hole_position)
-									score += (1 / distance_to_hole) * GlobalData.EnemyDificulty[current_enemy][GlobalData.EnemyDififultyVariables.crit3]
-									
-									# Critério 4: Interferências (penalizar se houver outras bolas no caminho)
-									var clear_path = await check_clear_path(b, hole_position,contact_point) 
-									# caminho direto ao buraco, numero de colisões sem contar as proibídas, 
-									# numero de colisões proibídas sem contar a 8, e numero de colisões com a 8 (0 ou 1)
-									if not clear_path[0]:
-										var penalidade = GlobalData.EnemyDificulty[current_enemy][GlobalData.EnemyDififultyVariables.crit4] * clear_path[1]
-										penalidade += GlobalData.EnemyDificulty[current_enemy][GlobalData.EnemyDififultyVariables.crit5] * clear_path[2]
-										penalidade += GlobalData.EnemyDificulty[current_enemy][GlobalData.EnemyDififultyVariables.crit6] * clear_path[3]
-										if debug: print("Penalidade colisões: ", penalidade)
-										score -= penalidade  # Penalidade se houver interferência
-									print(b.name," - ",hole.name," - ",score)
-									# Avaliar se esta jogada é melhor que as anteriores
-									if score > best_score:
-										best_score = score
-										best_ball = b
-										best_collision_point = collision_point
-										best_hole_position = hole_position
-										best_contact_point = contact_point
-										direct_shot = false
+									var angle_radians = pocket_direction.angle_to(tabela_to_ball)
+									var angle_degrees = rad_to_deg(angle_radians)
+									print("Angle: ", angle_degrees)
+									if abs(angle_degrees) < GlobalData.EnemyDificulty[current_enemy][GlobalData.EnemyDififultyVariables.max_shot_angle]:
+										var score = 0
+										
+										# Critério 1: Ângulo (quanto menor, melhor)
+										score += (GlobalData.EnemyDificulty[current_enemy][GlobalData.EnemyDififultyVariables.max_shot_angle] - abs(angle_degrees)) * GlobalData.EnemyDificulty[current_enemy][GlobalData.EnemyDififultyVariables.crit1] # Multiplicador de 2 para dar mais peso
+										
+										# Critério 2: Distância da bola branca até a bola alvo (quanto menor, melhor)
+										var distance_to_ball = cue_ball.position.distance_to(collision_point) + collision_point.distance_to(b.position)
+										score += (1 / distance_to_ball) * GlobalData.EnemyDificulty[current_enemy][GlobalData.EnemyDififultyVariables.crit2]  # Inverso da distância multiplicado para dar peso
+										
+										# Critério 3: Distância da bola alvo até a caçapa (quanto menor, melhor)
+										var distance_to_hole = b.position.distance_to(hole_position)
+										score += (1 / distance_to_hole) * GlobalData.EnemyDificulty[current_enemy][GlobalData.EnemyDififultyVariables.crit3]
+										
+										# Critério 4: Interferências (penalizar se houver outras bolas no caminho)
+										var clear_path = await check_clear_path(b, hole_position,contact_point) 
+										# caminho direto ao buraco, numero de colisões sem contar as proibídas, 
+										# numero de colisões proibídas sem contar a 8, e numero de colisões com a 8 (0 ou 1)
+										if not clear_path[0]:
+											var penalidade = GlobalData.EnemyDificulty[current_enemy][GlobalData.EnemyDififultyVariables.crit4] * clear_path[1]
+											penalidade += GlobalData.EnemyDificulty[current_enemy][GlobalData.EnemyDififultyVariables.crit5] * clear_path[2]
+											penalidade += GlobalData.EnemyDificulty[current_enemy][GlobalData.EnemyDififultyVariables.crit6] * clear_path[3]
+											if debug: print("Penalidade colisões: ", penalidade)
+											score -= penalidade  # Penalidade se houver interferência
+										print(b.name," - ",hole.name," - ",score)
+										# Avaliar se esta jogada é melhor que as anteriores
+										if score > best_score:
+											best_score = score
+											best_ball = b
+											best_collision_point = collision_point
+											best_hole_position = hole_position
+											best_contact_point = contact_point
+											direct_shot = false
 		if best_ball != null:
 			if not direct_shot:
 				print("--------------------- Tabelando no ponto de contato")
@@ -381,7 +383,7 @@ func get_better_ball():
 				# significa que best_ball = null, best_score = -INF e best_collision_point = null 
 				# mirar apenas para acertar uma bola do grupo
 				for b in permitted_balls:
-					for degree in range(0, 360, 360.0/10.0): # 10 é o total de pontos verificados
+					for degree in range(0, 360, 360.0/1.0): # 10 é o total de pontos verificados
 						var radians = deg_to_rad(degree)  # Converte graus para radianos
 						var x = b.position.x + ball_radius * cos(radians)  # Calcula a coordenada x
 						var y = b.position.y + ball_radius * sin(radians)  # Calcula a coordenada y
@@ -410,7 +412,7 @@ func get_better_ball():
 						var debug_full = false
 						# para cada bola permitida, cria vetor do ponto de mira da bola em cada buraco até as 4 posições da bola branca projetada
 						for projected_cue_ball in cue_ball_projections:
-							for degree in range(0, 360, 360.0/10.0):
+							for degree in range(0, 360, 360.0/1.0):
 								var radians = deg_to_rad(degree)  # Converte graus para radianos
 								var x = b.position.x + ball_radius * cos(radians)  # Calcula a coordenada x
 								var y = b.position.y + ball_radius * sin(radians)  # Calcula a coordenada y
@@ -426,16 +428,16 @@ func get_better_ball():
 									# corrigir best_collision_point
 									# descobrir em qual parede está tabelando
 									if collision_point.x>limites_paredes[1]: # direita
-										collision_point -= Vector2(ball_radius,0)
+										#collision_point -= Vector2(ball_radius,0)
 										if debug_full: print("Tabelando na direita ", collision_point)							
 									elif collision_point.x<limites_paredes[0]: # esquerda
-										collision_point += Vector2(ball_radius,0)							
+										#collision_point += Vector2(ball_radius,0)							
 										if debug_full: print("Tabelando na esquerda ", collision_point)							
 									elif collision_point.y>limites_paredes[2]: # baixo
-										collision_point -= Vector2(0,ball_radius)
+										#collision_point -= Vector2(0,ball_radius)
 										if debug_full: print("Tabelando em baixo ", collision_point)							
 									elif collision_point.y<limites_paredes[3]: # cima
-										collision_point += Vector2(0,ball_radius)
+										#collision_point += Vector2(0,ball_radius)
 										if debug_full: print("Tabelando em cima ", collision_point)							
 									
 									var collisions = await check_ball_path(collision_point,cue_ball.global_position)
@@ -485,10 +487,20 @@ func calculate_cue_ball_projections():
 		raycast2.force_raycast_update()
 		if raycast2.is_colliding():
 			var collision_point = raycast2.get_collision_point()
-			var distance = cue_ball.global_position.distance_to(collision_point)# - ball_radius
+			var distance = cue_ball.global_position.distance_to(collision_point) - ball_radius/2
 			var projected_position = cue_ball.position + direction * distance * 2
 			ball_positions.append(projected_position)
-
+	
+	for i in range(len(ball_positions)):
+		match i:
+			0:
+				$Projection0.position = ball_positions[i]
+			1:
+				$Projection1.position = ball_positions[i]
+			2:
+				$Projection2.position = ball_positions[i]
+			3:
+				$Projection3.position = ball_positions[i]
 	raycast2.enabled = false
 	print("Projections: ", ball_positions)
 	return ball_positions
@@ -601,7 +613,7 @@ func vez_bot():
 		if rng.randf() > GlobalData.EnemyDificulty[current_enemy][GlobalData.EnemyDififultyVariables.precision]:
 			print("Falha na precisão")
 			var possible_points := []
-			for degree in range(0, 360, 360.0/10.0):
+			for degree in range(0, 360, 360.0/1.0):
 				var radians = deg_to_rad(degree)  # Converte graus para radianos
 				var x = target_point.x + GlobalData.EnemyDificulty[current_enemy][GlobalData.EnemyDififultyVariables.error_radius] * cos(radians)  # Calcula a coordenada x
 				var y = target_point.y + GlobalData.EnemyDificulty[current_enemy][GlobalData.EnemyDififultyVariables.error_radius] * sin(radians)  # Calcula a coordenada y
@@ -620,8 +632,8 @@ func vez_bot():
 		await get_tree().create_timer(1).timeout
 		
 		# Camera lenta na tabela
-		#if better_ball[4]: Engine.set_time_scale(1)
-		#else: Engine.set_time_scale(0.1)
+		if better_ball[4]: Engine.set_time_scale(0.2)
+		else: Engine.set_time_scale(0.05)
 		
 		var power = MAX_POWER * dir.normalized() * $Taco.power_multiplier 
 		# se tiro direto calcula a força, senão usa força maxima nas tabelas
@@ -629,9 +641,9 @@ func vez_bot():
 		power *= GlobalData.EnemyDificulty[current_enemy][GlobalData.EnemyDififultyVariables.force_scale]
 		print("POWER > ", power.length())
 		cue_ball.apply_central_impulse(power)		
-		$Line2D.visible = false
-		$Line2D2.visible = false
-		$Line2D3.visible = false
+		#$Line2D.visible = false
+		#$Line2D2.visible = false
+		#$Line2D3.visible = false
 	else:		
 		print("Não sei oq fazer")		
 	print("FIM VEZ BOT")
@@ -648,6 +660,7 @@ func inicia_vez():
 	if jogador_atual == 1:
 		vez_bot() # show_cue()
 	else:
+		Engine.set_time_scale(1)
 		show_cue()
 			
 func hide_cue():
@@ -673,7 +686,8 @@ func _input(event):
 		get_tree().change_scene_to_file(GlobalData.last_scene_before_battle)
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
-func _process(_delta):	
+func _process(_delta):
+	if cue_ball != null: $WhiteBall.position = cue_ball.global_position
 	var moving := false
 	for b in get_tree().get_nodes_in_group("bolas"):
 		if (b.linear_velocity.length() > 0.0 and b.linear_velocity.length() < MOVE_THRESHOLD):
@@ -742,8 +756,9 @@ func check_ball_path(destination,phantom_ball_position,parent = cue_ball):
 	var start_pos = phantom_ball_position
 	
 	# Definir o shape e a origem do cast
-	shapecast.global_position = start_pos
 	shapecast.reparent(parent)
+	shapecast.global_position = start_pos
+	
 	# Definir a direção do ShapeCast em relação à bola branca (diferenca entre destino e origem)
 	var direction = (destination - start_pos).normalized()
 
@@ -795,7 +810,7 @@ func check_ball_path(destination,phantom_ball_position,parent = cue_ball):
 			#$Ball18.global_position = shapecast.global_position
 			# Atualizar a detecção de colisão novamente
 			shapecast.force_shapecast_update()
-
+	shapecast.reparent($".")
 	return phantom_ball_detections
 	
 func define_grupos(bola):
