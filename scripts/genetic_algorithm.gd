@@ -14,7 +14,7 @@ var weights = {
 }
 
 # Called when the node enters the scene tree for the first time.
-func _ready() -> void:
+func _ready() -> void:	
 	GlobalData.clear_bots()
 	for i in range(num_bots):
 		GlobalData.add_bot(create_bot())
@@ -29,6 +29,32 @@ func start_camp():
 func new_generation():
 	print("New generation")
 	print(bots_fitness)
+	# Aplica elitismo
+	print(GlobalData.get_bots())
+	var new_generation = apply_elitism(GlobalData.get_bots(), bots_fitness, 1)
+	print(len(new_generation()))
+	print(new_generation())
+	print(select_parents(bots_fitness))
+
+func apply_elitism(population: Array, fitness_array: Array, num_elites: int) -> Array:
+	# Cria uma cópia da população ordenada pelo fitness (do maior para o menor)
+	var elite_indices = []
+	for i in range(fitness_array.size()):
+		elite_indices.append([fitness_array[i], i])
+	
+	# Ordena pelos valores de fitness de forma crescente
+	elite_indices.sort()
+
+	# Inverte a lista para ordem decrescente (maior fitness primeiro)
+	elite_indices.reverse()
+	
+	# Seleciona os 'num_elites' melhores indivíduos
+	var elites := []
+	for i in range(num_elites):
+		var elite_index = elite_indices[i][1]  # Índice do melhor indivíduo
+		elites.append(population[elite_index])  # Adiciona o melhor indivíduo na nova geração
+	
+	return elites
 
 func eval_bot(bot, stats):	
 	print(bot, ": ", stats)
@@ -64,48 +90,38 @@ func create_bot():
 	}
 	return bot
 
-func select_parents(fitness):
-	# Passo 1: Classificar os indivíduos com base no fitness
-	var sorted_indices = fitness.sorted(true).invert() # Ordena em ordem decrescente
-	var ranking = range(1, len(fitness) + 1) # Gera o ranking
-
-	# Passo 2: Calcular a soma do ranking manualmente
-	var total_ranks = 0
-	for rank in ranking:
-		total_ranks += rank
-
-	# Atribuir probabilidades com base no ranking
-	var selection_prob = []
-	for rank in ranking:
-		selection_prob.append((len(fitness) - rank + 1) / total_ranks)
-
-	# Reordenar as probabilidades para corresponder aos indivíduos na ordem original
-	var final_selection_prob = []
-	for i in range(len(fitness)):
-		final_selection_prob.append(0)
-
-	for i in range(len(sorted_indices)):
-		final_selection_prob[sorted_indices[i]] = selection_prob[i]
-
-	# Exibir as probabilidades
-	print("Probabilidades de seleção com base no ranking: ", final_selection_prob)
-
-	# Passo 3: Selecionar dois indivíduos para crossover com base nas probabilidades
-	var selected = select_individuals(final_selection_prob, 2)
-	print("Indivíduos selecionados: ", selected)
-
-# Função para selecionar indivíduos com base nas probabilidades
-func select_individuals(probabilities, n):
-	var selected = []
-	for _i in range(n):
-		var r = randf()
-		var cumulative_prob = 0.0
-		for i in range(len(probabilities)):
-			cumulative_prob += probabilities[i]
-			if r < cumulative_prob:
-				selected.append(i)
+func select_parents(fitness_array: Array) -> Array:
+	# Soma total dos fitness
+	var total_fitness = 0
+	for fitness in fitness_array:
+		total_fitness += fitness
+	
+	# Lista para armazenar os pais selecionados
+	var selected_parents = []
+	
+	# Selecionar o primeiro pai
+	var random_value = randf() * total_fitness
+	var running_sum = 0
+	for j in range(fitness_array.size()):
+		running_sum += fitness_array[j]
+		if running_sum >= random_value:
+			selected_parents.append(j)
+			break
+	
+	# Selecionar o segundo pai, diferente do primeiro
+	while true:
+		random_value = randf() * total_fitness
+		running_sum = 0
+		for j in range(fitness_array.size()):
+			running_sum += fitness_array[j]
+			if running_sum >= random_value and j != selected_parents[0]:
+				selected_parents.append(j)
 				break
-	return selected
+		if selected_parents.size() == 2:
+			break
+	
+	return selected_parents
+
 	
 func cross_parents(a,b):
 	pass

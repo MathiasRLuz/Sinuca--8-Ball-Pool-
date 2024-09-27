@@ -200,6 +200,8 @@ func get_better_ball():
 	var best_hole_position = Vector2.ZERO
 	var direct_shot := false
 	var possible_contact_points = []
+	if not get_tree():
+		return
 	for b in get_tree().get_nodes_in_group("bolas"):
 		if b.name != "Bola":
 			if is_ball_permitted(b.name.to_int()):
@@ -650,7 +652,7 @@ func vez_bot(bot_id):
 				var x = target_point.x + current_enemy[GlobalData.EnemyDififultyVariables.error_radius] * cos(radians)  # Calcula a coordenada x
 				var y = target_point.y + current_enemy[GlobalData.EnemyDififultyVariables.error_radius] * sin(radians)  # Calcula a coordenada y
 				var point = Vector2(x, y)  # Cria o ponto como um Vector2
-				possible_points.append(point)				
+				possible_points.append(point)
 			target_point = possible_points.pick_random()
 		$Taco.position = cue_ball.position
 		var dir = target_point - cue_ball.position
