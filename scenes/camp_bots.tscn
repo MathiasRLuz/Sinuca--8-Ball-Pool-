@@ -1,19 +1,9 @@
-[gd_scene load_steps=12 format=3 uid="uid://drlktyoe7eg1s"]
+[gd_scene load_steps=6 format=3 uid="uid://drlktyoe7eg1s"]
 
 [ext_resource type="Script" path="res://scripts/camp_bots.gd" id="1_abn6p"]
 [ext_resource type="PackedScene" uid="uid://drwm0yb1mdeo8" path="res://scenes/bola.tscn" id="2_g3oi0"]
 [ext_resource type="PackedScene" uid="uid://d0uweniqsslnk" path="res://scenes/mesa.tscn" id="3_fnrl2"]
 [ext_resource type="PackedScene" uid="uid://clecbdn7movg2" path="res://scenes/taco.tscn" id="4_0gahc"]
-[ext_resource type="Script" path="res://scripts/PowerBar.gd" id="5_aiwg5"]
-[ext_resource type="Texture2D" uid="uid://b3hkuh5gaoyqc" path="res://icon.svg" id="6_flqsn"]
-[ext_resource type="Script" path="res://scripts/screen.gd" id="7_ojfdl"]
-[ext_resource type="PackedScene" uid="uid://d210d8k3gp6ak" path="res://scenes/roll_dice.tscn" id="8_elgnw"]
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_yysmw"]
-bg_color = Color(1, 1, 1, 0.458824)
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_m1iqg"]
-bg_color = Color(0.909804, 0, 0.254902, 1)
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_lmf8b"]
 radius = 14.1
@@ -26,17 +16,6 @@ ball_scene = ExtResource("2_g3oi0")
 
 [node name="Taco" parent="." instance=ExtResource("4_0gahc")]
 power_multiplier = 12
-
-[node name="PowerBar" type="ProgressBar" parent="."]
-z_index = 1
-offset_left = 277.0
-offset_top = 151.0
-offset_right = 377.0
-offset_bottom = 181.0
-theme_override_styles/background = SubResource("StyleBoxFlat_yysmw")
-theme_override_styles/fill = SubResource("StyleBoxFlat_m1iqg")
-show_percentage = false
-script = ExtResource("5_aiwg5")
 
 [node name="Player" type="Label" parent="."]
 offset_left = 24.0
@@ -101,31 +80,6 @@ shape = SubResource("CircleShape2D_lmf8b")
 target_position = Vector2(-797, 395)
 collision_mask = 3
 collide_with_areas = true
-
-[node name="Line2D" type="Line2D" parent="."]
-visible = false
-width = 4.0
-
-[node name="Line2D2" type="Line2D" parent="."]
-visible = false
-width = 4.0
-default_color = Color(1, 0, 0, 1)
-
-[node name="Line2D3" type="Line2D" parent="."]
-visible = false
-width = 4.0
-default_color = Color(0.521291, 0.431825, 0.962876, 1)
-
-[node name="Screen" type="Sprite2D" parent="."]
-visible = false
-position = Vector2(1021, 707)
-texture = ExtResource("6_flqsn")
-script = ExtResource("7_ojfdl")
-
-[node name="SubViewport" type="SubViewport" parent="."]
-size = Vector2i(100, 100)
-
-[node name="StaticBody3D" parent="SubViewport" instance=ExtResource("8_elgnw")]
 
 [node name="Camera2D" type="Camera2D" parent="."]
 position = Vector2(484, 276)

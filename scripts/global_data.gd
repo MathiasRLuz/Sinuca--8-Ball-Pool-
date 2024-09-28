@@ -102,6 +102,9 @@ func clear_bots():
 	
 func get_bots():
 	return bots
+
+func set_bots(new_bots):
+	bots = new_bots
 	
 func add_bot(bot):
 	bots.append(bot)
