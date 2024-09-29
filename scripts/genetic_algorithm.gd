@@ -1,6 +1,6 @@
 extends Node
 
-var num_bots = 9
+var num_bots = 8
 var n_elite = 2
 var bots_fitness := []
 var gen = 0
@@ -16,7 +16,9 @@ var weights = {
 }
 
 var last_population = [{ 1: 1.41252899169922, 2: 0.99195492267609, 3: 4.31879997253418, 4: 42.3448867797852, 5: -127.159027099609, 6: 0, 7: 22.9579200744629, 8: 69.0926178693771, 9: 200, 10: 543.595092773438, 11: 500, 12: 175.253707885742 }, { 1: 0.57767850160599, 2: 0.94868111610413, 3: 1.7042647600174, 4: 59.1753025829792, 5: -102.919921445847, 6: 0, 7: 18.2738933563232, 8: 192.550231933594, 9: 200.016456317902, 10: 914.077331542969, 11: 545.488891601563, 12: 1000 }, { 1: 0.57247577905655, 2: 0.96246737241745, 3: 4.31879997253418, 4: 59.2210388183594, 5: 1.74151611328125, 6: 0, 7: 18.2738933563232, 8: 69.0926178693771, 9: 417.661163330078, 10: 914.077331542969, 11: 500.051652860641, 12: 1000 }, { 1: 0.57767850160599, 2: 0.94868111610413, 3: 1.78218884468079, 4: 59.2210388183594, 5: -102.970474243164, 6: 0, 7: 18.2738933563232, 8: 75.9342880249023, 9: 200.016456317902, 10: 543.593848371506, 11: 545.488891601563, 12: 1000 }, { 1: 0.57767850160599, 2: 1, 3: 1.7042647600174, 4: 88.3881683349609, 5: -102.919921445847, 6: 0, 7: 27.6915073394775, 8: 192.550231933594, 9: 417.661163330078, 10: 543.595092773438, 11: 889.875793457031, 12: 1000 }, { 1: 1.41252899169922, 2: 0.96246737241745, 3: 1.7042647600174, 4: 88.3881683349609, 5: -127.159027099609, 6: 0, 7: 18.2738933563232, 8: 69.0926178693771, 9: 206.126953125, 10: 543.595092773438, 11: 889.875793457031, 12: 759.133443248272 }, { 1: 0.57247577905655, 2: 0.95520466566086, 3: 1.78218884468079, 4: 59.1514423817396, 5: -102.970474243164, 6: 0, 7: 18.2738933563232, 8: 75.9342880249023, 9: 200.016456317902, 10: 543.593848371506, 11: 500, 12: 1000 }, { 1: 0.57767850160599, 2: 0.99195492267609, 3: 1.7042647600174, 4: 59.1753025829792, 5: -127.159027099609, 6: 0, 7: 18.2738933563232, 8: 192.550231933594, 9: 200.033326673508, 10: 914.077331542969, 11: 500, 12: 1000 }, { 1: 1.41252899169922, 2: 0.99195492267609, 3: 1.78218884468079, 4: 59.2210388183594, 5: -102.970474243164, 6: 0, 7: 22.9579200744629, 8: 75.9342880249023, 9: 200, 10: 543.595092773438, 11: 500, 12: 1000.01405683756 }, { 1: 0.57767850160599, 2: 0.94868111610413, 3: 0.66031914949417, 4: 59.2210388183594, 5: -127.159027099609, 6: 1, 7: 18.2738933563232, 8: 75.9342880249023, 9: 206.126953125, 10: 914.077331542969, 11: 545.488891601563, 12: 759.133443248272 }]
-var continue_with_last_population := true
+var continue_with_last_population := false # para iniciar o treinamento com a população de outro treino
+
+var championship_mode := true # para realizar um campeonato MDx (MD5, por exemplo) entre os bots e definir o ganhador, sem aplicar o GA
 
 func new_population():
 	GlobalData.clear_bots()
@@ -24,16 +26,28 @@ func new_population():
 		GlobalData.add_bot(create_bot())
 		bots_fitness.append(0) 	
 	add_specific_bot([1,1,5,60,0,1,2,100,200,250,500,1000])
+	add_specific_bot([1.41252899169922, 0.97707498073578, 1.7042647600174, 88.3777362942695, -102.991931340098, 1, 18.2738933563232, 75.935868692398, 206.028515652381, 543.64482998848, 500.031824212521, 759.133443248272])
+	add_specific_bot([0.95879989266396, 1, 9.38956937789917,  53.4195175170898, -49.2016143798828, 1, 18.2738933563232, 107.540453344584, 286.130897557735, 543.720483505726, 840.666850036383, 1000])	
+
+func load_championship_bots():
+	num_bots = 0
+	GlobalData.clear_bots()
+	add_specific_bot([1,1,5,60,0,1,2,100,200,250,500,1000])
+	add_specific_bot([1.41252899169922, 0.97707498073578, 1.7042647600174, 88.3777362942695, -102.991931340098, 1, 18.2738933563232, 75.935868692398, 206.028515652381, 543.64482998848, 500.031824212521, 759.133443248272])
+	add_specific_bot([0.95879989266396, 1, 9.38956937789917,  53.4195175170898, -49.2016143798828, 1, 18.2738933563232, 107.540453344584, 286.130897557735, 543.720483505726, 840.666850036383, 1000])
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:	
-	if continue_with_last_population:
-		GlobalData.set_bots(last_population)
-		num_bots = len(last_population)
-		for i in range(num_bots):
-			bots_fitness.append(0)
+	if championship_mode:
+		load_championship_bots()
 	else:
-		new_population()
+		if continue_with_last_population:
+			GlobalData.set_bots(last_population)
+			num_bots = len(last_population)
+			for i in range(num_bots):
+				bots_fitness.append(0)
+		else:
+			new_population()
 	GlobalData.set_matchups(create_matchups())
 	if start_ga: 
 		var scale = 100
@@ -65,8 +79,10 @@ func start_camp():
 	print("------------------------ Starting gen ", gen, " -------------------------------------")
 	var population = GlobalData.get_bots()
 	print(population)
-	for i in range(num_bots):
-		bots_fitness[i] = 0
+	if not championship_mode:
+		# zerar os fitness
+		for i in range(num_bots):
+			bots_fitness[i] = 0
 	GlobalData.matchup_id = 0
 	#get_tree().change_scene_to_file("res://scenes/camp_bots.tscn")
 	get_tree().change_scene_to_file.bind("res://scenes/camp_bots.tscn").call_deferred()
@@ -74,14 +90,15 @@ func start_camp():
 func new_generation():
 	print("New generation")
 	print(bots_fitness)
-	# Aplica elitismo
-	var population = GlobalData.get_bots()
-	var new_gen = apply_elitism(population, bots_fitness, n_elite)
-	for _i in range(num_bots - len(new_gen)):
-		var parents = select_parents(bots_fitness)
-		var _new_bot = new_bot(population[parents[0]],population[parents[1]])
-		new_gen.append(_new_bot)
-	GlobalData.set_bots(new_gen)
+	if not championship_mode:
+		# Aplica elitismo
+		var population = GlobalData.get_bots()
+		var new_gen = apply_elitism(population, bots_fitness, n_elite)
+		for _i in range(num_bots - len(new_gen)):
+			var parents = select_parents(bots_fitness)
+			var _new_bot = new_bot(population[parents[0]],population[parents[1]])
+			new_gen.append(_new_bot)
+		GlobalData.set_bots(new_gen)
 	gen += 1
 	start_camp()
 	

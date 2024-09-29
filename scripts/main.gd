@@ -25,8 +25,9 @@ var mesa_aberta : bool = true
 
 var jogador_atual : int = 0 # 0 jogador, 1 bot
 var apply_max_force: bool = false
-var force_first_player: int = 1 # -1 random, 0 bot, 1 jogador
+var force_first_player: int = 0 # -1 random, 0 bot, 1 jogador
 var grupo_jogador : int = 0 # indefinido, 1 menores, 2 maiores
+var estouro := true
 
 var grupo_maior := [9,10,11,12,13,14,15]
 var grupo_menor := [1,2,3,4,5,6,7]
@@ -37,6 +38,7 @@ var derrubou_a_8_por_ultimo: bool = false
 var buracos := []
 var jogador_ja_tinha_grupo: bool = false
 
+@export var debug_slow_time := false
 # Called when the node enters the scene tree for the first time.
 func _ready():	
 	hide_cue()
@@ -182,6 +184,7 @@ func reset_cue_ball():
 
 func _on_CueBall_area_entered(body):
 	if body.is_in_group("bolas") && primeira_bola_batida == 0 && body.name != "Bola":
+		estouro = false
 		Engine.set_time_scale(1)
 		primeira_bola_batida = body.name.to_int()
 		
@@ -243,10 +246,11 @@ func get_better_ball():
 						best_collision_point = contact_point
 						best_hole_position = hole_position
 						# linha vermelha
-						$Line2D2.clear_points()
-						$Line2D2.add_point(contact_point)
-						$Line2D2.add_point(hole_position)
-						$Line2D2.visible = true
+						if debug_slow_time:
+							$Line2D2.clear_points()
+							$Line2D2.add_point(contact_point)
+							$Line2D2.add_point(hole_position)
+							$Line2D2.visible = true
 						direct_shot = true
 					else:
 						possible_contact_points.append([b,hole_position,contact_point,score])	
@@ -315,16 +319,17 @@ func get_better_ball():
 								if collisions != {} and collisions.keys()[0] == b.name and check_collision_distance(collisions[collisions.keys()[0]],contact_point):
 									# da parede até a bola 
 									print("Buraco: ", hole.name, " Bola: ", b.name)
-									# linha vermelha
-									$Line2D2.clear_points()
-									$Line2D2.add_point(contact_point)
-									$Line2D2.add_point(hole_position)
-									$Line2D2.visible = true
-									# linha roxa
-									$Line2D3.clear_points()
-									$Line2D3.add_point(collision_point)
-									$Line2D3.add_point(contact_point)
-									$Line2D3.visible = true	
+									if debug_slow_time:
+										# linha vermelha
+										$Line2D2.clear_points()
+										$Line2D2.add_point(contact_point)
+										$Line2D2.add_point(hole_position)
+										$Line2D2.visible = true
+										# linha roxa
+										$Line2D3.clear_points()
+										$Line2D3.add_point(collision_point)
+										$Line2D3.add_point(contact_point)
+										$Line2D3.visible = true	
 									if debug: await get_tree().create_timer(1).timeout
 									
 									var tabela_to_ball = (contact_point - collision_point).normalized()
@@ -368,16 +373,17 @@ func get_better_ball():
 		if best_ball != null:
 			if not direct_shot:
 				print("--------------------- Tabelando no ponto de contato")
-				# linha vermelha
-				$Line2D2.clear_points()
-				$Line2D2.add_point(best_contact_point)
-				$Line2D2.add_point(best_hole_position)
-				$Line2D2.visible = true
-				# linha roxa
-				$Line2D3.clear_points()
-				$Line2D3.add_point(best_collision_point)
-				$Line2D3.add_point(best_contact_point)
-				$Line2D3.visible = true
+				if debug_slow_time:
+					# linha vermelha
+					$Line2D2.clear_points()
+					$Line2D2.add_point(best_contact_point)
+					$Line2D2.add_point(best_hole_position)
+					$Line2D2.visible = true
+					# linha roxa
+					$Line2D3.clear_points()
+					$Line2D3.add_point(best_collision_point)
+					$Line2D3.add_point(best_contact_point)
+					$Line2D3.visible = true
 #endregion
 		else:
 				# significa que best_ball = null, best_score = -INF e best_collision_point = null 
@@ -490,17 +496,17 @@ func calculate_cue_ball_projections():
 			var distance = cue_ball.global_position.distance_to(collision_point) - ball_radius/2
 			var projected_position = cue_ball.position + direction * distance * 2
 			ball_positions.append(projected_position)
-	
-	for i in range(len(ball_positions)):
-		match i:
-			0:
-				$Projection0.position = ball_positions[i]
-			1:
-				$Projection1.position = ball_positions[i]
-			2:
-				$Projection2.position = ball_positions[i]
-			3:
-				$Projection3.position = ball_positions[i]
+	if debug_slow_time:
+		for i in range(len(ball_positions)):
+			match i:
+				0:
+					$Projection0.position = ball_positions[i]
+				1:
+					$Projection1.position = ball_positions[i]
+				2:
+					$Projection2.position = ball_positions[i]
+				3:
+					$Projection3.position = ball_positions[i]
 	raycast2.enabled = false
 	print("Projections: ", ball_positions)
 	return ball_positions
@@ -599,53 +605,71 @@ func vez_bot():
 	var rng = RandomNumberGenerator.new()
 	if rng.randf() < GlobalData.EnemyDificulty[current_enemy][GlobalData.EnemyDififultyVariables.power_probability]:
 		print("Usar poder")
-	var better_ball = await get_better_ball() # ([best_ball, best_hole_position,best_collision_point,best_score,direct_shot])
-	if better_ball[4]:
-		# linha vermelha
-		$Line2D2.clear_points()
-		$Line2D2.add_point(better_ball[2])
-		$Line2D2.add_point(better_ball[1])
-		$Line2D2.visible = true
-		$Line2D3.visible = false
-	print("Betterball: ",better_ball)	
-	if better_ball[2] != null:
-		var target_point = better_ball[2]		
-		if rng.randf() > GlobalData.EnemyDificulty[current_enemy][GlobalData.EnemyDififultyVariables.precision]:
-			print("Falha na precisão")
-			var possible_points := []
-			for degree in range(0, 360, 360.0/1.0):
-				var radians = deg_to_rad(degree)  # Converte graus para radianos
-				var x = target_point.x + GlobalData.EnemyDificulty[current_enemy][GlobalData.EnemyDififultyVariables.error_radius] * cos(radians)  # Calcula a coordenada x
-				var y = target_point.y + GlobalData.EnemyDificulty[current_enemy][GlobalData.EnemyDififultyVariables.error_radius] * sin(radians)  # Calcula a coordenada y
-				var point = Vector2(x, y)  # Cria o ponto como um Vector2
-				possible_points.append(point)				
-			target_point = possible_points.pick_random()
-		print(target_point)
+	if estouro:
+		var dir = Vector2(-1, 0) # Direção padrão para o estouro
+		# Adicionar variação na direção do estouro
+		var angle_variation = randf_range(-0.01, 0.01) # Ajuste o valor para mais ou menos variação (em radianos)
+		dir = dir.rotated(angle_variation) # Rotaciona a direção base
 		$Taco.position = cue_ball.position
 		$Taco.show()
-		var dir = target_point - cue_ball.position
-		$Taco.look_at(target_point)
-		$Line2D.clear_points()
-		$Line2D.add_point(cue_ball.position)
-		$Line2D.add_point(target_point)
-		$Line2D.visible = true
-		await get_tree().create_timer(1).timeout
-		
-		# Camera lenta na tabela
-		if better_ball[4]: Engine.set_time_scale(0.2)
-		else: Engine.set_time_scale(0.05)
-		
-		var power = MAX_POWER * dir.normalized() * $Taco.power_multiplier 
-		# se tiro direto calcula a força, senão usa força maxima nas tabelas
-		if better_ball[4]: power *= calculate_shot_power(better_ball[1],better_ball[2])
+		$Taco.look_at(cue_ball.to_global(dir))
+		await get_tree().create_timer(0.5).timeout
+		var power = MAX_POWER * dir.normalized() * $Taco.power_multiplier
 		power *= GlobalData.EnemyDificulty[current_enemy][GlobalData.EnemyDififultyVariables.force_scale]
+		power+=randf_range(0.1, 0.3)*power
 		print("POWER > ", power.length())
-		cue_ball.apply_central_impulse(power)		
-		#$Line2D.visible = false
-		#$Line2D2.visible = false
-		#$Line2D3.visible = false
-	else:		
-		print("Não sei oq fazer")		
+		cue_ball.apply_central_impulse(power)
+	else:	
+		var better_ball = await get_better_ball() # ([best_ball, best_hole_position,best_collision_point,best_score,direct_shot])
+		if better_ball[4]:
+			if debug_slow_time:
+				# linha vermelha
+				$Line2D2.clear_points()
+				$Line2D2.add_point(better_ball[2])
+				$Line2D2.add_point(better_ball[1])
+				$Line2D2.visible = true
+				$Line2D3.visible = false
+		print("Betterball: ",better_ball)	
+		if better_ball[2] != null:
+			var target_point = better_ball[2]		
+			if rng.randf() > GlobalData.EnemyDificulty[current_enemy][GlobalData.EnemyDififultyVariables.precision]:
+				print("Falha na precisão")
+				var possible_points := []
+				for degree in range(0, 360, 360.0/1.0):
+					var radians = deg_to_rad(degree)  # Converte graus para radianos
+					var x = target_point.x + GlobalData.EnemyDificulty[current_enemy][GlobalData.EnemyDififultyVariables.error_radius] * cos(radians)  # Calcula a coordenada x
+					var y = target_point.y + GlobalData.EnemyDificulty[current_enemy][GlobalData.EnemyDififultyVariables.error_radius] * sin(radians)  # Calcula a coordenada y
+					var point = Vector2(x, y)  # Cria o ponto como um Vector2
+					possible_points.append(point)				
+				target_point = possible_points.pick_random()
+			print(target_point)
+			$Taco.position = cue_ball.position
+			$Taco.show()
+			var dir = target_point - cue_ball.position
+			$Taco.look_at(target_point)
+			if debug_slow_time:
+				$Line2D.clear_points()
+				$Line2D.add_point(cue_ball.position)
+				$Line2D.add_point(target_point)
+				$Line2D.visible = true
+			await get_tree().create_timer(0.5).timeout
+			
+			if debug_slow_time:
+				# Camera lenta na tabela
+				if better_ball[4]: Engine.set_time_scale(0.2)
+				else: Engine.set_time_scale(0.05)
+			
+			var power = MAX_POWER * dir.normalized() * $Taco.power_multiplier 
+			# se tiro direto calcula a força, senão usa força maxima nas tabelas
+			if better_ball[4]: power *= calculate_shot_power(better_ball[1],better_ball[2])
+			power *= GlobalData.EnemyDificulty[current_enemy][GlobalData.EnemyDififultyVariables.force_scale]
+			print("POWER > ", power.length())
+			cue_ball.apply_central_impulse(power)		
+			#$Line2D.visible = false
+			#$Line2D2.visible = false
+			#$Line2D3.visible = false
+		else:		
+			print("Não sei oq fazer")		
 	print("FIM VEZ BOT")
 
 func show_cue():
@@ -687,7 +711,7 @@ func _input(event):
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(_delta):
-	if cue_ball != null: $WhiteBall.position = cue_ball.global_position
+	if cue_ball != null and debug_slow_time: $WhiteBall.position = cue_ball.global_position
 	var moving := false
 	for b in get_tree().get_nodes_in_group("bolas"):
 		if (b.linear_velocity.length() > 0.0 and b.linear_velocity.length() < MOVE_THRESHOLD):
@@ -766,10 +790,11 @@ func check_ball_path(destination,phantom_ball_position,parent = cue_ball):
 	shapecast.target_position = shapecast.to_local(start_pos + direction * 1000)
 
 	# Desenhar a linha de trajetória
-	$Line2D3.clear_points()
-	$Line2D3.add_point(shapecast.global_position)
-	$Line2D3.add_point(shapecast.to_global(shapecast.target_position))
-	$Line2D3.visible = true
+	if debug_slow_time:
+		$Line2D3.clear_points()
+		$Line2D3.add_point(shapecast.global_position)
+		$Line2D3.add_point(shapecast.to_global(shapecast.target_position))
+		$Line2D3.visible = true
 
 	# Habilitar o ShapeCast para detectar colisões
 	shapecast.enabled = true	
