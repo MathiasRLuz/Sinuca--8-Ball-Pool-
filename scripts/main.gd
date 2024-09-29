@@ -25,7 +25,7 @@ var mesa_aberta : bool = true
 
 var jogador_atual : int = 0 # 0 jogador, 1 bot
 var apply_max_force: bool = false
-var force_first_player: int = 0 # -1 random, 0 bot, 1 jogador
+@export var force_first_player: int = 0 # -1 random, 0 bot, 1 jogador
 var grupo_jogador : int = 0 # indefinido, 1 menores, 2 maiores
 var estouro := true
 
@@ -617,6 +617,7 @@ func vez_bot():
 		var power = MAX_POWER * dir.normalized() * $Taco.power_multiplier
 		power *= GlobalData.EnemyDificulty[current_enemy][GlobalData.EnemyDififultyVariables.force_scale]
 		power+=randf_range(0.1, 0.3)*power
+		power = randf_range(1.1, 1.3)*700*GlobalData.EnemyDificulty[current_enemy][GlobalData.EnemyDififultyVariables.force_scale]* dir.normalized()
 		print("POWER > ", power.length())
 		cue_ball.apply_central_impulse(power)
 	else:	
@@ -652,7 +653,7 @@ func vez_bot():
 				$Line2D.add_point(cue_ball.position)
 				$Line2D.add_point(target_point)
 				$Line2D.visible = true
-			await get_tree().create_timer(0.5).timeout
+			await get_tree().create_timer(1).timeout
 			
 			if debug_slow_time:
 				# Camera lenta na tabela
