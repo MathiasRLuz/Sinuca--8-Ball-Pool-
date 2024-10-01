@@ -12,23 +12,7 @@ var matchups := []
 var matchup_id = 0
 
 var EnemyDificulty = {
-	Npcs.NPC : {
-		EnemyDififultyVariables.power_probability : 0,
-		EnemyDififultyVariables.force_scale : 1.41252899169922, 
-		EnemyDififultyVariables.precision : 0.97707498073578, 
-		EnemyDififultyVariables.error_radius : 1.7042647600174, 
-		EnemyDififultyVariables.max_shot_angle : 88.3777362942695, 
-		EnemyDififultyVariables.min_score : -102.991931340098, 
-		EnemyDififultyVariables.risky: 1, 
-		EnemyDififultyVariables.crit1 : 18.2738933563232, 
-		EnemyDififultyVariables.crit2 : 75.935868692398, 
-		EnemyDififultyVariables.crit3 : 206.028515652381, 
-		EnemyDififultyVariables.crit4 : 543.64482998848, 
-		EnemyDififultyVariables.crit5 : 500.031824212521, 
-		EnemyDififultyVariables.crit6 : 759.133443248272
-	},
-	
-	Npcs.SLIME : {		
+	Npcs.NPC : {		
 		EnemyDififultyVariables.power_probability : 0,
 		EnemyDififultyVariables.force_scale : 0.95879989266396, 
 		EnemyDififultyVariables.precision : 1, 
@@ -44,8 +28,8 @@ var EnemyDificulty = {
 		EnemyDififultyVariables.crit6 : 1000,
 	},
 	
-	Npcs.ESQUELETO : {
-		EnemyDififultyVariables.power_probability : 0,
+	Npcs.DOMOVOY : {
+		EnemyDififultyVariables.power_probability : 1,
 		EnemyDififultyVariables.force_scale : 1,
 		EnemyDififultyVariables.precision : 1,
 		EnemyDififultyVariables.error_radius : 5,
@@ -73,7 +57,22 @@ var EnemyDificulty = {
 		EnemyDififultyVariables.crit4 : 500,
 		EnemyDififultyVariables.crit5 : 750,
 		EnemyDififultyVariables.crit6 : 1000
-	}
+	},
+	Npcs.MINOTAURO : {
+		EnemyDififultyVariables.power_probability : 0,
+		EnemyDififultyVariables.force_scale : 1.41252899169922, 
+		EnemyDififultyVariables.precision : 0.97707498073578, 
+		EnemyDififultyVariables.error_radius : 1.7042647600174, 
+		EnemyDififultyVariables.max_shot_angle : 88.3777362942695, 
+		EnemyDififultyVariables.min_score : -102.991931340098, 
+		EnemyDififultyVariables.risky: 1, 
+		EnemyDififultyVariables.crit1 : 18.2738933563232, 
+		EnemyDififultyVariables.crit2 : 75.935868692398, 
+		EnemyDififultyVariables.crit3 : 206.028515652381, 
+		EnemyDififultyVariables.crit4 : 543.64482998848, 
+		EnemyDififultyVariables.crit5 : 500.031824212521, 
+		EnemyDififultyVariables.crit6 : 759.133443248272
+	},
 }
 
 var Texts = {

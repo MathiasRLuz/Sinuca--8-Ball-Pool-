@@ -23,6 +23,8 @@ radius = 14.1
 [node name="Sinuca" type="Node"]
 script = ExtResource("1_4cjhd")
 ball_scene = ExtResource("2_g7l3x")
+current_enemy = 1
+force_first_player = -1
 
 [node name="Mesa" parent="." instance=ExtResource("3_45acg")]
 

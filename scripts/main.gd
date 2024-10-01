@@ -37,6 +37,8 @@ var moveram: bool = false
 var derrubou_a_8_por_ultimo: bool = false
 var buracos := []
 var jogador_ja_tinha_grupo: bool = false
+var bot_power_ready := false
+
 
 @export var debug_slow_time := false
 # Called when the node enters the scene tree for the first time.
@@ -48,7 +50,6 @@ func _ready():
 	else: jogador_atual = randi() % 2  # Retorna 0 ou 1 aleatoriamente
 	for hole in $Mesa/buracos.get_children():
 		buracos.append(hole)
-	#load_images()
 	new_game()	
 	$Mesa/buracos.body_entered.connect(potted_ball)
 
@@ -120,14 +121,9 @@ func fim_de_partida(jogador_vencedor): # 0 jogador, 1 bot
 	get_tree().change_scene_to_file(GlobalData.last_scene_before_battle)
 	set_process(false)
 
-func load_images():
-	for i in range(1,17,1):
-		var filename = str("res://assets/ball_",i,".png")
-		var ball_image = load(filename)
-		ball_images.append(ball_image)
-
 func new_game():
 	generate_balls()
+	create_cue_ball()
 	reset_cue_ball()	
 	
 func generate_balls():
@@ -163,24 +159,19 @@ func generate_balls():
 		ball.name = str(count)
 		ball.continuous_cd = true
 		add_child(ball)	
-		
-func remove_cue_ball():
-	shapecast.reparent($".")
-	var old_b = cue_ball
-	remove_child(old_b)
-	old_b.queue_free()
-	
-func reset_cue_ball():
+
+func create_cue_ball():
 	cue_ball = ball_scene.instantiate()
 	add_child(cue_ball)
-	cue_ball.position = START_POS
-	cue_ball.get_node("Sprite2D").frame = 0
-	#cue_ball.get_node("Sprite2D").texture = ball_images.back() # última imagem do array
-	taking_shot = false
 	cue_ball.set_contact_monitor(true)
 	cue_ball.max_contacts_reported = 256
 	cue_ball.connect("body_entered", Callable(self, "_on_CueBall_area_entered"))
 	cue_ball.continuous_cd = true  # Ativa o CCD
+	cue_ball.get_node("Sprite2D").frame = 0
+
+func reset_cue_ball():
+	cue_ball.position = START_POS
+	taking_shot = false
 
 func _on_CueBall_area_entered(body):
 	if body.is_in_group("bolas") && primeira_bola_batida == 0 && body.name != "Bola":
@@ -602,9 +593,6 @@ func is_ball_permitted(ball):
 	
 func vez_bot():
 	print("INICIO VEZ BOT")
-	var rng = RandomNumberGenerator.new()
-	if rng.randf() < GlobalData.EnemyDificulty[current_enemy][GlobalData.EnemyDififultyVariables.power_probability]:
-		print("Usar poder")
 	if estouro:
 		var dir = Vector2(-1, 0) # Direção padrão para o estouro
 		# Adicionar variação na direção do estouro
@@ -621,6 +609,12 @@ func vez_bot():
 		print("POWER > ", power.length())
 		cue_ball.apply_central_impulse(power)
 	else:	
+		var rng = RandomNumberGenerator.new()
+		if rng.randf() < GlobalData.EnemyDificulty[current_enemy][GlobalData.EnemyDififultyVariables.power_probability]:
+			print("Usar poder")
+			if current_enemy == GlobalData.Npcs.DOMOVOY:
+				print("Poder do Domovoy")
+				bot_power_ready = true
 		var better_ball = await get_better_ball() # ([best_ball, best_hole_position,best_collision_point,best_score,direct_shot])
 		if better_ball[4]:
 			if debug_slow_time:
@@ -887,10 +881,21 @@ func bola_8_derrubada():
 			fim_de_partida(0) # jogador vence
 			return
 
+func teleport_cue_ball():
+	# Congelar o movimento da bola branca (cue ball)
+	cue_ball.linear_velocity = Vector2.ZERO
+	cue_ball.angular_velocity = 0.0
+	
+	# Teleportar a bola para a nova posição
+	cue_ball.position = Vector2(10000,10000)
+	
+	# Atualizar o estado da física para evitar problemas na simulação
+	cue_ball.sleeping = true # Faz a bola "dormir" até receber um novo impulso
+
 func potted_ball(body):
 	if body == cue_ball:
 		cue_ball_potted = true
-		remove_cue_ball()
+		teleport_cue_ball()
 	else:
 		print(body.name)
 		var bola = body.name.to_int()
