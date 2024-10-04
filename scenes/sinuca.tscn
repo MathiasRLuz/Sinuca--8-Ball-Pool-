@@ -24,7 +24,6 @@ radius = 14.1
 script = ExtResource("1_4cjhd")
 ball_scene = ExtResource("2_g7l3x")
 current_enemy = 1
-force_first_player = -1
 
 [node name="Mesa" parent="." instance=ExtResource("3_45acg")]
 
@@ -71,10 +70,10 @@ offset_bottom = 573.0
 text = "indefinido"
 
 [node name="Fim de jogo" type="Label" parent="."]
-offset_left = 24.0
-offset_top = 573.0
-offset_right = 132.0
-offset_bottom = 596.0
+offset_left = 931.0
+offset_top = 472.0
+offset_right = 1039.0
+offset_bottom = 495.0
 
 [node name="RayCast2D" type="RayCast2D" parent="."]
 position = Vector2(891, 340)
@@ -125,7 +124,7 @@ size = Vector2i(100, 100)
 [node name="StaticBody3D" parent="SubViewport" instance=ExtResource("8_ejpbm")]
 
 [node name="Camera2D" type="Camera2D" parent="."]
-position = Vector2(484, 276)
+position = Vector2(484, 219)
 
 [node name="Projection0" type="Sprite2D" parent="."]
 position = Vector2(-635, 260)

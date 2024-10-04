@@ -39,6 +39,12 @@ var buracos := []
 var jogador_ja_tinha_grupo: bool = false
 var bot_power_ready := false
 
+# poderes bots
+var domovoy_ball_to_remove = null
+var domovoy_has_removed_ball := false
+var domovoy_removed_ball_last_position : Vector2
+
+var waiting_timer := false
 
 @export var debug_slow_time := false
 # Called when the node enters the scene tree for the first time.
@@ -204,6 +210,11 @@ func get_better_ball():
 			var angle_radians = pocket_direction.angle_to(white_to_ball)
 			var angle_degrees = rad_to_deg(angle_radians)
 			var collisions = await check_ball_path(contact_point,cue_ball.global_position)
+			var domovoy_removing_ball_name = ""
+			if bot_power_ready and current_enemy == GlobalData.Npcs.DOMOVOY and collisions != {} and collisions.keys()[0] != b.name and collisions.keys()[0] != "paredes":
+				domovoy_removing_ball_name = collisions.keys()[0]
+				collisions.erase(domovoy_removing_ball_name)
+				#print("Removendo a bola ", domovoy_removing_ball_name, " para acertar a bola ", b.name)
 			if collisions != {} and collisions.keys()[0] == b.name and check_collision_distance(collisions[collisions.keys()[0]],contact_point) and abs(angle_degrees) < GlobalData.EnemyDificulty[current_enemy][GlobalData.EnemyDififultyVariables.max_shot_angle]:			
 				var score = 0
 				
@@ -236,6 +247,16 @@ func get_better_ball():
 						best_ball = b
 						best_collision_point = contact_point
 						best_hole_position = hole_position
+						
+						# poder domovoy
+						if domovoy_removing_ball_name != "":
+							for _b in get_tree().get_nodes_in_group("bolas"):
+								if _b.name == domovoy_removing_ball_name:
+									domovoy_ball_to_remove = _b
+									break
+						else:
+							domovoy_ball_to_remove = null
+							
 						# linha vermelha
 						if debug_slow_time:
 							$Line2D2.clear_points()
@@ -252,7 +273,7 @@ func get_better_ball():
 		var possible_points := []
 		
 		for possible_contact_point in possible_contact_points:
-			if possible_contact_point[3] > best_score:				
+			if possible_contact_point[3] > best_score:
 				best_ball = possible_contact_point[0]
 				best_hole_position = possible_contact_point[1]
 				best_collision_point = possible_contact_point[2]
@@ -304,7 +325,7 @@ func get_better_ball():
 							var collisions = await check_ball_path(collision_point,cue_ball.global_position)
 							if collisions != {} and collisions.keys()[0] == "paredes" and check_collision_distance(collisions[collisions.keys()[0]],collision_point):
 							# da posição da branca até a parede
-								print("Caminho livre até o ponto de tabela em ", parede, " em ", collision_point, " na bola ", b.name, " na caçapa ", hole.name)
+								#print("Caminho livre até o ponto de tabela em ", parede, " em ", collision_point, " na bola ", b.name, " na caçapa ", hole.name)
 								# se a bola branca tem caminho direto até o ponto de tabela
 								collisions = await check_ball_path(contact_point,collision_point)
 								if collisions != {} and collisions.keys()[0] == b.name and check_collision_distance(collisions[collisions.keys()[0]],contact_point):
@@ -465,8 +486,25 @@ func get_better_ball():
 						print("mirou em qualquer bola")
 						best_collision_point = permitted_balls.pick_random().position
 		
-			
+	
+	# poder domovoy
+	if bot_power_ready and current_enemy == GlobalData.Npcs.DOMOVOY and domovoy_ball_to_remove:
+		domovoy_power_remove()
+	
 	return [best_ball, best_hole_position,best_collision_point,best_score,direct_shot]
+
+func domovoy_power_remove():
+	print("Removendo a bola ", domovoy_ball_to_remove.name)
+	bot_power_ready = false
+	domovoy_removed_ball_last_position = domovoy_ball_to_remove.position
+	domovoy_ball_to_remove.position = Vector2(-10000,10000)
+	domovoy_has_removed_ball = true
+
+func domovoy_power_return():
+	print("Devolvendo a bola ", domovoy_ball_to_remove.name)
+	domovoy_ball_to_remove.position = domovoy_removed_ball_last_position
+	domovoy_ball_to_remove = null
+	domovoy_has_removed_ball = false
 
 func calculate_cue_ball_projections():
 	var ball_positions = []
@@ -593,6 +631,7 @@ func is_ball_permitted(ball):
 	
 func vez_bot():
 	print("INICIO VEZ BOT")
+	await get_tree().create_timer(1).timeout
 	if estouro:
 		var dir = Vector2(-1, 0) # Direção padrão para o estouro
 		# Adicionar variação na direção do estouro
@@ -612,9 +651,7 @@ func vez_bot():
 		var rng = RandomNumberGenerator.new()
 		if rng.randf() < GlobalData.EnemyDificulty[current_enemy][GlobalData.EnemyDififultyVariables.power_probability]:
 			print("Usar poder")
-			if current_enemy == GlobalData.Npcs.DOMOVOY:
-				print("Poder do Domovoy")
-				bot_power_ready = true
+			bot_power_ready = true
 		var better_ball = await get_better_ball() # ([best_ball, best_hole_position,best_collision_point,best_score,direct_shot])
 		if better_ball[4]:
 			if debug_slow_time:
@@ -688,6 +725,10 @@ func hide_cue():
 	$PowerBar.hide()
 
 func nova_tacada():
+	waiting_timer = true
+	await get_tree().create_timer(1).timeout
+	waiting_timer = false
+	
 	if not jogador_ja_tinha_grupo and grupo_jogador != 0:
 		jogador_ja_tinha_grupo = true
 	if potted.size() == 0 || foi_falta:
@@ -706,6 +747,9 @@ func _input(event):
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(_delta):
+	if waiting_timer:
+		return
+		
 	if cue_ball != null and debug_slow_time: $WhiteBall.position = cue_ball.global_position
 	var moving := false
 	for b in get_tree().get_nodes_in_group("bolas"):
@@ -733,6 +777,8 @@ func _process(_delta):
 		
 		if moveram: # bolas pararam após a tacada
 			print("Primeira bola ", primeira_bola_batida)
+			if domovoy_has_removed_ball:
+				domovoy_power_return()
 			if (primeira_bola_batida == 0 and grupo_jogador != 0) or (jogador_ja_tinha_grupo and primeira_bola_batida != 0 and bateu_primeiro_em_bola_proibida(primeira_bola_batida)):
 				foi_falta = true
 			
