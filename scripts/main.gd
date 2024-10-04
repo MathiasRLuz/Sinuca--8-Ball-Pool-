@@ -717,6 +717,13 @@ func inicia_vez():
 		vez_bot() # show_cue()
 	else:
 		Engine.set_time_scale(1)
+		if bot_power_ready and current_enemy == GlobalData.Npcs.SLIME:
+			bot_power_ready = false
+			# poder slime
+			
+			var x = randi_range(limites_paredes[0],limites_paredes[1])
+			var y = randi_range(limites_paredes[3],limites_paredes[2]) 
+			
 		show_cue()
 			
 func hide_cue():
