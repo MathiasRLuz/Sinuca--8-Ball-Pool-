@@ -156,4 +156,10 @@ texture = ExtResource("10_uckew")
 [node name="SlimePower" parent="." instance=ExtResource("11_bs7ja")]
 position = Vector2(-625, 194)
 
+[node name="SlimePower2" parent="." instance=ExtResource("11_bs7ja")]
+position = Vector2(-625, 194)
+
+[node name="SlimePower3" parent="." instance=ExtResource("11_bs7ja")]
+position = Vector2(-625, 194)
+
 [connection signal="shoot" from="Taco" to="." method="_on_taco_shoot"]

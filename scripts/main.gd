@@ -720,14 +720,34 @@ func inicia_vez():
 		if bot_power_ready and current_enemy == GlobalData.Npcs.SLIME:
 			bot_power_ready = false
 			# poder slime
-			var margin = 30
-			#  limites_paredes => [70, 850, 350, 70] # esquerda, direita, baixo, cima
-			var x = randi_range(limites_paredes[0]+margin,limites_paredes[1]-margin)
-			var y = randi_range(limites_paredes[3]+margin,limites_paredes[2]-margin)
-			$SlimePower.global_position = Vector2(x,y)
+			slime_power()
 			
 		show_cue()
-			
+
+func slime_power(activate := true):
+	if activate:
+		var margin = 30
+		var number_of_blobs = randi_range(1,3)
+		#  limites_paredes => [70, 850, 350, 70] # esquerda, direita, baixo, cima
+		var x = randi_range(limites_paredes[0]+margin,limites_paredes[1]-margin)
+		var y = randi_range(limites_paredes[3]+margin,limites_paredes[2]-margin)
+		$SlimePower.global_position = Vector2(x,y)
+		$SlimePower/Sprite.frame = randi_range(0,2)
+		if number_of_blobs>1:
+			x = randi_range(limites_paredes[0]+margin,limites_paredes[1]-margin)
+			y = randi_range(limites_paredes[3]+margin,limites_paredes[2]-margin)
+			$SlimePower2.global_position = Vector2(x,y)
+			$SlimePower2/Sprite.frame = randi_range(0,2)
+		if number_of_blobs>2:
+			x = randi_range(limites_paredes[0]+margin,limites_paredes[1]-margin)
+			y = randi_range(limites_paredes[3]+margin,limites_paredes[2]-margin)
+			$SlimePower3.global_position = Vector2(x,y)
+			$SlimePower3/Sprite.frame = randi_range(0,2)
+	else:
+		$SlimePower.global_position = Vector2(-625,194)
+		$SlimePower2.global_position = Vector2(-625,194)
+		$SlimePower3.global_position = Vector2(-625,194)
+		
 func hide_cue():
 	$Taco.set_process(false)
 	$Taco.hide()
@@ -808,7 +828,7 @@ func remove_power_effects():
 	if domovoy_has_removed_ball:
 		domovoy_power_return()
 	# Slime
-	$SlimePower.global_position = Vector2(-625,194)
+	slime_power(false)
 	# Esqueleto
 	# Bruxa
 	# Medusa

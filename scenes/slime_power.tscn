@@ -10,7 +10,7 @@ priority = 1
 linear_damp_space_override = 2
 linear_damp = 30.0
 
-[node name="Poder(slime)(tileset)" type="Sprite2D" parent="."]
+[node name="Sprite" type="Sprite2D" parent="."]
 scale = Vector2(2, 2)
 texture = ExtResource("1_x1p31")
 hframes = 3
