@@ -1,0 +1,19 @@
+[gd_scene load_steps=3 format=3 uid="uid://cbxv6x0cfc401"]
+
+[ext_resource type="Texture2D" uid="uid://bn8p3j13qomt5" path="res://assets/Ícones/Poder (Slime) (Tileset).png" id="1_x1p31"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_ulk1b"]
+radius = 21.0238
+
+[node name="SlimePower" type="Area2D"]
+priority = 1
+linear_damp_space_override = 2
+linear_damp = 30.0
+
+[node name="Poder(slime)(tileset)" type="Sprite2D" parent="."]
+scale = Vector2(2, 2)
+texture = ExtResource("1_x1p31")
+hframes = 3
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("CircleShape2D_ulk1b")

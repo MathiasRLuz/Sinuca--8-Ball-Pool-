@@ -720,9 +720,11 @@ func inicia_vez():
 		if bot_power_ready and current_enemy == GlobalData.Npcs.SLIME:
 			bot_power_ready = false
 			# poder slime
-			
-			var x = randi_range(limites_paredes[0],limites_paredes[1])
-			var y = randi_range(limites_paredes[3],limites_paredes[2]) 
+			var margin = 30
+			#  limites_paredes => [70, 850, 350, 70] # esquerda, direita, baixo, cima
+			var x = randi_range(limites_paredes[0]+margin,limites_paredes[1]-margin)
+			var y = randi_range(limites_paredes[3]+margin,limites_paredes[2]-margin)
+			$SlimePower.global_position = Vector2(x,y)
 			
 		show_cue()
 			
@@ -784,8 +786,8 @@ func _process(_delta):
 		
 		if moveram: # bolas pararam após a tacada
 			print("Primeira bola ", primeira_bola_batida)
-			if domovoy_has_removed_ball:
-				domovoy_power_return()
+			
+			remove_power_effects()
 			if (primeira_bola_batida == 0 and grupo_jogador != 0) or (jogador_ja_tinha_grupo and primeira_bola_batida != 0 and bateu_primeiro_em_bola_proibida(primeira_bola_batida)):
 				foi_falta = true
 			
@@ -800,6 +802,17 @@ func _process(_delta):
 		if taking_shot:
 			taking_shot = false
 			hide_cue()
+
+func remove_power_effects():
+	# Domovoy
+	if domovoy_has_removed_ball:
+		domovoy_power_return()
+	# Slime
+	$SlimePower.global_position = Vector2(-625,194)
+	# Esqueleto
+	# Bruxa
+	# Medusa
+	# Golem
 
 func verifica_favorecido_por_falta():
 	if jogador_atual == 0: 

@@ -22,7 +22,6 @@ can_sleep = false
 continuous_cd = 2
 contact_monitor = true
 max_contacts_reported = 1
-linear_damp_mode = 1
 linear_damp = 1.0
 angular_damp_mode = 1
 angular_damp = 1.5

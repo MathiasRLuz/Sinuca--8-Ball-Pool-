@@ -1,4 +1,4 @@
-[gd_scene load_steps=14 format=3 uid="uid://dvexns24mbh41"]
+[gd_scene load_steps=15 format=3 uid="uid://dvexns24mbh41"]
 
 [ext_resource type="Script" path="res://scripts/main.gd" id="1_4cjhd"]
 [ext_resource type="PackedScene" uid="uid://drwm0yb1mdeo8" path="res://scenes/bola.tscn" id="2_g7l3x"]
@@ -10,6 +10,7 @@
 [ext_resource type="PackedScene" uid="uid://d210d8k3gp6ak" path="res://scenes/roll_dice.tscn" id="8_ejpbm"]
 [ext_resource type="Texture2D" uid="uid://d03mqfdew41rl" path="res://assets/ball_16.png" id="9_jieif"]
 [ext_resource type="Texture2D" uid="uid://dqg6moc8b5dy5" path="res://assets/ball_8.png" id="10_uckew"]
+[ext_resource type="PackedScene" uid="uid://cbxv6x0cfc401" path="res://scenes/slime_power.tscn" id="11_bs7ja"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_yysmw"]
 bg_color = Color(1, 1, 1, 0.458824)
@@ -23,7 +24,7 @@ radius = 14.1
 [node name="Sinuca" type="Node"]
 script = ExtResource("1_4cjhd")
 ball_scene = ExtResource("2_g7l3x")
-current_enemy = 1
+current_enemy = 2
 
 [node name="Mesa" parent="." instance=ExtResource("3_45acg")]
 
@@ -151,5 +152,8 @@ z_index = 4096
 position = Vector2(-623, 260)
 scale = Vector2(0.2, 0.2)
 texture = ExtResource("10_uckew")
+
+[node name="SlimePower" parent="." instance=ExtResource("11_bs7ja")]
+position = Vector2(-625, 194)
 
 [connection signal="shoot" from="Taco" to="." method="_on_taco_shoot"]
