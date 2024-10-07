@@ -49,6 +49,7 @@ var witch_power_activated := false
 var goblin_power_activated := false
 var goblin_warning_time = 3
 var goblin_warned := false
+var medusa_petrified_ball : RigidBody2D = null
 
 var waiting_timer := false
 
@@ -746,6 +747,10 @@ func inicia_vez():
 			$GoblinPower.start(5)
 			goblin_warned = false
 			$GoblinTimer.visible = true
+		# poder golem
+		if bot_power_ready and current_enemy == GlobalData.Npcs.MEDUSA:
+			bot_power_ready = false
+			medusa_power()
 		show_cue()
 
 func selecionar_numeros_aleatorios(qtd,max_num):
@@ -759,7 +764,22 @@ func selecionar_numeros_aleatorios(qtd,max_num):
 	var selecionados = numeros.slice(0, qtd)
 
 	return selecionados
-
+	
+func medusa_power(activate := true):
+	if activate:
+		var permitted_balls := []
+		for b in get_tree().get_nodes_in_group("bolas"):
+			if b.name != "Bola":
+				if not all_potted.has(b):
+					if grupo_jogador == 0 or (grupo_jogador == 1 and b.name.to_int()<8) or (grupo_jogador == 2 and b.name.to_int()>8):
+						permitted_balls.append(b)
+		if len(permitted_balls)>0:
+			medusa_petrified_ball = permitted_balls.pick_random()
+			print("PODER MEDUSA: ", medusa_petrified_ball.name)
+			medusa_petrified_ball.freeze = true
+	else:
+		if medusa_petrified_ball:
+			medusa_petrified_ball.freeze = false
 func golem_power(activate := true):	
 	if activate:
 		var number_of_rocks = randi_range(1,3)
@@ -926,6 +946,7 @@ func remove_power_effects():
 	# Bruxa
 	witch_power(false)
 	# Medusa
+	medusa_power(false)
 	# Golem
 	golem_power(false)
 
