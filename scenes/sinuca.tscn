@@ -1,4 +1,4 @@
-[gd_scene load_steps=15 format=3 uid="uid://dvexns24mbh41"]
+[gd_scene load_steps=20 format=3 uid="uid://dvexns24mbh41"]
 
 [ext_resource type="Script" path="res://scripts/main.gd" id="1_4cjhd"]
 [ext_resource type="PackedScene" uid="uid://drwm0yb1mdeo8" path="res://scenes/bola.tscn" id="2_g7l3x"]
@@ -11,6 +11,8 @@
 [ext_resource type="Texture2D" uid="uid://d03mqfdew41rl" path="res://assets/ball_16.png" id="9_jieif"]
 [ext_resource type="Texture2D" uid="uid://dqg6moc8b5dy5" path="res://assets/ball_8.png" id="10_uckew"]
 [ext_resource type="PackedScene" uid="uid://cbxv6x0cfc401" path="res://scenes/slime_power.tscn" id="11_bs7ja"]
+[ext_resource type="PackedScene" uid="uid://dubg246eeb30t" path="res://scenes/skeleton_power.tscn" id="12_0vwkq"]
+[ext_resource type="Shader" path="res://scenes/witch_power.gdshader" id="13_thsul"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_yysmw"]
 bg_color = Color(1, 1, 1, 0.458824)
@@ -21,10 +23,25 @@ bg_color = Color(0.909804, 0, 0.254902, 1)
 [sub_resource type="CircleShape2D" id="CircleShape2D_lmf8b"]
 radius = 14.1
 
-[node name="Sinuca" type="Node"]
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_b3eps"]
+size = Vector2(6, 15)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_pxm7o"]
+size = Vector2(6, 24)
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_jbkyi"]
+shader = ExtResource("13_thsul")
+shader_parameter/frequency = 1.18
+shader_parameter/amplitude = 3.0
+shader_parameter/ripple_rate = 20.0
+shader_parameter/wave_amplitude = 0.012
+shader_parameter/wave_frequency = 9.54
+
+[node name="Sinuca" type="Node" node_paths=PackedStringArray("skeletons")]
 script = ExtResource("1_4cjhd")
 ball_scene = ExtResource("2_g7l3x")
-current_enemy = 2
+current_enemy = 3
+skeletons = [NodePath("SkeletonPower"), NodePath("SkeletonPower2"), NodePath("SkeletonPower3")]
 
 [node name="Mesa" parent="." instance=ExtResource("3_45acg")]
 
@@ -162,4 +179,40 @@ position = Vector2(-625, 194)
 [node name="SlimePower3" parent="." instance=ExtResource("11_bs7ja")]
 position = Vector2(-625, 194)
 
+[node name="SkeletonPower" parent="." instance=ExtResource("12_0vwkq")]
+visible = false
+position = Vector2(-592, 259)
+
+[node name="Sprite" parent="SkeletonPower" index="0"]
+frame = 0
+
+[node name="CollisionShape2D" parent="SkeletonPower" index="1"]
+position = Vector2(0, -5.5)
+shape = SubResource("RectangleShape2D_b3eps")
+
+[node name="SkeletonPower2" parent="." instance=ExtResource("12_0vwkq")]
+visible = false
+position = Vector2(-563, 259)
+
+[node name="Sprite" parent="SkeletonPower2" index="0"]
+frame = 1
+
+[node name="CollisionShape2D" parent="SkeletonPower2" index="1"]
+position = Vector2(0, -4)
+shape = SubResource("RectangleShape2D_pxm7o")
+
+[node name="SkeletonPower3" parent="." instance=ExtResource("12_0vwkq")]
+visible = false
+position = Vector2(-534, 259)
+
+[node name="LSD" type="ColorRect" parent="."]
+z_index = 4096
+material = SubResource("ShaderMaterial_jbkyi")
+offset_right = 924.0
+offset_bottom = 514.0
+
 [connection signal="shoot" from="Taco" to="." method="_on_taco_shoot"]
+
+[editable path="SkeletonPower"]
+[editable path="SkeletonPower2"]
+[editable path="SkeletonPower3"]

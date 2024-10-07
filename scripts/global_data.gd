@@ -28,7 +28,7 @@ var EnemyDificulty = {
 		EnemyDififultyVariables.crit6 : 1000,
 	},
 	
-	Npcs.SLIME : {
+	Npcs.ESQUELETO : {
 		EnemyDififultyVariables.power_probability : 1,
 		EnemyDififultyVariables.force_scale : 1,
 		EnemyDififultyVariables.precision : 1,

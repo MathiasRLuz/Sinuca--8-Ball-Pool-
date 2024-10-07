@@ -1,0 +1,16 @@
+[gd_scene load_steps=3 format=3 uid="uid://dubg246eeb30t"]
+
+[ext_resource type="Texture2D" uid="uid://ddimiktkbgn8k" path="res://assets/Ícones/Poder (Esqueleto) (Tileset).png" id="1_kfysd"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_thkyc"]
+size = Vector2(6, 32)
+
+[node name="SkeletonPower" type="StaticBody2D"]
+
+[node name="Sprite" type="Sprite2D" parent="."]
+texture = ExtResource("1_kfysd")
+hframes = 3
+frame = 2
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("RectangleShape2D_thkyc")

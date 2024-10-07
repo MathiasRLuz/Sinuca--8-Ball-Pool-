@@ -4,6 +4,8 @@ extends Node
 @export var force_victory := false
 @export var current_enemy : GlobalData.Npcs
 @export var table_max_distance := 900.0
+@export var skeletons : Array[StaticBody2D]
+
 @onready var shapecast = $ShapeCast2D
 @onready var raycast: RayCast2D = $RayCast2D
 @onready var raycast2: RayCast2D = $RayCast2D2
@@ -211,6 +213,7 @@ func get_better_ball():
 			var angle_degrees = rad_to_deg(angle_radians)
 			var collisions = await check_ball_path(contact_point,cue_ball.global_position)
 			var domovoy_removing_ball_name = ""
+			# Poder Domovoy
 			if bot_power_ready and current_enemy == GlobalData.Npcs.DOMOVOY and collisions != {} and collisions.keys()[0] != b.name and collisions.keys()[0] != "paredes":
 				domovoy_removing_ball_name = collisions.keys()[0]
 				collisions.erase(domovoy_removing_ball_name)
@@ -717,13 +720,39 @@ func inicia_vez():
 		vez_bot() # show_cue()
 	else:
 		Engine.set_time_scale(1)
+		# poder slime
 		if bot_power_ready and current_enemy == GlobalData.Npcs.SLIME:
 			bot_power_ready = false
-			# poder slime
 			slime_power()
+		# poder esqueleto
+		if bot_power_ready and current_enemy == GlobalData.Npcs.ESQUELETO:
+			bot_power_ready = false
+			skeleton_power()
+		
 			
 		show_cue()
 
+func witch_power(activate := true):
+	if activate:
+		pass
+	else:
+		pass
+	
+func skeleton_power(activate := true):
+	if activate:
+		var margin = 30
+		for i in range(randi_range(1,3)):
+			#  limites_paredes => [70, 850, 350, 70] # esquerda, direita, baixo, cima
+			var x = randi_range(limites_paredes[0]+margin,limites_paredes[1]-margin)
+			var y = randi_range(limites_paredes[3]+margin,limites_paredes[2]-margin)
+			skeletons[i].global_position = Vector2(x,y)
+			skeletons[i].rotation_degrees = randf_range(0,360)
+			skeletons[i].visible = true
+	else:
+		for i in range(3):
+			skeletons[i].global_position = Vector2(-625,194)
+			skeletons[i].visible = false
+	
 func slime_power(activate := true):
 	if activate:
 		var margin = 30
@@ -732,21 +761,27 @@ func slime_power(activate := true):
 		var x = randi_range(limites_paredes[0]+margin,limites_paredes[1]-margin)
 		var y = randi_range(limites_paredes[3]+margin,limites_paredes[2]-margin)
 		$SlimePower.global_position = Vector2(x,y)
+		$SlimePower.visible = true
 		$SlimePower/Sprite.frame = randi_range(0,2)
 		if number_of_blobs>1:
 			x = randi_range(limites_paredes[0]+margin,limites_paredes[1]-margin)
 			y = randi_range(limites_paredes[3]+margin,limites_paredes[2]-margin)
 			$SlimePower2.global_position = Vector2(x,y)
+			$SlimePower2.visible = true
 			$SlimePower2/Sprite.frame = randi_range(0,2)
 		if number_of_blobs>2:
 			x = randi_range(limites_paredes[0]+margin,limites_paredes[1]-margin)
 			y = randi_range(limites_paredes[3]+margin,limites_paredes[2]-margin)
 			$SlimePower3.global_position = Vector2(x,y)
+			$SlimePower3.visible = true
 			$SlimePower3/Sprite.frame = randi_range(0,2)
 	else:
 		$SlimePower.global_position = Vector2(-625,194)
+		$SlimePower.visible = false
 		$SlimePower2.global_position = Vector2(-625,194)
+		$SlimePower2.visible = false
 		$SlimePower3.global_position = Vector2(-625,194)
+		$SlimePower3.visible = false
 		
 func hide_cue():
 	$Taco.set_process(false)
@@ -776,6 +811,7 @@ func _input(event):
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(_delta):
+	#$LSD.global_position = cue_ball.global_position
 	if waiting_timer:
 		return
 		
@@ -830,6 +866,7 @@ func remove_power_effects():
 	# Slime
 	slime_power(false)
 	# Esqueleto
+	skeleton_power(false)
 	# Bruxa
 	# Medusa
 	# Golem
