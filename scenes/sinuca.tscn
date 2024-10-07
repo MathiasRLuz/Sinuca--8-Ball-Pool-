@@ -1,4 +1,4 @@
-[gd_scene load_steps=20 format=3 uid="uid://dvexns24mbh41"]
+[gd_scene load_steps=21 format=3 uid="uid://dvexns24mbh41"]
 
 [ext_resource type="Script" path="res://scripts/main.gd" id="1_4cjhd"]
 [ext_resource type="PackedScene" uid="uid://drwm0yb1mdeo8" path="res://scenes/bola.tscn" id="2_g7l3x"]
@@ -13,6 +13,7 @@
 [ext_resource type="PackedScene" uid="uid://cbxv6x0cfc401" path="res://scenes/slime_power.tscn" id="11_bs7ja"]
 [ext_resource type="PackedScene" uid="uid://dubg246eeb30t" path="res://scenes/skeleton_power.tscn" id="12_0vwkq"]
 [ext_resource type="Shader" path="res://scenes/witch_power.gdshader" id="13_thsul"]
+[ext_resource type="PackedScene" uid="uid://bskg6ucyryxht" path="res://scenes/golem_power.tscn" id="14_7rrfr"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_yysmw"]
 bg_color = Color(1, 1, 1, 0.458824)
@@ -38,8 +39,9 @@ shader_parameter/attenuation = 5.761
 [node name="Sinuca" type="Node" node_paths=PackedStringArray("skeletons")]
 script = ExtResource("1_4cjhd")
 ball_scene = ExtResource("2_g7l3x")
-current_enemy = 6
+current_enemy = 7
 skeletons = [NodePath("SkeletonPower"), NodePath("SkeletonPower2"), NodePath("SkeletonPower3")]
+force_first_player = 1
 
 [node name="Mesa" parent="." instance=ExtResource("3_45acg")]
 
@@ -230,6 +232,18 @@ offset_top = -79.0
 offset_right = 761.0
 offset_bottom = 443.0
 metadata/_edit_use_anchors_ = true
+
+[node name="GolemPower" parent="." instance=ExtResource("14_7rrfr")]
+visible = false
+position = Vector2(-1174, -2)
+
+[node name="GolemPower2" parent="." instance=ExtResource("14_7rrfr")]
+visible = false
+position = Vector2(-3939, 138)
+
+[node name="GolemPower3" parent="." instance=ExtResource("14_7rrfr")]
+visible = false
+position = Vector2(-3939, 138)
 
 [connection signal="shoot" from="Taco" to="." method="_on_taco_shoot"]
 

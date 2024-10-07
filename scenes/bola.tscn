@@ -14,6 +14,7 @@ radius = 14.0
 radius = 14.0
 
 [node name="Bola" type="RigidBody2D" groups=["bolas"]]
+collision_mask = 129
 collision_priority = 10.0
 mass = 0.16
 physics_material_override = SubResource("PhysicsMaterial_mlpql")

@@ -734,9 +734,47 @@ func inicia_vez():
 		if bot_power_ready and current_enemy == GlobalData.Npcs.BRUXA:
 			bot_power_ready = false
 			witch_power()
-		
+		# poder golem
+		if bot_power_ready and current_enemy == GlobalData.Npcs.GOLEM:
+			bot_power_ready = false
+			golem_power()
 			
 		show_cue()
+
+func selecionar_numeros_aleatorios(qtd,max_num):
+	# Criar um array com os números de 0 a 5
+	var numeros = Array(range(max_num))
+
+	# Embaralhar o array
+	numeros.shuffle()
+
+	# Selecionar os primeiros 'qtd' números do array embaralhado
+	var selecionados = numeros.slice(0, qtd)
+
+	return selecionados
+
+func golem_power(activate := true):	
+	if activate:
+		var number_of_rocks = randi_range(1,3)
+		var indices = selecionar_numeros_aleatorios(number_of_rocks,len(buracos))
+		$GolemPower.visible = true
+		$GolemPower.global_position = buracos[indices[0]].global_position
+		$GolemPower/Sprite.frame = randi_range(0,1)
+		if number_of_rocks>1:
+			$GolemPower2.visible = true
+			$GolemPower2.global_position = buracos[indices[1]].global_position
+			$GolemPower2/Sprite.frame = randi_range(0,1)
+		if number_of_rocks>2:
+			$GolemPower3.visible = true
+			$GolemPower3.global_position = buracos[indices[2]].global_position
+			$GolemPower3/Sprite.frame = randi_range(0,1)
+	else:
+		$GolemPower.visible = false
+		$GolemPower2.visible = false
+		$GolemPower3.visible = false
+		$GolemPower.global_position = Vector2(-4000,53)
+		$GolemPower2.global_position = Vector2(-4000,53)
+		$GolemPower3.global_position = Vector2(-4000,53)
 
 func witch_power(activate := true):
 	$WitchPower.visible = activate
@@ -877,6 +915,7 @@ func remove_power_effects():
 	witch_power(false)
 	# Medusa
 	# Golem
+	golem_power(false)
 
 func verifica_favorecido_por_falta():
 	if jogador_atual == 0: 
