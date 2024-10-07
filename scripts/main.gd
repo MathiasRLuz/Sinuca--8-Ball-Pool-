@@ -45,8 +45,10 @@ var bot_power_ready := false
 var domovoy_ball_to_remove = null
 var domovoy_has_removed_ball := false
 var domovoy_removed_ball_last_position : Vector2
-
-var witch_power_activated : = false
+var witch_power_activated := false
+var goblin_power_activated := false
+var goblin_warning_time = 3
+var goblin_warned := false
 
 var waiting_timer := false
 
@@ -738,7 +740,12 @@ func inicia_vez():
 		if bot_power_ready and current_enemy == GlobalData.Npcs.GOLEM:
 			bot_power_ready = false
 			golem_power()
-			
+		# poder Goblin
+		if current_enemy == GlobalData.Npcs.GOBLIN:
+			goblin_power_activated = true
+			$GoblinPower.start(5)
+			goblin_warned = false
+			$GoblinTimer.visible = true
 		show_cue()
 
 func selecionar_numeros_aleatorios(qtd,max_num):
@@ -853,6 +860,11 @@ func _input(event):
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(_delta):
+	if goblin_power_activated:
+		$GoblinTimer.text = str($GoblinPower.time_left)
+		if $GoblinPower.time_left < goblin_warning_time and not goblin_warned:
+			print("Tempo acabando")
+			goblin_warned = true
 	if witch_power_activated:
 		$WitchPower.material.set_shader_parameter("chaos", randf_range(20,50))
 		$WitchPower.material.set_shader_parameter("attenuation", randf_range(5,15))
@@ -938,6 +950,11 @@ func _on_taco_shoot(power, _mouse_pos):
 	# definir força manualmente
 	#power = 80 *power.normalized()	
 	cue_ball.apply_central_impulse(power)
+	# poder Goblin
+	if current_enemy == GlobalData.Npcs.GOBLIN:
+		$GoblinPower.stop()
+		goblin_power_activated = false
+		$GoblinTimer.visible = false
 	
 func check_ball_path(destination,phantom_ball_position,parent = cue_ball):
 	# Posição inicial do ShapeCast (global position da bola branca)
@@ -1142,3 +1159,12 @@ func bola_adversaria(bola):
 		elif (grupo_jogador == 2): #jogador no grupo das maiores, bot no grupo das menores
 			if bola < 8: return false
 			else: return true
+
+
+func _on_goblin_power_timeout() -> void:
+	print("Time Over")
+	$GoblinTimer.visible = false
+	hide_cue()
+	proximo_jogador()
+	inicia_vez()
+	

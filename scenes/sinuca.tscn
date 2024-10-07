@@ -12,7 +12,7 @@
 [ext_resource type="Texture2D" uid="uid://dqg6moc8b5dy5" path="res://assets/ball_8.png" id="10_uckew"]
 [ext_resource type="PackedScene" uid="uid://cbxv6x0cfc401" path="res://scenes/slime_power.tscn" id="11_bs7ja"]
 [ext_resource type="PackedScene" uid="uid://dubg246eeb30t" path="res://scenes/skeleton_power.tscn" id="12_0vwkq"]
-[ext_resource type="Shader" path="res://scenes/witch_power.gdshader" id="13_thsul"]
+[ext_resource type="Shader" path="res://shaders/witch_power.gdshader" id="13_thsul"]
 [ext_resource type="PackedScene" uid="uid://bskg6ucyryxht" path="res://scenes/golem_power.tscn" id="14_7rrfr"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_yysmw"]
@@ -32,14 +32,14 @@ size = Vector2(6, 24)
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_jbkyi"]
 shader = ExtResource("13_thsul")
-shader_parameter/chaos = 500.0
+shader_parameter/chaos = 16.129
 shader_parameter/radius = 1.3
 shader_parameter/attenuation = 5.761
 
 [node name="Sinuca" type="Node" node_paths=PackedStringArray("skeletons")]
 script = ExtResource("1_4cjhd")
 ball_scene = ExtResource("2_g7l3x")
-current_enemy = 7
+current_enemy = 4
 skeletons = [NodePath("SkeletonPower"), NodePath("SkeletonPower2"), NodePath("SkeletonPower3")]
 force_first_player = 1
 
@@ -245,7 +245,19 @@ position = Vector2(-3939, 138)
 visible = false
 position = Vector2(-3939, 138)
 
+[node name="GoblinTimer" type="Label" parent="."]
+visible = false
+z_index = 4
+offset_left = 931.0
+offset_top = 213.0
+offset_right = 1039.0
+offset_bottom = 236.0
+
+[node name="GoblinPower" type="Timer" parent="."]
+one_shot = true
+
 [connection signal="shoot" from="Taco" to="." method="_on_taco_shoot"]
+[connection signal="timeout" from="GoblinPower" to="." method="_on_goblin_power_timeout"]
 
 [editable path="SkeletonPower"]
 [editable path="SkeletonPower2"]
