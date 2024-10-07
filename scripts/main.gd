@@ -46,6 +46,8 @@ var domovoy_ball_to_remove = null
 var domovoy_has_removed_ball := false
 var domovoy_removed_ball_last_position : Vector2
 
+var witch_power_activated : = false
+
 var waiting_timer := false
 
 @export var debug_slow_time := false
@@ -308,23 +310,23 @@ func get_better_ball():
 							# corrigir best_collision_point
 							collision_point -= direction.normalized() * ball_radius
 							# descobrir em qual parede está tabelando
-							var parede = ""
+							var _parede = ""
 							if collision_point.x>limites_paredes[1]: # direita
 								#collision_point -= Vector2(ball_radius,0)
 								if debug: print("Tabelando na direita ", collision_point, " Branca em: ", cue_ball.position)
-								parede = "Direita"
+								_parede = "Direita"
 							elif collision_point.x<limites_paredes[0]: # esquerda
 								#collision_point += Vector2(ball_radius,0)							
 								if debug: print("Tabelando na esquerda ", collision_point, " Branca em: ", cue_ball.position)
-								parede = "Esquerda"
+								_parede = "Esquerda"
 							elif collision_point.y>limites_paredes[2]: # baixo
 								#collision_point -= Vector2(0,ball_radius)
 								if debug: print("Tabelando em baixo ", collision_point, " Branca em: ", cue_ball.position)
-								parede = "Baixo"
+								_parede = "Baixo"
 							elif collision_point.y<limites_paredes[3]: # cima
 								#collision_point += Vector2(0,ball_radius)
 								if debug: print("Tabelando em cima ", collision_point, " Branca em: ", cue_ball.position)
-								parede = "Cima"						
+								_parede = "Cima"						
 							var collisions = await check_ball_path(collision_point,cue_ball.global_position)
 							if collisions != {} and collisions.keys()[0] == "paredes" and check_collision_distance(collisions[collisions.keys()[0]],collision_point):
 							# da posição da branca até a parede
@@ -728,15 +730,17 @@ func inicia_vez():
 		if bot_power_ready and current_enemy == GlobalData.Npcs.ESQUELETO:
 			bot_power_ready = false
 			skeleton_power()
+		# poder bruxa
+		if bot_power_ready and current_enemy == GlobalData.Npcs.BRUXA:
+			bot_power_ready = false
+			witch_power()
 		
 			
 		show_cue()
 
 func witch_power(activate := true):
-	if activate:
-		pass
-	else:
-		pass
+	$WitchPower.visible = activate
+	witch_power_activated = activate
 	
 func skeleton_power(activate := true):
 	if activate:
@@ -811,7 +815,9 @@ func _input(event):
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(_delta):
-	#$LSD.global_position = cue_ball.global_position
+	if witch_power_activated:
+		$WitchPower.material.set_shader_parameter("chaos", randf_range(20,50))
+		$WitchPower.material.set_shader_parameter("attenuation", randf_range(5,15))
 	if waiting_timer:
 		return
 		
@@ -868,6 +874,7 @@ func remove_power_effects():
 	# Esqueleto
 	skeleton_power(false)
 	# Bruxa
+	witch_power(false)
 	# Medusa
 	# Golem
 

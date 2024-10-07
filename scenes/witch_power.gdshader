@@ -1,42 +1,43 @@
-// Attach to a ColorRect in front of texture/background
-
 shader_type canvas_item;
+uniform sampler2D SCREEN_TEXTURE : hint_screen_texture, filter_linear_mipmap;
+uniform float chaos : hint_range(0., 500.) = 1.;
 
-// Handles the concentric ripples
-uniform float frequency: hint_range(0, 15, 0.01) = 4.0;
-uniform float amplitude: hint_range(0, 3, 0.1) = 2.0;
-uniform float ripple_rate : hint_range(0, 20.0, 1) = 5;
+uniform float radius : hint_range(0., 10.) = 0.5;
 
-// Handles the waves themselves
-uniform float wave_amplitude: hint_range(0.001, 0.1, 0.001) = 0.05;
-uniform float wave_frequency: hint_range(0, 15, 0.01) = 4.0;
+uniform float attenuation : hint_range(1., 15.) = 2.;
 
-uniform sampler2D noise;
+varying vec2 amount_r;
+varying vec2 amount_g;
+varying vec2 amount_b;
 
-uniform sampler2D SCREEN_TEXTURE: hint_screen_texture, filter_linear_mipmap;
+float rand(vec2 co){
+    return fract(sin(dot(co.xy ,vec2(12.9898,78.233))) * 43758.5453) - .5;
+}
 
-vec2 wave(vec2 uv, float time) {
-    return vec2(
-        uv.x + sin(uv.y * wave_frequency + time) * wave_amplitude,
-        uv.y + sin(uv.x * wave_frequency + time) * wave_amplitude
-    );
+void vertex() {
+	vec2 shifted_uv = (UV * 2.) - 1.;
+	amount_r = normalize(
+		vec2(rand(TIME * 1.3 * shifted_uv),
+		rand(TIME * 1.64 * shifted_uv)));
+	amount_g = normalize(
+		vec2(rand(TIME * 1.5 * shifted_uv),
+		rand(TIME * 1.7 * shifted_uv)));
+	amount_b = normalize(
+		vec2(rand(TIME * 1.17 * shifted_uv),
+		rand(TIME * 1.23 * shifted_uv)));
 }
 
 void fragment() {
-	vec2 center_position = -1.0 + 2.0 * UV / (1.0 / TEXTURE_PIXEL_SIZE);
-	float center_distance = length(center_position);
+	vec2 chaos_v = vec2(chaos, -chaos) * SCREEN_PIXEL_SIZE;
 	
-	float ripple = sin(center_distance * -frequency * PI + ripple_rate * TIME) * amplitude / (center_distance + 1.0);
+	float dist = length((UV - vec2(0.5)) * 2.);
+	float att = clamp(dist / radius, 0., 1.);
 	
-	vec2 uv = FRAGCOORD.xy / (1.0 / SCREEN_PIXEL_SIZE).xy + (center_position/center_distance) * ripple * wave_amplitude;
-    vec2 background_wave = wave(uv, TIME);
-	vec4 background_texture = texture(SCREEN_TEXTURE,background_wave) * sqrt(amplitude);
-
-	float alpha_scalar = (1.0 - min(center_distance, 1.0)) * background_texture.x * 2.5; 
+	chaos_v *= 1. - pow(att, attenuation);
 	
-	background_texture.a *= 1.0 * alpha_scalar * (ripple + background_texture.x * background_texture.y);
-	background_texture.a = max(background_texture.a - (background_texture.y * 0.45), 0.0);
-	
-	COLOR = vec4(background_texture.xyz, background_texture.a);
-
+	COLOR = vec4(
+		texture(SCREEN_TEXTURE, SCREEN_UV + chaos_v * amount_r).r,
+		texture(SCREEN_TEXTURE, SCREEN_UV + chaos_v * amount_g).g,
+		texture(SCREEN_TEXTURE, SCREEN_UV + chaos_v * amount_b).b,
+		1.);
 }

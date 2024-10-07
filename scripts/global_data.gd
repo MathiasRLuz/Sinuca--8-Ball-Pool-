@@ -28,7 +28,7 @@ var EnemyDificulty = {
 		EnemyDififultyVariables.crit6 : 1000,
 	},
 	
-	Npcs.ESQUELETO : {
+	Npcs.BRUXA : {
 		EnemyDififultyVariables.power_probability : 1,
 		EnemyDififultyVariables.force_scale : 1,
 		EnemyDififultyVariables.precision : 1,
@@ -43,7 +43,7 @@ var EnemyDificulty = {
 		EnemyDififultyVariables.crit5 : 500,
 		EnemyDififultyVariables.crit6 : 1000
 	}, 
-	Npcs.BRUXA : {
+	Npcs.SLIME : {
 		EnemyDififultyVariables.power_probability : 0,
 		EnemyDififultyVariables.force_scale : 0.8,
 		EnemyDififultyVariables.precision : 0.95,
