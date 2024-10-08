@@ -27,13 +27,6 @@ linear_damp = 1.0
 angular_damp_mode = 1
 angular_damp = 1.5
 
-[node name="Sprite2D" type="Sprite2D" parent="."]
-texture_filter = 1
-scale = Vector2(2, 2)
-texture = ExtResource("1_ymfk2")
-hframes = 9
-vframes = 2
-
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 shape = SubResource("CircleShape2D_ecgr8")
 
@@ -41,3 +34,9 @@ shape = SubResource("CircleShape2D_ecgr8")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Area2D"]
 shape = SubResource("CircleShape2D_ml710")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+scale = Vector2(2, 2)
+texture = ExtResource("1_ymfk2")
+hframes = 9
+vframes = 2

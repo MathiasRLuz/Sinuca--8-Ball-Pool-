@@ -747,10 +747,15 @@ func inicia_vez():
 			$GoblinPower.start(5)
 			goblin_warned = false
 			$GoblinTimer.visible = true
-		# poder golem
+		# poder medusa
 		if bot_power_ready and current_enemy == GlobalData.Npcs.MEDUSA:
 			bot_power_ready = false
 			medusa_power()
+			
+		# poder fantasma
+		if bot_power_ready and current_enemy == GlobalData.Npcs.FANTASMA:
+			bot_power_ready = false
+			ghost_power()
 		show_cue()
 
 func selecionar_numeros_aleatorios(qtd,max_num):
@@ -764,7 +769,40 @@ func selecionar_numeros_aleatorios(qtd,max_num):
 	var selecionados = numeros.slice(0, qtd)
 
 	return selecionados
+
+func fade_out(sprite: Sprite2D, duration: float):
+	# Cria um tween no nó Sprite2D
+	var tween = get_tree().create_tween()
 	
+	# Pega o valor atual da modulate do Sprite (que inclui o alpha)
+	var start_modulate = sprite.modulate
+	
+	# Configura o tween para modificar o alpha de 1.0 até 0.0
+	tween.tween_property(sprite, "modulate:a", 0.0, duration)
+	
+	# Iniciar o tween
+	tween.play()
+
+func fade_in(sprite: Sprite2D, duration: float):
+	# Cria um tween no nó Sprite2D
+	var tween = get_tree().create_tween()
+	
+	# Pega o valor atual da modulate do Sprite (que inclui o alpha)
+	var start_modulate = sprite.modulate
+	
+	# Configura o tween para modificar o alpha de 0.0 até 1.0
+	tween.tween_property(sprite, "modulate:a", 1.0, duration)
+	
+	# Iniciar o tween
+	tween.play()
+	
+func ghost_power(activate := true):
+	for b in get_tree().get_nodes_in_group("bolas"):
+		if activate:
+			fade_out(b.get_node("Sprite2D"),1)
+		else:
+			fade_in(b.get_node("Sprite2D"),1)	
+
 func medusa_power(activate := true):
 	if activate:
 		var permitted_balls := []
@@ -780,6 +818,7 @@ func medusa_power(activate := true):
 	else:
 		if medusa_petrified_ball:
 			medusa_petrified_ball.freeze = false
+			
 func golem_power(activate := true):	
 	if activate:
 		var number_of_rocks = randi_range(1,3)
@@ -949,7 +988,7 @@ func remove_power_effects():
 	medusa_power(false)
 	# Golem
 	golem_power(false)
-
+	
 func verifica_favorecido_por_falta():
 	if jogador_atual == 0: 
 		# jogador fez falta
@@ -976,6 +1015,9 @@ func _on_taco_shoot(power, _mouse_pos):
 		$GoblinPower.stop()
 		goblin_power_activated = false
 		$GoblinTimer.visible = false
+	if current_enemy == GlobalData.Npcs.FANTASMA:
+		ghost_power(false)
+
 	
 func check_ball_path(destination,phantom_ball_position,parent = cue_ball):
 	# Posição inicial do ShapeCast (global position da bola branca)
