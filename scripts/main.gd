@@ -160,7 +160,11 @@ func generate_balls():
 	count = 0
 	ball_positions.shuffle()	
 	for i in range(15):
-		var ball = ball_scene.instantiate()		
+		var ball = ball_scene.instantiate()
+		# Acessa o Sprite2D e clona o material
+		var sprite = ball.get_node("Sprite2D")
+		sprite.material = sprite.material.duplicate() # Clona o material para ser exclusivo desta bola
+	
 		#ball.get_node("Sprite2D").texture = ball_images[count]
 		ball.get_node("Sprite2D").frame = i+1
 		if count == 7:
@@ -813,6 +817,27 @@ func fade_in(sprite: Sprite2D, duration: float):
 	# Iniciar o tween
 	tween.play()
 
+func fade_out_percentage(body: Node2D, duration: float):
+	# Acessa o material do Sprite2D da bola
+	var sprite = body.get_node("Sprite2D")
+	var material = sprite.material
+	
+	# Cria o tween
+	var tween = get_tree().create_tween()
+	
+	# Define o tween para animar o parâmetro "percentage" de 1.0 para 0.0
+	tween.tween_property(material, "shader_parameter/percentage", 0.0, duration)
+	
+	# Conectar o sinal de quando o tween for completado
+	tween.connect("finished", Callable(self, "_on_minotaur_destroy_completed").bind(body))
+	
+	# Iniciar o tween
+	tween.play()
+
+func _on_minotaur_destroy_completed(body: Node2D):
+	# Apaga o corpo quando o tween finalizar
+	body.queue_free()
+
 func minotaur_power():
 	#instantly destroy two balls from his group
 	print("Instantly destroy two balls from his group")
@@ -853,7 +878,11 @@ func minotaur_destroy_ball(body):
 	b_sprite.frame = body.get_node("Sprite2D").frame
 	b_sprite.scale = body.get_node("Sprite2D").scale
 	b_sprite.position = get_potted_ball_position()
-	body.queue_free()
+	fade_out_percentage(body,1)
+	
+	
+
+
 
 func cyclops_power(activate := true):
 	if not all_potted.has("olho"):
