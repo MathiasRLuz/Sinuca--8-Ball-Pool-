@@ -39,7 +39,7 @@ shader_parameter/attenuation = 5.761
 [node name="Sinuca" type="Node" node_paths=PackedStringArray("skeletons")]
 script = ExtResource("1_4cjhd")
 ball_scene = ExtResource("2_g7l3x")
-current_enemy = 10
+current_enemy = 5
 skeletons = [NodePath("SkeletonPower"), NodePath("SkeletonPower2"), NodePath("SkeletonPower3")]
 force_first_player = 1
 

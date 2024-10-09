@@ -50,6 +50,8 @@ var goblin_power_activated := false
 var goblin_warning_time = 3
 var goblin_warned := false
 var medusa_petrified_ball : RigidBody2D = null
+var cyclops_eye = null
+var cyclops_eye_on_table := false
 
 var waiting_timer := false
 
@@ -172,7 +174,14 @@ func generate_balls():
 		ball.name = str(count)
 		ball.continuous_cd = true
 		add_child(ball)	
-
+	if current_enemy == GlobalData.Npcs.CICLOPE:
+		cyclops_eye = ball_scene.instantiate()
+		cyclops_eye.get_node("Sprite2D").frame = 16
+		cyclops_eye.name = "olho"
+		cyclops_eye.continuous_cd = true
+		cyclops_eye.position = Vector2(-10000,-1000000)
+		add_child(cyclops_eye)
+	
 func create_cue_ball():
 	cue_ball = ball_scene.instantiate()
 	add_child(cue_ball)
@@ -190,7 +199,10 @@ func _on_CueBall_area_entered(body):
 	if body.is_in_group("bolas") && primeira_bola_batida == 0 && body.name != "Bola":
 		estouro = false
 		Engine.set_time_scale(1)
-		primeira_bola_batida = body.name.to_int()
+		if body.name == "olho":
+			primeira_bola_batida = -1
+		else:
+			primeira_bola_batida = body.name.to_int()
 		
 func get_better_ball():
 	var permitted_balls := []
@@ -639,6 +651,8 @@ func is_ball_permitted(ball):
 	
 func vez_bot():
 	print("INICIO VEZ BOT")
+	if current_enemy == GlobalData.Npcs.CICLOPE:
+		cyclops_power(false)
 	await get_tree().create_timer(1).timeout
 	if estouro:
 		var dir = Vector2(-1, 0) # Direção padrão para o estouro
@@ -756,6 +770,9 @@ func inicia_vez():
 		if bot_power_ready and current_enemy == GlobalData.Npcs.FANTASMA:
 			bot_power_ready = false
 			ghost_power()
+			
+		if bot_power_ready and current_enemy == GlobalData.Npcs.CICLOPE and grupo_jogador != 0:
+			cyclops_power()
 		show_cue()
 
 func selecionar_numeros_aleatorios(qtd,max_num):
@@ -796,6 +813,22 @@ func fade_in(sprite: Sprite2D, duration: float):
 	# Iniciar o tween
 	tween.play()
 	
+func cyclops_power(activate := true):
+	if not all_potted.has("olho"):
+		if activate:
+			if not cyclops_eye_on_table:
+				var margin = 30
+				#  limites_paredes => [70, 850, 350, 70] # esquerda, direita, baixo, cima
+				var x = randi_range(limites_paredes[0]+margin,limites_paredes[1]-margin)
+				var y = randi_range(limites_paredes[3]+margin,limites_paredes[2]-margin)
+				cyclops_eye.visible = true
+				cyclops_eye.position = Vector2(x,y)
+				cyclops_eye_on_table = true
+		else:
+			cyclops_eye.position = Vector2(-10000,-1000000)
+			cyclops_eye.visible = false
+			cyclops_eye_on_table = false
+			
 func ghost_power(activate := true):
 	for b in get_tree().get_nodes_in_group("bolas"):
 		if activate:
@@ -1086,13 +1119,21 @@ func define_grupos(bola):
 	if bola>8:
 		if jogador_atual == 0:
 			grupo_jogador = 2
+			if current_enemy == GlobalData.Npcs.CICLOPE:
+				grupo_maior.append("olho")
 		else:
 			grupo_jogador = 1
+			if current_enemy == GlobalData.Npcs.CICLOPE:
+				grupo_menor.append("olho")
 	else:
 		if jogador_atual == 0:
 			grupo_jogador = 1
+			if current_enemy == GlobalData.Npcs.CICLOPE:
+				grupo_menor.append("olho")
 		else:
 			grupo_jogador = 2
+			if current_enemy == GlobalData.Npcs.CICLOPE:
+				grupo_maior.append("olho")
 	print("Grupo do jogador: " + str(grupo_jogador))
 	ajusta_texto_grupo()
 
@@ -1145,6 +1186,14 @@ func potted_ball(body):
 	if body == cue_ball:
 		cue_ball_potted = true
 		teleport_cue_ball()
+		return
+	elif body == cyclops_eye:
+		if grupo_maior.has("olho"):
+			grupo_maior.erase("olho")
+		if grupo_menor.has("olho"):
+			grupo_menor.erase("olho")
+		potted.append(body)
+		all_potted.append("olho")
 	else:
 		print(body.name)
 		var bola = body.name.to_int()
@@ -1162,20 +1211,22 @@ func potted_ball(body):
 			foi_falta = true
 		potted.append(body)
 		all_potted.append(bola)
-		var b_sprite = Sprite2D.new()
-		add_child(b_sprite)
-		b_sprite.texture = body.get_node("Sprite2D").texture
-		b_sprite.hframes = body.get_node("Sprite2D").hframes
-		b_sprite.vframes = body.get_node("Sprite2D").vframes
-		b_sprite.frame = body.get_node("Sprite2D").frame
-		b_sprite.scale = body.get_node("Sprite2D").scale
-		b_sprite.position = get_potted_ball_position()
-		body.queue_free()
+	var b_sprite = Sprite2D.new()
+	add_child(b_sprite)
+	b_sprite.texture = body.get_node("Sprite2D").texture
+	b_sprite.hframes = body.get_node("Sprite2D").hframes
+	b_sprite.vframes = body.get_node("Sprite2D").vframes
+	b_sprite.frame = body.get_node("Sprite2D").frame
+	b_sprite.scale = body.get_node("Sprite2D").scale
+	b_sprite.position = get_potted_ball_position()
+	body.queue_free()
 
 func get_potted_ball_position():
 	return Vector2(180 + 50 * (14-grupo_maior.size()-grupo_menor.size()),550)
 
 func bateu_primeiro_em_bola_proibida(bola):
+	if bola == -1:
+		return false
 	if bola == 8:
 		if jogador_atual == 0:
 			# vez do jogador
