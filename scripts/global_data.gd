@@ -1,7 +1,7 @@
 extends Node
 
 enum LookingDirection {RIGHT, LEFT, UP, DOWN}
-enum Npcs {NPC, DOMOVOY, SLIME, ESQUELETO, GOBLIN, CICLOPE, BRUXA, GOLEM, MEDUSA, REALEZA, FANTASMA, MINOTAURO}
+enum Npcs {NPC, DOMOVOY, SLIME, ESQUELETO, GOBLIN, CICLOPE, BRUXA, GOLEM, MEDUSA, PRINCIPE, PRINCESA, FANTASMA, MINOTAURO}
 enum Falas {PRE_BATALHA, VITORIOSO, DERROTADO, GENERICA, }
 
 enum EnemyDififultyVariables {power_probability, force_scale, precision, error_radius, max_shot_angle, min_score, risky, crit1, crit2, crit3, crit4, crit5, crit6}
@@ -28,8 +28,23 @@ var EnemyDificulty = {
 		EnemyDififultyVariables.crit6 : 1000,
 	},
 	
-	Npcs.CICLOPE : {
+	Npcs.PRINCIPE : {
 		EnemyDififultyVariables.power_probability : 1,
+		EnemyDififultyVariables.force_scale : 1,
+		EnemyDififultyVariables.precision : 1,
+		EnemyDififultyVariables.error_radius : 5,
+		EnemyDififultyVariables.max_shot_angle : 60,
+		EnemyDififultyVariables.min_score : 0,
+		EnemyDififultyVariables.risky: 1,
+		EnemyDififultyVariables.crit1 : 2,
+		EnemyDififultyVariables.crit2 : 100,
+		EnemyDififultyVariables.crit3 : 200,
+		EnemyDififultyVariables.crit4 : 250,
+		EnemyDififultyVariables.crit5 : 500,
+		EnemyDififultyVariables.crit6 : 1000
+	}, 
+	Npcs.PRINCESA : {
+		EnemyDififultyVariables.power_probability : 0,
 		EnemyDififultyVariables.force_scale : 1,
 		EnemyDififultyVariables.precision : 1,
 		EnemyDififultyVariables.error_radius : 5,

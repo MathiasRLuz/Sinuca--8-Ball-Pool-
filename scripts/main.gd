@@ -738,7 +738,7 @@ func inicia_vez():
 	if jogador_atual == 1:
 		vez_bot() # show_cue()
 	else:
-		Engine.set_time_scale(1)
+		Engine.set_time_scale(1)		
 		# poder slime
 		if bot_power_ready and current_enemy == GlobalData.Npcs.SLIME:
 			bot_power_ready = false
@@ -941,6 +941,15 @@ func nova_tacada():
 	
 	potted = []
 	taking_shot = true
+	# poder principe
+	if jogador_atual == 0:
+		if bot_power_ready and current_enemy == GlobalData.Npcs.PRINCIPE:
+			bot_power_ready = false
+			proximo_jogador()
+			print("VEZ DA PRINCESA")
+			current_enemy = GlobalData.Npcs.PRINCESA
+		elif current_enemy == GlobalData.Npcs.PRINCESA:
+			current_enemy = GlobalData.Npcs.PRINCIPE
 	inicia_vez()
 	primeira_bola_batida = 0
 	foi_falta = false
