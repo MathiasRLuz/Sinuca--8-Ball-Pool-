@@ -52,7 +52,7 @@ var goblin_warned := false
 var medusa_petrified_ball : RigidBody2D = null
 var cyclops_eye = null
 var cyclops_eye_on_table := false
-
+@export var minotaur_can_destroy_8_ball := true
 var waiting_timer := false
 
 @export var debug_slow_time := false
@@ -775,10 +775,10 @@ func inicia_vez():
 			cyclops_power()
 		show_cue()
 
-func selecionar_numeros_aleatorios(qtd,max_num):
-	# Criar um array com os números de 0 a 5
-	var numeros = Array(range(max_num))
 
+#region Powers
+
+func selecionar_numeros_aleatorios(qtd:int,numeros:Array):
 	# Embaralhar o array
 	numeros.shuffle()
 
@@ -792,7 +792,7 @@ func fade_out(sprite: Sprite2D, duration: float):
 	var tween = get_tree().create_tween()
 	
 	# Pega o valor atual da modulate do Sprite (que inclui o alpha)
-	var start_modulate = sprite.modulate
+	var _start_modulate = sprite.modulate
 	
 	# Configura o tween para modificar o alpha de 1.0 até 0.0
 	tween.tween_property(sprite, "modulate:a", 0.0, duration)
@@ -805,14 +805,56 @@ func fade_in(sprite: Sprite2D, duration: float):
 	var tween = get_tree().create_tween()
 	
 	# Pega o valor atual da modulate do Sprite (que inclui o alpha)
-	var start_modulate = sprite.modulate
+	var _start_modulate = sprite.modulate
 	
 	# Configura o tween para modificar o alpha de 0.0 até 1.0
 	tween.tween_property(sprite, "modulate:a", 1.0, duration)
 	
 	# Iniciar o tween
 	tween.play()
-	
+
+func minotaur_power():
+	#instantly destroy two balls from his group
+	print("Instantly destroy two balls from his group")
+	var group = []
+	if grupo_jogador == 1:
+		group = grupo_maior
+	else:
+		group = grupo_menor
+	var selected_balls = []
+	if len(group)<2 and minotaur_can_destroy_8_ball:
+		if len(group)>0:
+			selected_balls = [group[0],8]
+		else:
+			selected_balls = [8]
+	else:
+		selected_balls = selecionar_numeros_aleatorios(2,group)
+	for b in get_tree().get_nodes_in_group("bolas"):
+		if b.name != "Bola":
+			for selected in selected_balls:
+				if selected == b.name.to_int():
+					print("Destroyed ", b.name)
+					if b.name == "8":
+						fim_de_partida(1) # bot vence
+						return
+					minotaur_destroy_ball(b)
+
+func minotaur_destroy_ball(body):
+	if grupo_maior.has(body.name.to_int()):
+		grupo_maior.erase(body.name.to_int())
+	elif grupo_menor.has(body.name.to_int()):
+		grupo_menor.erase(body.name.to_int())
+	all_potted.append(body.name.to_int())
+	var b_sprite = Sprite2D.new()
+	add_child(b_sprite)
+	b_sprite.texture = body.get_node("Sprite2D").texture
+	b_sprite.hframes = body.get_node("Sprite2D").hframes
+	b_sprite.vframes = body.get_node("Sprite2D").vframes
+	b_sprite.frame = body.get_node("Sprite2D").frame
+	b_sprite.scale = body.get_node("Sprite2D").scale
+	b_sprite.position = get_potted_ball_position()
+	body.queue_free()
+
 func cyclops_power(activate := true):
 	if not all_potted.has("olho"):
 		if activate:
@@ -855,7 +897,7 @@ func medusa_power(activate := true):
 func golem_power(activate := true):	
 	if activate:
 		var number_of_rocks = randi_range(1,3)
-		var indices = selecionar_numeros_aleatorios(number_of_rocks,len(buracos))
+		var indices = selecionar_numeros_aleatorios(number_of_rocks,Array(range(len(buracos))))
 		$GolemPower.visible = true
 		$GolemPower.global_position = buracos[indices[0]].global_position
 		$GolemPower/Sprite.frame = randi_range(0,1)
@@ -924,6 +966,7 @@ func slime_power(activate := true):
 		$SlimePower3.global_position = Vector2(-625,194)
 		$SlimePower3.visible = false
 		
+#endregion
 func hide_cue():
 	$Taco.set_process(false)
 	$Taco.hide()
@@ -956,8 +999,10 @@ func nova_tacada():
 
 func _input(event):
 	if event.is_action_pressed("interact"):	
-		if force_victory: GlobalData.enemy_defeated(GlobalData.current_enemy_name) # força vitória do jogador
-		get_tree().change_scene_to_file(GlobalData.last_scene_before_battle)
+		if current_enemy == GlobalData.Npcs.MINOTAURO and grupo_jogador != 0:
+			minotaur_power()
+		#if force_victory: GlobalData.enemy_defeated(GlobalData.current_enemy_name) # força vitória do jogador
+		#get_tree().change_scene_to_file(GlobalData.last_scene_before_battle)
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(_delta):
@@ -1199,7 +1244,7 @@ func potted_ball(body):
 	elif body == cyclops_eye:
 		if grupo_maior.has("olho"):
 			grupo_maior.erase("olho")
-		if grupo_menor.has("olho"):
+		elif grupo_menor.has("olho"):
 			grupo_menor.erase("olho")
 		potted.append(body)
 		all_potted.append("olho")
