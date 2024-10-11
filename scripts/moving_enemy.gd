@@ -21,6 +21,11 @@ signal dialogue_finished
 @onready var sprite: AnimatedSprite2D = $PathFollow2D/StaticBody2D/AnimatedSprite2D
 @onready var path_follow_2d: PathFollow2D = $PathFollow2D
 
+@export var image_pre : Texture2D
+@export var image_victory : Texture2D
+@export var image_defeat : Texture2D
+@export var icon : Texture2D
+
 var is_waiting := false
 var objs_na_area := []
 var character_direction : Vector2
@@ -77,7 +82,7 @@ func talk():
 			_current_enemy[0].position = _current_enemy[1]
 			_current_enemy[0].can_move = _current_enemy[2]
 		GlobalData.set_new_enemy($".",position,can_move,npc_name,npc_type)
-
+		GlobalData.set_battle_images(image_pre,image_victory,image_defeat,icon)
 		# teleport to nearest table
 		can_move = false
 		player.position = nearest_table.position + Vector2(-25,-30)

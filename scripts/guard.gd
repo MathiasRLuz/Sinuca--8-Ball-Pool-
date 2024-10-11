@@ -21,6 +21,11 @@ signal dialogue_finished
 @onready var sprite: Sprite2D = $PathFollow2D/StaticBody2D/Sprite2D
 @onready var path_follow_2d: PathFollow2D = $PathFollow2D
 
+@export var image_pre : Texture2D
+@export var image_victory : Texture2D
+@export var image_defeat : Texture2D
+@export var icon : Texture2D
+
 var is_waiting := false
 var objs_na_area := []
 var character_direction : Vector2
@@ -31,14 +36,27 @@ var enfrentado := false
 var pode_desafiar := true
 var next_enemy_type: GlobalData.Npcs
 var next_enemy_name: String
+var next_enemy_image_pre : Texture2D
+var next_enemy_image_victory : Texture2D
+var next_enemy_image_defeat : Texture2D
+var next_enemy_icon : Texture2D
+
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
 	next_enemy_type = npc_type
 	next_enemy_name = npc_name
+	next_enemy_image_pre = image_pre
+	next_enemy_image_victory = image_victory
+	next_enemy_image_defeat = image_defeat
+	next_enemy_icon = icon
 	for kid in kids_array:
 		if not GlobalData.defeated_enemies.count(kid.npc_name) > 0:
 			next_enemy_name = kid.npc_name
 			next_enemy_type = kid.npc_type
+			next_enemy_image_pre = kid.image_pre
+			next_enemy_image_victory = kid.image_victory
+			next_enemy_image_defeat = kid.image_defeat
+			next_enemy_icon = kid.icon
 			break
 	sprite.texture = spritesheet
 	interact_icon.visible = false
@@ -85,7 +103,7 @@ func talk():
 			_current_enemy[0].position = _current_enemy[1]
 			_current_enemy[0].can_move = _current_enemy[2]
 		GlobalData.set_new_enemy($".",position,can_move,next_enemy_name,next_enemy_type)
-
+		GlobalData.set_battle_images(next_enemy_image_pre,next_enemy_image_victory,next_enemy_image_defeat,next_enemy_icon)
 		# teleport to nearest table
 		can_move = false
 		player.position = nearest_table.position + Vector2(-25,-30)

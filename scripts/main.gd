@@ -55,18 +55,51 @@ var cyclops_eye_on_table := false
 @export var minotaur_can_destroy_8_ball := true
 var waiting_timer := false
 
+var image_pre : Texture2D
+var image_victory : Texture2D
+var image_defeat : Texture2D
+var icon : Texture2D
+
+var match_has_started := false
+
 @export var debug_slow_time := false
-# Called when the node enters the scene tree for the first time.
-func _ready():	
-	hide_cue()
-	all_potted = []
-	randomize()  # Garante que a semente do gerador de números aleatórios seja diferente a cada execução
+
+func play_animation_and_wait():
+	# Reproduz a animação
+	$BattleTransitionScreen.visible = true
+	$BattleTransitionScreen/AnimationPlayer.play("start_battle")
+	
+	# Conecta o sinal `animation_finished` a uma função
+	await $BattleTransitionScreen/AnimationPlayer.animation_finished.connect(Callable(self, "_on_animation_finished"))
+
+	# Continuação do código após a animação terminar
+	print("Animação concluída, agora continuando o código.")
+
+func _on_animation_finished(_anim_name: String):
+	print("A animação terminou")
 	if force_first_player!=-1: jogador_atual = force_first_player
 	else: jogador_atual = randi() % 2  # Retorna 0 ou 1 aleatoriamente
 	for hole in $Mesa/buracos.get_children():
 		buracos.append(hole)
 	new_game()	
 	$Mesa/buracos.body_entered.connect(potted_ball)
+	match_has_started = true
+
+# Called when the node enters the scene tree for the first time.
+func _ready():
+	hide_cue()
+	all_potted = []
+	randomize()  # Garante que a semente do gerador de números aleatórios seja diferente a cada execução
+	var battle_images = GlobalData.get_battle_images() # [image_pre,image_victory,image_defeat,icon]
+	if battle_images[0] != null:
+		image_pre = battle_images[0]
+		image_victory = battle_images[1]
+		image_defeat = battle_images[2]
+		icon = battle_images[3]
+		play_animation_and_wait()
+	else:
+		$BattleTransitionScreen.visible = false
+		_on_animation_finished("")
 
 func proximo_jogador():
 	jogador_atual = 1 - jogador_atual
@@ -1041,6 +1074,9 @@ func _input(event):
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(_delta):
+	if not match_has_started:
+		return
+		
 	if goblin_power_activated:
 		$GoblinTimer.text = str($GoblinPower.time_left)
 		if $GoblinPower.time_left < goblin_warning_time and not goblin_warned:

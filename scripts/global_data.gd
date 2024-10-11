@@ -236,6 +236,19 @@ var last_scene_before_battle : String
 var enemy_pos : Vector2
 var defeated_enemies := []
 var faced_enemies := []
+var image_pre : Texture2D
+var image_victory : Texture2D
+var image_defeat : Texture2D
+var icon : Texture2D
+
+func set_battle_images(_image_pre,_image_victory,_image_defeat,_icon):
+	image_pre = _image_pre
+	image_victory = _image_victory
+	image_defeat = _image_defeat
+	icon = _icon
+
+func get_battle_images():
+	return [image_pre,image_victory,image_defeat,icon]
 
 func enemy_defeated(enemy_name):
 	defeated_enemies.append(enemy_name)

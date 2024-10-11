@@ -1,4 +1,4 @@
-[gd_scene load_steps=21 format=3 uid="uid://dvexns24mbh41"]
+[gd_scene load_steps=32 format=3 uid="uid://dvexns24mbh41"]
 
 [ext_resource type="Script" path="res://scripts/main.gd" id="1_4cjhd"]
 [ext_resource type="PackedScene" uid="uid://drwm0yb1mdeo8" path="res://scenes/bola.tscn" id="2_g7l3x"]
@@ -14,6 +14,9 @@
 [ext_resource type="PackedScene" uid="uid://dubg246eeb30t" path="res://scenes/skeleton_power.tscn" id="12_0vwkq"]
 [ext_resource type="Shader" path="res://shaders/witch_power.gdshader" id="13_thsul"]
 [ext_resource type="PackedScene" uid="uid://bskg6ucyryxht" path="res://scenes/golem_power.tscn" id="14_7rrfr"]
+[ext_resource type="Texture2D" uid="uid://d1fdltdj6635d" path="res://assets/Wizpool/Npcs/Npcs/Bárbaro.png" id="15_88fdc"]
+[ext_resource type="Shader" path="res://shaders/battle_transition.gdshader" id="15_fuvfm"]
+[ext_resource type="Texture2D" uid="uid://bnmds8g5raq7x" path="res://assets/Wizpool/UI/caixa de texto UI batalha.png" id="16_navwl"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_yysmw"]
 bg_color = Color(1, 1, 1, 0.458824)
@@ -35,6 +38,139 @@ shader = ExtResource("13_thsul")
 shader_parameter/chaos = 16.129
 shader_parameter/radius = 1.3
 shader_parameter/attenuation = 5.761
+
+[sub_resource type="Gradient" id="Gradient_w5tqx"]
+
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_j3wp3"]
+gradient = SubResource("Gradient_w5tqx")
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_ntdso"]
+noise_type = 0
+frequency = 0.09
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_6mh1l"]
+seamless = true
+noise = SubResource("FastNoiseLite_ntdso")
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_vsx6p"]
+shader = ExtResource("15_fuvfm")
+shader_parameter/line_color_a = Color(2, 0, 0, 1)
+shader_parameter/line_color_b = Color(1, 1, 0, 1)
+shader_parameter/back_color = Color(0.271, 0, 0, 1)
+shader_parameter/line_threshold = 0.8
+shader_parameter/speed = 0.03
+shader_parameter/line_length = 1000.0
+shader_parameter/angle = 60.0
+shader_parameter/noise = SubResource("NoiseTexture2D_6mh1l")
+
+[sub_resource type="Animation" id="Animation_56wif"]
+resource_name = "start_battle"
+length = 5.0
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("../../Camera2D:zoom")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 4.5, 5),
+"transitions": PackedFloat32Array(1, 1, 1),
+"update": 0,
+"values": [Vector2(2, 2), Vector2(2, 2), Vector2(1, 1)]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("../Sprite2D:position")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0, 1),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [Vector2(719, 477), Vector2(719, 321)]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("../Dialogue:position")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0, 1.2, 1.5),
+"transitions": PackedFloat32Array(1, 1, 1),
+"update": 0,
+"values": [Vector2(-162, 284), Vector2(-162, 284), Vector2(255, 284)]
+}
+tracks/3/type = "value"
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/path = NodePath("..:visible")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/keys = {
+"times": PackedFloat32Array(0, 4.5),
+"transitions": PackedFloat32Array(1, 1),
+"update": 1,
+"values": [true, false]
+}
+
+[sub_resource type="Animation" id="Animation_3a5m6"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("../../Camera2D:zoom")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector2(1, 1)]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("../Sprite2D:position")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector2(719, 321)]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("../Dialogue:position")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector2(255, 284)]
+}
+tracks/3/type = "value"
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/path = NodePath("..:visible")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [false]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_0gcef"]
+_data = {
+"RESET": SubResource("Animation_3a5m6"),
+"start_battle": SubResource("Animation_56wif")
+}
 
 [node name="Sinuca" type="Node" node_paths=PackedStringArray("skeletons")]
 script = ExtResource("1_4cjhd")
@@ -257,6 +393,74 @@ offset_bottom = 236.0
 
 [node name="GoblinPower" type="Timer" parent="."]
 one_shot = true
+
+[node name="BattleTransitionScreen" type="Node2D" parent="."]
+visible = false
+
+[node name="Background" type="Sprite2D" parent="BattleTransitionScreen"]
+visible = false
+z_index = 4095
+position = Vector2(652, 219.5)
+scale = Vector2(4.64063, 375)
+texture = SubResource("GradientTexture1D_j3wp3")
+
+[node name="ColorRect" type="ColorRect" parent="BattleTransitionScreen"]
+z_index = 4090
+material = SubResource("ShaderMaterial_vsx6p")
+offset_left = 165.0
+offset_top = 39.0
+offset_right = 804.0
+offset_bottom = 398.0
+
+[node name="Sprite2D" type="Sprite2D" parent="BattleTransitionScreen"]
+z_index = 4096
+position = Vector2(719, 321)
+texture = ExtResource("15_88fdc")
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="BattleTransitionScreen"]
+root_node = NodePath("../Background")
+libraries = {
+"": SubResource("AnimationLibrary_0gcef")
+}
+
+[node name="Dialogue" type="Control" parent="BattleTransitionScreen"]
+z_index = 4096
+layout_mode = 3
+anchor_left = 0.125
+anchor_top = 0.083
+anchor_right = 0.125
+anchor_bottom = 0.083
+offset_left = 255.0
+offset_top = 284.0
+offset_right = 575.0
+offset_bottom = 344.0
+grow_horizontal = 2
+grow_vertical = 0
+
+[node name="NinePatchRect" type="NinePatchRect" parent="BattleTransitionScreen/Dialogue"]
+texture_filter = 1
+layout_mode = 0
+offset_right = 320.0
+offset_bottom = 60.0
+texture = ExtResource("16_navwl")
+
+[node name="Name" type="RichTextLabel" parent="BattleTransitionScreen/Dialogue/NinePatchRect"]
+layout_mode = 0
+offset_left = 4.0
+offset_top = 1.0
+offset_right = 104.0
+offset_bottom = 26.0
+scale = Vector2(0.5, 0.5)
+text = "Name"
+
+[node name="Text" type="RichTextLabel" parent="BattleTransitionScreen/Dialogue/NinePatchRect"]
+layout_mode = 0
+offset_left = 4.0
+offset_top = 10.0
+offset_right = 526.0
+offset_bottom = 88.0
+scale = Vector2(0.6, 0.6)
+text = "Text template Text templateText templateText templateText template"
 
 [connection signal="shoot" from="Taco" to="." method="_on_taco_shoot"]
 [connection signal="timeout" from="GoblinPower" to="." method="_on_goblin_power_timeout"]

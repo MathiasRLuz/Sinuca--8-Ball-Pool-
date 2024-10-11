@@ -37,6 +37,13 @@ radius = 25.0
 [node name="MovingEnemy" type="Path2D"]
 curve = SubResource("Curve2D_5moho")
 script = ExtResource("1_jlwd4")
+loop = null
+speed = null
+look_at_player = null
+npc_name = null
+npc_type = null
+state_fala = null
+can_move = null
 
 [node name="PathFollow2D" type="PathFollow2D" parent="."]
 position = Vector2(102, -9)

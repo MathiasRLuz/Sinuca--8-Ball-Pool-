@@ -23,8 +23,12 @@ radius = 25.0
 curve = SubResource("Curve2D_5moho")
 script = ExtResource("1_ah6fx")
 spritesheet = ExtResource("2_q6n2t")
+loop = null
+speed = null
 look_at_player = true
+npc_name = null
 npc_type = 1
+state_fala = null
 can_move = false
 kids_array = [null, null]
 
