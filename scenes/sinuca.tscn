@@ -35,7 +35,7 @@ size = Vector2(6, 24)
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_jbkyi"]
 shader = ExtResource("13_thsul")
-shader_parameter/chaos = 16.129
+shader_parameter/chaos = 145.439
 shader_parameter/radius = 1.3
 shader_parameter/attenuation = 5.761
 
@@ -62,6 +62,57 @@ shader_parameter/speed = 0.03
 shader_parameter/line_length = 1000.0
 shader_parameter/angle = 60.0
 shader_parameter/noise = SubResource("NoiseTexture2D_6mh1l")
+
+[sub_resource type="Animation" id="Animation_3a5m6"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("../../Camera2D:zoom")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector2(1, 1)]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("../Sprite2D:position")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector2(719, 321)]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("../Dialogue:position")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector2(255, 284)]
+}
+tracks/3/type = "value"
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/path = NodePath("..:visible")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [false]
+}
 
 [sub_resource type="Animation" id="Animation_56wif"]
 resource_name = "start_battle"
@@ -115,57 +166,6 @@ tracks/3/keys = {
 "values": [true, false]
 }
 
-[sub_resource type="Animation" id="Animation_3a5m6"]
-length = 0.001
-tracks/0/type = "value"
-tracks/0/imported = false
-tracks/0/enabled = true
-tracks/0/path = NodePath("../../Camera2D:zoom")
-tracks/0/interp = 1
-tracks/0/loop_wrap = true
-tracks/0/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 0,
-"values": [Vector2(1, 1)]
-}
-tracks/1/type = "value"
-tracks/1/imported = false
-tracks/1/enabled = true
-tracks/1/path = NodePath("../Sprite2D:position")
-tracks/1/interp = 1
-tracks/1/loop_wrap = true
-tracks/1/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 0,
-"values": [Vector2(719, 321)]
-}
-tracks/2/type = "value"
-tracks/2/imported = false
-tracks/2/enabled = true
-tracks/2/path = NodePath("../Dialogue:position")
-tracks/2/interp = 1
-tracks/2/loop_wrap = true
-tracks/2/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 0,
-"values": [Vector2(255, 284)]
-}
-tracks/3/type = "value"
-tracks/3/imported = false
-tracks/3/enabled = true
-tracks/3/path = NodePath("..:visible")
-tracks/3/interp = 1
-tracks/3/loop_wrap = true
-tracks/3/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 1,
-"values": [false]
-}
-
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_0gcef"]
 _data = {
 "RESET": SubResource("Animation_3a5m6"),
@@ -176,8 +176,8 @@ _data = {
 script = ExtResource("1_4cjhd")
 ball_scene = ExtResource("2_g7l3x")
 force_victory = true
-current_enemy = 13
-skeletons = [NodePath("SkeletonPower"), NodePath("SkeletonPower2"), NodePath("SkeletonPower3")]
+current_enemy = 7
+skeletons = [NodePath("SkeletonPower"), NodePath("SkeletonPower2"), NodePath("SkeletonPower3"), NodePath("SkeletonPower4"), NodePath("SkeletonPower5"), NodePath("SkeletonPower6")]
 force_first_player = 1
 minotaur_can_destroy_8_ball = false
 
@@ -356,6 +356,32 @@ shape = SubResource("RectangleShape2D_pxm7o")
 visible = false
 position = Vector2(-534, 259)
 
+[node name="SkeletonPower4" parent="." instance=ExtResource("12_0vwkq")]
+visible = false
+position = Vector2(-592, 259)
+
+[node name="Sprite" parent="SkeletonPower4" index="0"]
+frame = 0
+
+[node name="CollisionShape2D" parent="SkeletonPower4" index="1"]
+position = Vector2(0, -5.5)
+shape = SubResource("RectangleShape2D_b3eps")
+
+[node name="SkeletonPower5" parent="." instance=ExtResource("12_0vwkq")]
+visible = false
+position = Vector2(-563, 259)
+
+[node name="Sprite" parent="SkeletonPower5" index="0"]
+frame = 1
+
+[node name="CollisionShape2D" parent="SkeletonPower5" index="1"]
+position = Vector2(0, -4)
+shape = SubResource("RectangleShape2D_pxm7o")
+
+[node name="SkeletonPower6" parent="." instance=ExtResource("12_0vwkq")]
+visible = false
+position = Vector2(-534, 259)
+
 [node name="WitchPower" type="ColorRect" parent="."]
 visible = false
 z_index = 3
@@ -407,10 +433,10 @@ texture = SubResource("GradientTexture1D_j3wp3")
 [node name="ColorRect" type="ColorRect" parent="BattleTransitionScreen"]
 z_index = 4090
 material = SubResource("ShaderMaterial_vsx6p")
-offset_left = 165.0
-offset_top = 39.0
-offset_right = 804.0
-offset_bottom = 398.0
+offset_left = 228.0
+offset_top = 76.0
+offset_right = 740.0
+offset_bottom = 365.0
 
 [node name="Sprite2D" type="Sprite2D" parent="BattleTransitionScreen"]
 z_index = 4096
@@ -468,3 +494,6 @@ text = "Text template Text templateText templateText templateText template"
 [editable path="SkeletonPower"]
 [editable path="SkeletonPower2"]
 [editable path="SkeletonPower3"]
+[editable path="SkeletonPower4"]
+[editable path="SkeletonPower5"]
+[editable path="SkeletonPower6"]

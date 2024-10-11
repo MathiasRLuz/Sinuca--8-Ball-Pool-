@@ -991,7 +991,7 @@ func witch_power(activate := true):
 func skeleton_power(activate := true):
 	if activate:
 		var margin = 30
-		for i in range(randi_range(1,3)):
+		for i in range(randi_range(3,6)):
 			#  limites_paredes => [70, 850, 350, 70] # esquerda, direita, baixo, cima
 			var x = randi_range(limites_paredes[0]+margin,limites_paredes[1]-margin)
 			var y = randi_range(limites_paredes[3]+margin,limites_paredes[2]-margin)
@@ -999,14 +999,14 @@ func skeleton_power(activate := true):
 			skeletons[i].rotation_degrees = randf_range(0,360)
 			skeletons[i].visible = true
 	else:
-		for i in range(3):
+		for i in range(6):
 			skeletons[i].global_position = Vector2(-625,194)
 			skeletons[i].visible = false
 	
 func slime_power(activate := true):
 	if activate:
 		var margin = 30
-		var number_of_blobs = randi_range(1,3)
+		var number_of_blobs = randi_range(3,5)
 		#  limites_paredes => [70, 850, 350, 70] # esquerda, direita, baixo, cima
 		var x = randi_range(limites_paredes[0]+margin,limites_paredes[1]-margin)
 		var y = randi_range(limites_paredes[3]+margin,limites_paredes[2]-margin)
@@ -1083,7 +1083,7 @@ func _process(_delta):
 			print("Tempo acabando")
 			goblin_warned = true
 	if witch_power_activated:
-		$WitchPower.material.set_shader_parameter("chaos", randf_range(20,50))
+		$WitchPower.material.set_shader_parameter("chaos", randf_range(50,100))
 		$WitchPower.material.set_shader_parameter("attenuation", randf_range(5,15))
 	if waiting_timer:
 		return
