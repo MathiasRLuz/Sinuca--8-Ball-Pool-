@@ -1,7 +1,7 @@
 extends Node
 
 enum LookingDirection {RIGHT, LEFT, UP, DOWN}
-enum Npcs {NPC, DOMOVOY, SLIME, ESQUELETO, GOBLIN, CICLOPE, BRUXA, GOLEM, MEDUSA, PRINCIPE, PRINCESA, FANTASMA, MINOTAURO}
+enum Npcs {NENHUM, NPC, DOMOVOY, SLIME, ESQUELETO, GOBLIN, CICLOPE, BRUXA, GOLEM, MEDUSA, PRINCIPE, PRINCESA, FANTASMA, MINOTAURO}
 enum Falas {PRE_BATALHA, VITORIOSO, DERROTADO, GENERICA, }
 
 enum EnemyDififultyVariables {power_probability, force_scale, precision, error_radius, max_shot_angle, min_score, risky, crit1, crit2, crit3, crit4, crit5, crit6}
@@ -27,7 +27,126 @@ var EnemyDificulty = {
 		EnemyDififultyVariables.crit5 : 840.666850036383, 
 		EnemyDififultyVariables.crit6 : 1000,
 	},
-	
+	Npcs.DOMOVOY : {
+		EnemyDififultyVariables.power_probability : 1,
+		EnemyDififultyVariables.force_scale : 0.8,
+		EnemyDififultyVariables.precision : 0.95,
+		EnemyDififultyVariables.error_radius : 5,
+		EnemyDififultyVariables.max_shot_angle : 60,
+		EnemyDififultyVariables.min_score : 0,
+		EnemyDififultyVariables.risky: 0,
+		EnemyDififultyVariables.crit1 : 5,
+		EnemyDififultyVariables.crit2 : 100,
+		EnemyDififultyVariables.crit3 : 200,
+		EnemyDififultyVariables.crit4 : 500,
+		EnemyDififultyVariables.crit5 : 750,
+		EnemyDififultyVariables.crit6 : 1000
+	},
+	Npcs.SLIME : {
+		EnemyDififultyVariables.power_probability : 1,
+		EnemyDififultyVariables.force_scale : 0.8,
+		EnemyDififultyVariables.precision : 0.95,
+		EnemyDififultyVariables.error_radius : 5,
+		EnemyDififultyVariables.max_shot_angle : 60,
+		EnemyDififultyVariables.min_score : 0,
+		EnemyDififultyVariables.risky: 0,
+		EnemyDififultyVariables.crit1 : 5,
+		EnemyDififultyVariables.crit2 : 100,
+		EnemyDififultyVariables.crit3 : 200,
+		EnemyDififultyVariables.crit4 : 500,
+		EnemyDififultyVariables.crit5 : 750,
+		EnemyDififultyVariables.crit6 : 1000
+	},
+	Npcs.ESQUELETO : {
+		EnemyDififultyVariables.power_probability : 1,
+		EnemyDififultyVariables.force_scale : 1,
+		EnemyDififultyVariables.precision : 1,
+		EnemyDififultyVariables.error_radius : 5,
+		EnemyDififultyVariables.max_shot_angle : 60,
+		EnemyDififultyVariables.min_score : 0,
+		EnemyDififultyVariables.risky: 1,
+		EnemyDififultyVariables.crit1 : 2,
+		EnemyDififultyVariables.crit2 : 100,
+		EnemyDififultyVariables.crit3 : 200,
+		EnemyDififultyVariables.crit4 : 250,
+		EnemyDififultyVariables.crit5 : 500,
+		EnemyDififultyVariables.crit6 : 1000
+	}, 
+	Npcs.GOBLIN : {
+		EnemyDififultyVariables.power_probability : 1,
+		EnemyDififultyVariables.force_scale : 1,
+		EnemyDififultyVariables.precision : 1,
+		EnemyDififultyVariables.error_radius : 5,
+		EnemyDififultyVariables.max_shot_angle : 60,
+		EnemyDififultyVariables.min_score : 0,
+		EnemyDififultyVariables.risky: 1,
+		EnemyDififultyVariables.crit1 : 2,
+		EnemyDififultyVariables.crit2 : 100,
+		EnemyDififultyVariables.crit3 : 200,
+		EnemyDififultyVariables.crit4 : 250,
+		EnemyDififultyVariables.crit5 : 500,
+		EnemyDififultyVariables.crit6 : 1000
+	}, 
+	Npcs.CICLOPE : {
+		EnemyDififultyVariables.power_probability : 1,
+		EnemyDififultyVariables.force_scale : 1,
+		EnemyDififultyVariables.precision : 1,
+		EnemyDififultyVariables.error_radius : 5,
+		EnemyDififultyVariables.max_shot_angle : 60,
+		EnemyDififultyVariables.min_score : 0,
+		EnemyDififultyVariables.risky: 1,
+		EnemyDififultyVariables.crit1 : 2,
+		EnemyDififultyVariables.crit2 : 100,
+		EnemyDififultyVariables.crit3 : 200,
+		EnemyDififultyVariables.crit4 : 250,
+		EnemyDififultyVariables.crit5 : 500,
+		EnemyDififultyVariables.crit6 : 1000
+	}, 
+	Npcs.BRUXA : {
+		EnemyDififultyVariables.power_probability : 1,
+		EnemyDififultyVariables.force_scale : 1,
+		EnemyDififultyVariables.precision : 1,
+		EnemyDififultyVariables.error_radius : 5,
+		EnemyDififultyVariables.max_shot_angle : 60,
+		EnemyDififultyVariables.min_score : 0,
+		EnemyDififultyVariables.risky: 1,
+		EnemyDififultyVariables.crit1 : 2,
+		EnemyDififultyVariables.crit2 : 100,
+		EnemyDififultyVariables.crit3 : 200,
+		EnemyDififultyVariables.crit4 : 250,
+		EnemyDififultyVariables.crit5 : 500,
+		EnemyDififultyVariables.crit6 : 1000
+	}, 
+	Npcs.GOLEM : {
+		EnemyDififultyVariables.power_probability : 1,
+		EnemyDififultyVariables.force_scale : 1,
+		EnemyDififultyVariables.precision : 1,
+		EnemyDififultyVariables.error_radius : 5,
+		EnemyDififultyVariables.max_shot_angle : 60,
+		EnemyDififultyVariables.min_score : 0,
+		EnemyDififultyVariables.risky: 1,
+		EnemyDififultyVariables.crit1 : 2,
+		EnemyDififultyVariables.crit2 : 100,
+		EnemyDififultyVariables.crit3 : 200,
+		EnemyDififultyVariables.crit4 : 250,
+		EnemyDififultyVariables.crit5 : 500,
+		EnemyDififultyVariables.crit6 : 1000
+	}, 
+	Npcs.MEDUSA : {
+		EnemyDififultyVariables.power_probability : 1,
+		EnemyDififultyVariables.force_scale : 1,
+		EnemyDififultyVariables.precision : 1,
+		EnemyDififultyVariables.error_radius : 5,
+		EnemyDififultyVariables.max_shot_angle : 60,
+		EnemyDififultyVariables.min_score : 0,
+		EnemyDififultyVariables.risky: 1,
+		EnemyDififultyVariables.crit1 : 2,
+		EnemyDififultyVariables.crit2 : 100,
+		EnemyDififultyVariables.crit3 : 200,
+		EnemyDififultyVariables.crit4 : 250,
+		EnemyDififultyVariables.crit5 : 500,
+		EnemyDififultyVariables.crit6 : 1000
+	}, 
 	Npcs.PRINCIPE : {
 		EnemyDififultyVariables.power_probability : 1,
 		EnemyDififultyVariables.force_scale : 1,
@@ -58,21 +177,21 @@ var EnemyDificulty = {
 		EnemyDififultyVariables.crit5 : 500,
 		EnemyDififultyVariables.crit6 : 1000
 	}, 
-	Npcs.SLIME : {
-		EnemyDififultyVariables.power_probability : 0,
-		EnemyDififultyVariables.force_scale : 0.8,
-		EnemyDififultyVariables.precision : 0.95,
+	Npcs.FANTASMA : {
+		EnemyDififultyVariables.power_probability : 1,
+		EnemyDififultyVariables.force_scale : 1,
+		EnemyDififultyVariables.precision : 1,
 		EnemyDififultyVariables.error_radius : 5,
 		EnemyDififultyVariables.max_shot_angle : 60,
 		EnemyDififultyVariables.min_score : 0,
-		EnemyDififultyVariables.risky: 0,
-		EnemyDififultyVariables.crit1 : 5,
+		EnemyDififultyVariables.risky: 1,
+		EnemyDififultyVariables.crit1 : 2,
 		EnemyDififultyVariables.crit2 : 100,
 		EnemyDififultyVariables.crit3 : 200,
-		EnemyDififultyVariables.crit4 : 500,
-		EnemyDififultyVariables.crit5 : 750,
+		EnemyDififultyVariables.crit4 : 250,
+		EnemyDififultyVariables.crit5 : 500,
 		EnemyDififultyVariables.crit6 : 1000
-	},
+	}, 
 	Npcs.MINOTAURO : {
 		EnemyDififultyVariables.power_probability : 0,
 		EnemyDififultyVariables.force_scale : 1.41252899169922, 
@@ -105,7 +224,8 @@ var Texts = {
 	}
 }
 
-var current_enemy : Enemy = null
+var current_enemy : Node
+var current_enemy_type : Npcs = Npcs.NENHUM
 var current_enemy_name : String
 var enemy_original_position : Vector2
 var enemy_can_move: bool
@@ -123,19 +243,22 @@ func enemy_defeated(enemy_name):
 func enemy_faced(enemy_name):
 	faced_enemies.append(enemy_name)
 
-func set_new_enemy(_enemy,_enemy_original_position,_enemy_can_move,_current_enemy_name):
+func set_new_enemy(_enemy:Node,_enemy_original_position:Vector2,_enemy_can_move:bool,_current_enemy_name:String,_enemy_type:Npcs):
 	current_enemy = _enemy
 	enemy_original_position = _enemy_original_position
 	enemy_can_move = _enemy_can_move
 	current_enemy_name = _current_enemy_name
+	current_enemy_type = _enemy_type
+	
 func clear_enemy_data():
-	current_enemy = null	
+	current_enemy = null
+	current_enemy_type = Npcs.NENHUM
 	enemy_original_position = Vector2.ZERO
 	enemy_can_move = false
 	current_enemy_name = ""
 	
 func get_current_enemy():
-	return [current_enemy,enemy_original_position,enemy_can_move,current_enemy_name]
+	return [current_enemy,enemy_original_position,enemy_can_move,current_enemy_name,current_enemy_type]
 	
 func set_player_spawn(pos,dir):
 	player_spawn_position = pos

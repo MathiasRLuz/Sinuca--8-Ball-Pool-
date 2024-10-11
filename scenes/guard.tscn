@@ -1,0 +1,121 @@
+[gd_scene load_steps=9 format=3 uid="uid://c80k1jtd3cefb"]
+
+[ext_resource type="Script" path="res://scripts/guard.gd" id="1_ah6fx"]
+[ext_resource type="Texture2D" uid="uid://c77q051bc3pg3" path="res://assets/Wizpool/Overworld/Template criança.png" id="2_q6n2t"]
+[ext_resource type="Texture2D" uid="uid://d0dqnhmuh5gq6" path="res://assets/Wizpool/Overworld/Caixa de texto 3.png" id="3_5tvjd"]
+[ext_resource type="Texture2D" uid="uid://86d7vbjmjsa0" path="res://assets/Wizpool/Overworld/Caixa de texto 2.png" id="4_5p7yd"]
+[ext_resource type="Texture2D" uid="uid://dj3x543ubf0uu" path="res://assets/Wizpool/UI/keyboard_e_outline.png" id="5_akht8"]
+
+[sub_resource type="Curve2D" id="Curve2D_5moho"]
+_data = {
+"points": PackedVector2Array(0, 0, 0, 0, 22, -10, 0, 0, 0, 0, 102, -9)
+}
+point_count = 2
+
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_pkcqn"]
+radius = 8.0
+height = 20.0
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_26k16"]
+radius = 25.0
+
+[node name="Guard" type="Path2D" node_paths=PackedStringArray("kids_array")]
+curve = SubResource("Curve2D_5moho")
+script = ExtResource("1_ah6fx")
+spritesheet = ExtResource("2_q6n2t")
+look_at_player = true
+npc_type = 1
+can_move = false
+kids_array = [null, null]
+
+[node name="PathFollow2D" type="PathFollow2D" parent="."]
+position = Vector2(102, -9)
+progress = 160.012
+rotates = false
+loop = false
+
+[node name="StaticBody2D" type="StaticBody2D" parent="PathFollow2D"]
+
+[node name="Sprite2D" type="Sprite2D" parent="PathFollow2D/StaticBody2D"]
+texture = ExtResource("2_q6n2t")
+hframes = 2
+vframes = 4
+
+[node name="Dialogue" type="Control" parent="PathFollow2D/StaticBody2D/Sprite2D"]
+z_index = 4096
+layout_mode = 3
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -56.0
+offset_top = -109.0
+offset_right = 24.0
+offset_bottom = -69.0
+grow_horizontal = 2
+grow_vertical = 0
+
+[node name="NinePatchRect" type="NinePatchRect" parent="PathFollow2D/StaticBody2D/Sprite2D/Dialogue"]
+texture_filter = 1
+layout_mode = 0
+offset_right = 80.0
+offset_bottom = 40.0
+texture = ExtResource("3_5tvjd")
+
+[node name="Name" type="RichTextLabel" parent="PathFollow2D/StaticBody2D/Sprite2D/Dialogue/NinePatchRect"]
+layout_mode = 0
+offset_left = 4.0
+offset_top = 1.0
+offset_right = 104.0
+offset_bottom = 26.0
+scale = Vector2(0.5, 0.5)
+text = "Name"
+
+[node name="Text" type="RichTextLabel" parent="PathFollow2D/StaticBody2D/Sprite2D/Dialogue/NinePatchRect"]
+layout_mode = 0
+offset_left = 4.0
+offset_top = 10.0
+offset_right = 187.0
+offset_bottom = 75.0
+scale = Vector2(0.4, 0.4)
+text = "Text template Text templateText templateText templateText template"
+
+[node name="InteractIcon" type="Control" parent="PathFollow2D/StaticBody2D/Sprite2D"]
+z_index = 4096
+layout_mode = 3
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_top = -69.0
+offset_right = 16.0
+offset_bottom = -53.0
+grow_horizontal = 2
+grow_vertical = 0
+
+[node name="NinePatchRect" type="NinePatchRect" parent="PathFollow2D/StaticBody2D/Sprite2D/InteractIcon"]
+texture_filter = 1
+layout_mode = 0
+offset_right = 16.0
+offset_bottom = 16.0
+texture = ExtResource("4_5p7yd")
+
+[node name="Sprite2D" type="Sprite2D" parent="PathFollow2D/StaticBody2D/Sprite2D/InteractIcon/NinePatchRect"]
+position = Vector2(8, 8)
+scale = Vector2(0.2, 0.2)
+texture = ExtResource("5_akht8")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="PathFollow2D/StaticBody2D"]
+position = Vector2(0, 12)
+shape = SubResource("CapsuleShape2D_pkcqn")
+
+[node name="Area2D" type="Area2D" parent="PathFollow2D"]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="PathFollow2D/Area2D"]
+position = Vector2(0, 4)
+shape = SubResource("CircleShape2D_26k16")
+
+[connection signal="body_entered" from="PathFollow2D/Area2D" to="." method="_on_area_2d_body_entered"]
+[connection signal="body_exited" from="PathFollow2D/Area2D" to="." method="_on_area_2d_body_exited"]

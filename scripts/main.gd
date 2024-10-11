@@ -139,7 +139,12 @@ func fim_de_partida(jogador_vencedor): # 0 jogador, 1 bot
 func new_game():
 	generate_balls()
 	create_cue_ball()
-	reset_cue_ball()	
+	reset_cue_ball()
+	var _current_enemy = GlobalData.get_current_enemy() # [current_enemy,enemy_original_position,enemy_can_move,current_enemy_name,current_enemy_type]
+	print(_current_enemy)
+	if _current_enemy[4] != GlobalData.Npcs.NENHUM:
+		current_enemy = _current_enemy[4]
+	print("Enfrentando o inimigo ", current_enemy)
 	
 func generate_balls():
 	var count : int = 0
@@ -1030,8 +1035,9 @@ func _input(event):
 	if event.is_action_pressed("interact"):	
 		if current_enemy == GlobalData.Npcs.MINOTAURO and grupo_jogador != 0:
 			minotaur_power()
-		#if force_victory: GlobalData.enemy_defeated(GlobalData.current_enemy_name) # força vitória do jogador
-		#get_tree().change_scene_to_file(GlobalData.last_scene_before_battle)
+		else:
+			if force_victory: GlobalData.enemy_defeated(GlobalData.current_enemy_name) # força vitória do jogador
+			get_tree().change_scene_to_file(GlobalData.last_scene_before_battle)
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(_delta):
