@@ -99,8 +99,8 @@ func _ready():
 		play_animation_and_wait()
 	else:
 		$BattleTransitionScreen.visible = false
-		_on_animation_finished("")
-
+		#_on_animation_finished("")
+	play_animation_and_wait()
 func proximo_jogador():
 	jogador_atual = 1 - jogador_atual
 	print("Jogador atual: ", jogador_atual)
