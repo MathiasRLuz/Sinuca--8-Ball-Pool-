@@ -1,7 +1,7 @@
 extends Node
 
 enum LookingDirection {RIGHT, LEFT, UP, DOWN}
-enum Npcs {NENHUM, NPC, DOMOVOY, SLIME, ESQUELETO, GOBLIN, CICLOPE, BRUXA, GOLEM, MEDUSA, PRINCIPE, PRINCESA, FANTASMA, MINOTAURO}
+enum Npcs {NENHUM, NPC, DOMOVOY, SLIME, ESQUELETO, GOBLIN, CICLOPE, BRUXA, GOLEM, MEDUSA, PRINCIPE, PRINCESA, FANTASMA, MINOTAURO, NPC_HUMANO_MENINO, NPC_HUMANO_MENINA, NPC_BARBARO}
 enum Falas {PRE_BATALHA, VITORIOSO, DERROTADO, GENERICA, }
 
 enum EnemyDififultyVariables {power_probability, force_scale, precision, error_radius, max_shot_angle, min_score, risky, crit1, crit2, crit3, crit4, crit5, crit6}
@@ -13,6 +13,51 @@ var matchup_id = 0
 
 var EnemyDificulty = {
 	Npcs.NPC : {		
+		EnemyDififultyVariables.power_probability : 0,
+		EnemyDififultyVariables.force_scale : 0.95879989266396, 
+		EnemyDififultyVariables.precision : 1, 
+		EnemyDififultyVariables.error_radius : 9.38956937789917, 
+		EnemyDififultyVariables.max_shot_angle : 53.4195175170898,  
+		EnemyDififultyVariables.min_score : -49.2016143798828, 
+		EnemyDififultyVariables.risky: 1, 
+		EnemyDififultyVariables.crit1 : 18.2738933563232, 
+		EnemyDififultyVariables.crit2 : 107.540453344584,  
+		EnemyDififultyVariables.crit3 : 286.130897557735, 
+		EnemyDififultyVariables.crit4 : 543.720483505726, 
+		EnemyDififultyVariables.crit5 : 840.666850036383, 
+		EnemyDififultyVariables.crit6 : 1000,
+	},
+	Npcs.NPC_HUMANO_MENINO : {		
+		EnemyDififultyVariables.power_probability : 0,
+		EnemyDififultyVariables.force_scale : 0.95879989266396, 
+		EnemyDififultyVariables.precision : 1, 
+		EnemyDififultyVariables.error_radius : 9.38956937789917, 
+		EnemyDififultyVariables.max_shot_angle : 53.4195175170898,  
+		EnemyDififultyVariables.min_score : -49.2016143798828, 
+		EnemyDififultyVariables.risky: 1, 
+		EnemyDififultyVariables.crit1 : 18.2738933563232, 
+		EnemyDififultyVariables.crit2 : 107.540453344584,  
+		EnemyDififultyVariables.crit3 : 286.130897557735, 
+		EnemyDififultyVariables.crit4 : 543.720483505726, 
+		EnemyDififultyVariables.crit5 : 840.666850036383, 
+		EnemyDififultyVariables.crit6 : 1000,
+	},
+	Npcs.NPC_HUMANO_MENINA : {		
+		EnemyDififultyVariables.power_probability : 0,
+		EnemyDififultyVariables.force_scale : 0.95879989266396, 
+		EnemyDififultyVariables.precision : 1, 
+		EnemyDififultyVariables.error_radius : 9.38956937789917, 
+		EnemyDififultyVariables.max_shot_angle : 53.4195175170898,  
+		EnemyDififultyVariables.min_score : -49.2016143798828, 
+		EnemyDififultyVariables.risky: 1, 
+		EnemyDififultyVariables.crit1 : 18.2738933563232, 
+		EnemyDififultyVariables.crit2 : 107.540453344584,  
+		EnemyDififultyVariables.crit3 : 286.130897557735, 
+		EnemyDififultyVariables.crit4 : 543.720483505726, 
+		EnemyDififultyVariables.crit5 : 840.666850036383, 
+		EnemyDififultyVariables.crit6 : 1000,
+	},
+	Npcs.NPC_BARBARO : {		
 		EnemyDififultyVariables.power_probability : 0,
 		EnemyDififultyVariables.force_scale : 0.95879989266396, 
 		EnemyDififultyVariables.precision : 1, 
@@ -210,6 +255,39 @@ var EnemyDificulty = {
 }
 
 var Texts = {
+	Npcs.NPC_HUMANO_MENINO : { 
+		Falas.PRE_BATALHA: [
+			["oi...","hi…"],
+		],
+		Falas.VITORIOSO : [
+			["HAHAHA, FINALMENTE ME SENTI IMPORTANTE",""],
+		],
+		Falas.DERROTADO : [
+			["Você é bom",""],
+		]
+	},
+	Npcs.NPC_HUMANO_MENINA : { 
+		Falas.PRE_BATALHA: [
+			["O que, foi seu idiota?",""],
+		],
+		Falas.VITORIOSO : [
+			["hahaha eu sou muito melhor que você",""],
+		],
+		Falas.DERROTADO : [
+			["Se provou, seu idiota",""],
+		]
+	},
+	Npcs.NPC_BARBARO : {
+		Falas.PRE_BATALHA: [
+			["Eu fui treinado desde que era criança, acha mesmo que vai vencer de alguém tão foda quanto eu??",""],
+		],
+		Falas.VITORIOSO : [
+			["Seu merdinha, achou mesmo que tinha chance? sua filha deve estar morta agora...",""],
+		],
+		Falas.DERROTADO : [
+			["mas... mas... eu...",""],
+		]
+	},
 	Npcs.NPC : {
 		Falas.PRE_BATALHA: [
 			["Oi, sou um NPC", "Hi, I'm an NPC"],
@@ -236,6 +314,7 @@ var last_scene_before_battle : String
 var enemy_pos : Vector2
 var defeated_enemies := []
 var faced_enemies := []
+var freed_kids := []
 var image_pre : Texture2D
 var image_victory : Texture2D
 var image_defeat : Texture2D
@@ -255,6 +334,9 @@ func enemy_defeated(enemy_name):
 
 func enemy_faced(enemy_name):
 	faced_enemies.append(enemy_name)
+
+func freed_kid(kid: Kid):
+	freed_kids.append(kid)
 
 func set_new_enemy(_enemy:Node,_enemy_original_position:Vector2,_enemy_can_move:bool,_current_enemy_name:String,_enemy_type:Npcs):
 	current_enemy = _enemy

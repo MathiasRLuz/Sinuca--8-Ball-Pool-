@@ -26,9 +26,7 @@ signal dialogue_finished
 @export var image_defeat : Texture2D
 @export var icon : Texture2D
 
-var is_waiting := false
 var objs_na_area := []
-var character_direction : Vector2
 var falas := []
 var current_dialogue_id = -1
 var derrotado := false
@@ -68,7 +66,10 @@ func _ready() -> void:
 	enfrentado = GlobalData.faced_enemies.count(npc_name) > 0
 	if derrotado: 
 		pode_desafiar = false
-		$"../PortaGrade/Porta/AnimationPlayer".play("open_door")
+		for kid in kids_array:
+			GlobalData.freed_kid(kid)
+			kid.visible = false # devo teleportar elas para o lugar desejado
+		$"../Jaula/Frente".frame_coords = Vector2(1,1)
 		
 	if GlobalData.current_enemy_name == npc_name:
 		position = GlobalData.enemy_pos
@@ -129,7 +130,7 @@ func _input(event):
 
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
-func _process(delta: float) -> void:		
+func _process(_delta: float) -> void:		
 	
 	if objs_na_area.count(player) > 0:
 		interact_icon.visible = true

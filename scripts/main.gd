@@ -91,16 +91,23 @@ func _ready():
 	all_potted = []
 	randomize()  # Garante que a semente do gerador de números aleatórios seja diferente a cada execução
 	var battle_images = GlobalData.get_battle_images() # [image_pre,image_victory,image_defeat,icon]
+	var _current_enemy = GlobalData.get_current_enemy() # [current_enemy,enemy_original_position,enemy_can_move,current_enemy_name,current_enemy_type]
+	print(_current_enemy)
+	if _current_enemy[4] != GlobalData.Npcs.NENHUM:
+		current_enemy = _current_enemy[4]
+	print("Enfrentando o inimigo ", current_enemy)
 	if battle_images[0] != null:
 		image_pre = battle_images[0]
+		$BattleTransitionScreen/EnemySprite2D.texture = image_pre
 		image_victory = battle_images[1]
 		image_defeat = battle_images[2]
 		icon = battle_images[3]
+		$BattleTransitionScreen/RichTextLabel_Name.text = _current_enemy[3]
+		$BattleTransitionScreen/Dialogue/NinePatchRect/Text.text = "Teste"
 		play_animation_and_wait()
 	else:
 		$BattleTransitionScreen.visible = false
-		#_on_animation_finished("")
-	play_animation_and_wait()
+		_on_animation_finished("")
 func proximo_jogador():
 	jogador_atual = 1 - jogador_atual
 	print("Jogador atual: ", jogador_atual)
@@ -173,11 +180,7 @@ func new_game():
 	generate_balls()
 	create_cue_ball()
 	reset_cue_ball()
-	var _current_enemy = GlobalData.get_current_enemy() # [current_enemy,enemy_original_position,enemy_can_move,current_enemy_name,current_enemy_type]
-	print(_current_enemy)
-	if _current_enemy[4] != GlobalData.Npcs.NENHUM:
-		current_enemy = _current_enemy[4]
-	print("Enfrentando o inimigo ", current_enemy)
+	
 	
 func generate_balls():
 	var count : int = 0
