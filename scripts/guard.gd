@@ -16,7 +16,7 @@ signal dialogue_finished
 @onready var text_text: RichTextLabel = $PathFollow2D/StaticBody2D/Sprite2D/Dialogue/NinePatchRect/Text
 @onready var dialogue: Control = $PathFollow2D/StaticBody2D/Sprite2D/Dialogue
 @onready var interact_icon: Control = $PathFollow2D/StaticBody2D/Sprite2D/InteractIcon
-@onready var player = $"../Player"
+@onready var player = $"../../Player"
 @onready var transition_node = $"../Transition"
 @onready var sprite: Sprite2D = $PathFollow2D/StaticBody2D/Sprite2D
 @onready var path_follow_2d: PathFollow2D = $PathFollow2D
@@ -72,7 +72,7 @@ func _ready() -> void:
 		$"../Jaula/Frente".frame_coords = Vector2(1,1)
 		
 	if GlobalData.current_enemy_name == npc_name:
-		position = GlobalData.enemy_pos
+		global_position = GlobalData.enemy_pos
 		can_move = false
 		sprite.frame_coords = Vector2(0,2) # down, up, left, right
 		path_follow_2d.position = Vector2.ZERO
@@ -101,21 +101,21 @@ func talk():
 		transition_node._set_animation(transition_node.Animations.SPOT_PLAYER, 0.7,"transition_in") #PIXELS, SPOT_PLAYER, SPOT_CENTER, VER_CUT, HOR_CUT
 		await get_tree().create_timer(2).timeout
 		if _current_enemy[0] != null:
-			_current_enemy[0].position = _current_enemy[1]
+			_current_enemy[0].global_position = _current_enemy[1]
 			_current_enemy[0].can_move = _current_enemy[2]
-		GlobalData.set_new_enemy($".",position,can_move,next_enemy_name,next_enemy_type)
+		GlobalData.set_new_enemy($".",global_position,can_move,next_enemy_name,next_enemy_type)
 		GlobalData.set_battle_images(next_enemy_image_pre,next_enemy_image_victory,next_enemy_image_defeat,next_enemy_icon)
 		# teleport to nearest table
 		can_move = false
-		player.position = nearest_table.position + Vector2(-25,-30)
-		position = nearest_table.position + Vector2(40,0)
-		path_follow_2d.position = Vector2.ZERO
+		player.global_position = nearest_table.global_position + Vector2(-25,-30)
+		global_position = nearest_table.global_position + Vector2(40,0)
+		path_follow_2d.global_position = Vector2.ZERO
 		
 		sprite.frame_coords = Vector2(0,2) # down, up, left, right
 		player.sprite.animation = "walk_down"
-		GlobalData.set_player_spawn(player.position,GlobalData.LookingDirection.DOWN)
+		GlobalData.set_player_spawn(player.global_position,GlobalData.LookingDirection.DOWN)
 		GlobalData.last_scene_before_battle = get_tree().current_scene.scene_file_path
-		GlobalData.enemy_pos = position
+		GlobalData.enemy_pos = global_position
 		GlobalData.enemy_faced(next_enemy_name)
 		get_tree().change_scene_to_file("res://scenes/sinuca.tscn")		
 		return
@@ -135,7 +135,7 @@ func _process(_delta: float) -> void:
 	if objs_na_area.count(player) > 0:
 		interact_icon.visible = true
 		if look_at_player:
-			look_to($"../Player".position)
+			look_to(player.position)
 	else:
 		interact_icon.visible = false
 		dialogue.visible = false

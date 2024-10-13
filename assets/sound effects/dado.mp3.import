@@ -1,0 +1,19 @@
+[remap]
+
+importer="mp3"
+type="AudioStreamMP3"
+uid="uid://bxrl4hvtylvym"
+path="res://.godot/imported/dado.mp3-3f94516f062ed0e3eb4067609f3f5e20.mp3str"
+
+[deps]
+
+source_file="res://assets/sound effects/dado.mp3"
+dest_files=["res://.godot/imported/dado.mp3-3f94516f062ed0e3eb4067609f3f5e20.mp3str"]
+
+[params]
+
+loop=false
+loop_offset=0
+bpm=0
+beat_count=0
+bar_beats=4

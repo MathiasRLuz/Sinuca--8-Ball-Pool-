@@ -67,7 +67,7 @@ position = Vector2(-63, -54)
 position = Vector2(110, 46)
 texture = ExtResource("4_ih52s")
 script = ExtResource("6_urp26")
-player_spawn_position = Vector2(203, 287)
+player_spawn_position = Vector2(82, 629)
 next_scene_path = "res://scenes/porao.tscn"
 
 [node name="StaticBody2D" type="StaticBody2D" parent="Escada"]

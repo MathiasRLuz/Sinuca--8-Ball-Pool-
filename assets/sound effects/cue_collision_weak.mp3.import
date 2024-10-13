@@ -1,0 +1,19 @@
+[remap]
+
+importer="mp3"
+type="AudioStreamMP3"
+uid="uid://dcaibbxro8l8i"
+path="res://.godot/imported/cue_collision_weak.mp3-69c030dbe6e26aff7795d03900e18600.mp3str"
+
+[deps]
+
+source_file="res://assets/sound effects/cue_collision_weak.mp3"
+dest_files=["res://.godot/imported/cue_collision_weak.mp3-69c030dbe6e26aff7795d03900e18600.mp3str"]
+
+[params]
+
+loop=false
+loop_offset=0
+bpm=0
+beat_count=0
+bar_beats=4

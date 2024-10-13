@@ -27,7 +27,7 @@ void fragment() {
 	if (is_outline) {
 		final_color.rgb = mix(vec3(0.0), original_color.rgb, transition);  // Cor preta no contorno
 	}
-	
+
 	// Definir a cor final
 	COLOR = final_color;
 }

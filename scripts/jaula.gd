@@ -1,5 +1,5 @@
 extends Node2D
-@onready var player: CharacterBody2D = $"../Player"
+@onready var player: CharacterBody2D = $"../../Player"
 var objs_na_area := []
 @export var look_at_player := true
 @export var kids_sprites : Array[Kid]

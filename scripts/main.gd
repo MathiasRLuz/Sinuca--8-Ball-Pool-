@@ -108,6 +108,7 @@ func _ready():
 	else:
 		$BattleTransitionScreen.visible = false
 		_on_animation_finished("")
+		
 func proximo_jogador():
 	jogador_atual = 1 - jogador_atual
 	print("Jogador atual: ", jogador_atual)
