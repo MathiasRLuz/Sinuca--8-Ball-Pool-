@@ -1,7 +1,9 @@
-[gd_scene load_steps=9 format=3 uid="uid://drwm0yb1mdeo8"]
+[gd_scene load_steps=11 format=3 uid="uid://drwm0yb1mdeo8"]
 
+[ext_resource type="Script" path="res://scripts/bola.gd" id="1_7mu64"]
 [ext_resource type="Shader" path="res://shaders/balls.gdshader" id="1_t2nmk"]
 [ext_resource type="Texture2D" uid="uid://djwys21foai4d" path="res://assets/Wizpool/Bolas de Sinuca.png" id="1_ymfk2"]
+[ext_resource type="AudioStream" uid="uid://bl6u2emnk3xqw" path="res://assets/sound effects/ball_collision.mp3" id="4_tr2ga"]
 
 [sub_resource type="PhysicsMaterial" id="PhysicsMaterial_mlpql"]
 friction = 0.3
@@ -45,6 +47,7 @@ max_contacts_reported = 1
 linear_damp = 1.0
 angular_damp_mode = 1
 angular_damp = 1.5
+script = ExtResource("1_7mu64")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 shape = SubResource("CircleShape2D_ecgr8")
@@ -60,3 +63,8 @@ scale = Vector2(2, 2)
 texture = ExtResource("1_ymfk2")
 hframes = 9
 vframes = 2
+
+[node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("4_tr2ga")
+
+[connection signal="body_entered" from="Area2D" to="." method="_on_area_2d_body_entered"]

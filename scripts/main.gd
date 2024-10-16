@@ -27,7 +27,7 @@ var mesa_aberta : bool = true
 
 var jogador_atual : int = 0 # 0 jogador, 1 bot
 var apply_max_force: bool = false
-@export var force_first_player: int = 0 # -1 random, 0 bot, 1 jogador
+@export var force_first_player: int = -1 # -1 random, 0 bot, 1 jogador
 var grupo_jogador : int = 0 # indefinido, 1 menores, 2 maiores
 var estouro := true
 
@@ -52,7 +52,7 @@ var goblin_warned := false
 var medusa_petrified_ball : RigidBody2D = null
 var cyclops_eye = null
 var cyclops_eye_on_table := false
-@export var minotaur_can_destroy_8_ball := true
+@export var minotaur_can_destroy_8_ball := false
 var waiting_timer := false
 
 var image_pre : Texture2D
@@ -64,6 +64,7 @@ var match_has_started := false
 
 @export var debug_slow_time := false
 
+var playlist : AudioStreamPlaylist
 func play_animation_and_wait():
 	# Reproduz a animação
 	$BattleTransitionScreen.visible = true
@@ -87,6 +88,7 @@ func _on_animation_finished(_anim_name: String):
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
+	playlist = $SFX.stream
 	hide_cue()
 	all_potted = []
 	randomize()  # Garante que a semente do gerador de números aleatórios seja diferente a cada execução
@@ -714,6 +716,7 @@ func vez_bot():
 		power+=randf_range(0.1, 0.3)*power
 		power = randf_range(1.1, 1.3)*700*GlobalData.EnemyDificulty[current_enemy][GlobalData.EnemyDififultyVariables.force_scale]* dir.normalized()
 		print("POWER > ", power.length())
+		play_shoot_sound(power)
 		cue_ball.apply_central_impulse(power)
 	else:	
 		var rng = RandomNumberGenerator.new()
@@ -764,6 +767,7 @@ func vez_bot():
 			if better_ball[4]: power *= calculate_shot_power(better_ball[1],better_ball[2])
 			power *= GlobalData.EnemyDificulty[current_enemy][GlobalData.EnemyDififultyVariables.force_scale]
 			print("POWER > ", power.length())
+			play_shoot_sound(power)
 			cue_ball.apply_central_impulse(power)		
 			#$Line2D.visible = false
 			#$Line2D2.visible = false
@@ -1171,7 +1175,9 @@ func _on_taco_shoot(power, _mouse_pos):
 		print("Power: ",power.length())
 	# definir força manualmente
 	#power = 80 *power.normalized()	
+	play_shoot_sound(power)
 	cue_ball.apply_central_impulse(power)
+	
 	# poder Goblin
 	if current_enemy == GlobalData.Npcs.GOBLIN:
 		$GoblinPower.stop()
@@ -1180,7 +1186,15 @@ func _on_taco_shoot(power, _mouse_pos):
 	if current_enemy == GlobalData.Npcs.FANTASMA:
 		ghost_power(false)
 
-	
+func play_shoot_sound(power):
+	if power.length() > MAX_POWER * $Taco.power_multiplier/2.0:
+		var sfx = playlist.get_list_stream(0) as AudioStream
+		$SFX.stream = sfx
+	else:
+		var sfx = playlist.get_list_stream(1) as AudioStream
+		$SFX.stream = sfx
+	$SFX.play()
+		
 func check_ball_path(destination,phantom_ball_position,parent = cue_ball):
 	# Posição inicial do ShapeCast (global position da bola branca)
 	var start_pos = phantom_ball_position
