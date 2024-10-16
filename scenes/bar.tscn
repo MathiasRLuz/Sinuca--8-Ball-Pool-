@@ -1,4 +1,4 @@
-[gd_scene load_steps=19 format=4 uid="uid://dqoxt520vx0fw"]
+[gd_scene load_steps=22 format=4 uid="uid://dqoxt520vx0fw"]
 
 [ext_resource type="Script" path="res://scripts/level.gd" id="1_5n24m"]
 [ext_resource type="PackedScene" uid="uid://bdncjqubnoh5" path="res://scenes/transition.tscn" id="1_7xk4b"]
@@ -11,6 +11,8 @@
 [ext_resource type="Texture2D" uid="uid://ch0y6onio4gug" path="res://assets/Wizpool/Overworld/sprites bar/mesa redonda.png" id="9_nmhuw"]
 [ext_resource type="Script" path="res://scripts/overworld_objects.gd" id="10_cy3xv"]
 [ext_resource type="PackedScene" uid="uid://dtpda1tnwlla8" path="res://scenes/banco.tscn" id="11_fmo1c"]
+[ext_resource type="AudioStream" uid="uid://d2vd654edinwf" path="res://assets/musicas/LFBS.mp3" id="12_qqd3p"]
+[ext_resource type="AudioStream" uid="uid://0j5df8aqma8m" path="res://assets/musicas/ruhigeFantasie.mp3" id="13_a67xl"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_mvtp7"]
 texture = ExtResource("3_ec5md")
@@ -43,6 +45,12 @@ size = Vector2(20, 31)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_7ixgm"]
 size = Vector2(54, 16)
+
+[sub_resource type="AudioStreamPlaylist" id="AudioStreamPlaylist_kie2d"]
+shuffle = true
+stream_count = 2
+stream_0 = ExtResource("12_qqd3p")
+stream_1 = ExtResource("13_a67xl")
 
 [node name="bar" type="Node2D"]
 script = ExtResource("1_5n24m")
@@ -115,5 +123,9 @@ position = Vector2(-81, -42)
 
 [node name="Banco3" parent="." instance=ExtResource("11_fmo1c")]
 position = Vector2(-44, -42)
+
+[node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="."]
+stream = SubResource("AudioStreamPlaylist_kie2d")
+autoplay = true
 
 [connection signal="body_entered" from="Escada/Area2D" to="Escada" method="_on_area_2d_body_entered"]

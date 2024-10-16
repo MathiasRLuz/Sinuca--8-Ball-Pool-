@@ -1,4 +1,4 @@
-[gd_scene load_steps=37 format=4 uid="uid://sr5g8pchrh1v"]
+[gd_scene load_steps=42 format=4 uid="uid://sr5g8pchrh1v"]
 
 [ext_resource type="PackedScene" uid="uid://bdncjqubnoh5" path="res://scenes/transition.tscn" id="1_e74f6"]
 [ext_resource type="Texture2D" uid="uid://b1jxh1eytihxv" path="res://assets/Wizpool/Overworld/porao chao.png" id="1_qk1fd"]
@@ -19,6 +19,9 @@
 [ext_resource type="Texture2D" uid="uid://cklgggg1rd7aw" path="res://assets/Wizpool/Npcs/Npcs/Elfo (M) (Vitória).png" id="15_eo2mc"]
 [ext_resource type="Texture2D" uid="uid://iox1rjd7o07s" path="res://assets/Wizpool/Npcs/Npcs/Elfo (M) (Derrota).png" id="16_e0ljw"]
 [ext_resource type="Texture2D" uid="uid://ccqkdqw4klrxk" path="res://assets/Wizpool/Npcs/Ícones/Elfo (M).png" id="17_yaxst"]
+[ext_resource type="Texture2D" uid="uid://bxq5gbco3gswn" path="res://assets/Wizpool/Overworld/Estatuas.png" id="20_0sq3i"]
+[ext_resource type="AudioStream" uid="uid://dn845rq8t81vo" path="res://assets/musicas/DejaPool.mp3" id="21_f3s2l"]
+[ext_resource type="AudioStream" uid="uid://dhgulycpmvclc" path="res://assets/musicas/Snookin.mp3" id="22_cd1in"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_kyq34"]
 texture = ExtResource("2_1c4vj")
@@ -143,6 +146,15 @@ size = Vector2(25, 39)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_xwwn5"]
 size = Vector2(8, 22)
+
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_jkl0w"]
+height = 26.0
+
+[sub_resource type="AudioStreamPlaylist" id="AudioStreamPlaylist_3utkw"]
+shuffle = true
+stream_count = 2
+stream_0 = ExtResource("21_f3s2l")
+stream_1 = ExtResource("22_cd1in")
 
 [node name="Porao" type="Node2D"]
 script = ExtResource("1_qxowi")
@@ -271,7 +283,7 @@ position = Vector2(0, 3.5)
 shape = SubResource("RectangleShape2D_7yu76")
 
 [node name="Player" parent="." instance=ExtResource("3_y43fx")]
-position = Vector2(110, 619)
+position = Vector2(851, 1963)
 
 [node name="Slime" parent="." node_paths=PackedStringArray("nearest_table") instance=ExtResource("4_8m5in")]
 position = Vector2(410, 639)
@@ -449,6 +461,50 @@ position = Vector2(622, 509)
 
 [node name="Guard" parent="Cela7" index="4"]
 position = Vector2(497, 575)
+
+[node name="Estatuas" type="Node2D" parent="."]
+
+[node name="Estatua" type="Sprite2D" parent="Estatuas"]
+position = Vector2(854, 1912)
+texture = ExtResource("20_0sq3i")
+hframes = 3
+frame = 1
+script = ExtResource("5_62teu")
+
+[node name="StaticBody2D" type="StaticBody2D" parent="Estatuas/Estatua"]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Estatuas/Estatua/StaticBody2D"]
+position = Vector2(1, 8)
+shape = SubResource("CapsuleShape2D_jkl0w")
+
+[node name="Estatua3" type="Sprite2D" parent="Estatuas"]
+position = Vector2(844, 1829)
+texture = ExtResource("20_0sq3i")
+hframes = 3
+script = ExtResource("5_62teu")
+
+[node name="StaticBody2D" type="StaticBody2D" parent="Estatuas/Estatua3"]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Estatuas/Estatua3/StaticBody2D"]
+position = Vector2(1, 8)
+shape = SubResource("CapsuleShape2D_jkl0w")
+
+[node name="Estatua2" type="Sprite2D" parent="Estatuas"]
+position = Vector2(953, 1839)
+texture = ExtResource("20_0sq3i")
+hframes = 3
+frame = 2
+script = ExtResource("5_62teu")
+
+[node name="StaticBody2D" type="StaticBody2D" parent="Estatuas/Estatua2"]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Estatuas/Estatua2/StaticBody2D"]
+position = Vector2(1, 8)
+shape = SubResource("CapsuleShape2D_jkl0w")
+
+[node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="."]
+stream = SubResource("AudioStreamPlaylist_3utkw")
+autoplay = true
 
 [connection signal="body_entered" from="Escada/Area2D" to="Escada" method="_on_area_2d_body_entered"]
 
